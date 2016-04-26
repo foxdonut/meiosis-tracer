@@ -1,0 +1,37 @@
+{
+  "name": "meiosis-tracer",
+  "version": "0.4.1",
+  "description": "meiosis-tracer",
+  "main": "dist/meiosis-tracer.js",
+  "scripts": {
+    "start": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdonut/meiosis-tracer.git"
+  },
+  "keywords": [
+    "devtools",
+    "meiosis",
+    "reactive",
+    "time-travel",
+    "tracer"
+  ],
+  "author": "foxdonut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdonut/meiosis-tracer/issues"
+  },
+  "homepage": "https://github.com/foxdonut/meiosis-tracer#readme",
+  "peerDependencies": {
+    "meiosis": "*"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.7",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.6.0",
+    "eslint": "^2.8.0",
+    "meiosis": "^0.4.1",
+    "webpack": "^1.13.0"
+  }
+}
