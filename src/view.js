@@ -41,8 +41,8 @@ const view = (elementId, renderRoot) => (modelAndUpdate, tracerModel) => {
   const viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) +
     "' value='" + String(tracerModel.tracerIndex) + "'/>" +
     "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-    "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea>" +
-    "<textarea id='" + tracerUpdateId + "' rows='5' cols='100'></textarea></div>";
+    "<textarea id='" + tracerUpdateId + "' rows='5' cols='100'></textarea>" +
+    "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
 
   const target = document.getElementById(elementId);
 
