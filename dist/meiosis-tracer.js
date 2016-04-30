@@ -113,19 +113,10 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var onSliderChange = function onSliderChange(tracerModel, renderRoot) {
-	  return function (evt) {
-	    var index = parseInt(evt.target.value, 10);
-	    var snapshot = tracerModel.tracerStates[index];
-	    renderRoot(snapshot.model);
-	    tracerModel.tracerIndex = index;
-	    updateView(snapshot, tracerModel);
-	  };
-	};
-
 	var tracerId = "tracerSlider";
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
+	var tracerUpdateId = "tracerUpdate";
 
 	var updateView = function updateView(_ref, tracerModel) {
 	  var model = _ref.model;
@@ -138,14 +129,38 @@ module.exports =
 	  var tracerIndex = document.getElementById(tracerIndexId);
 	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
-	  var tracerModelLog = document.getElementById(tracerModelId);
-	  tracerModelLog.innerHTML = "model: " + JSON.stringify(model) + "\n" + "update: " + JSON.stringify(update);
+	  var tracerModelEl = document.getElementById(tracerModelId);
+	  tracerModelEl.innerHTML = JSON.stringify(model);
+
+	  var tracerUpdateEl = document.getElementById(tracerUpdateId);
+	  tracerUpdateEl.innerHTML = JSON.stringify(update);
+	};
+
+	var onSliderChange = function onSliderChange(tracerModel, renderRoot) {
+	  return function (evt) {
+	    var index = parseInt(evt.target.value, 10);
+	    var snapshot = tracerModel.tracerStates[index];
+	    renderRoot(snapshot.model);
+	    tracerModel.tracerIndex = index;
+	    updateView(snapshot, tracerModel);
+	  };
+	};
+
+	var onModelChange = function onModelChange(renderRoot) {
+	  return function (evt) {
+	    try {
+	      var model = JSON.parse(evt.target.value);
+	      renderRoot(model);
+	    } catch (err) {
+	      // ignore invalid JSON
+	    }
+	  };
 	};
 
 	var view = function view(elementId, renderRoot) {
 	  return function (modelAndUpdate, tracerModel) {
 
-	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
+	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea>" + "<textarea id='" + tracerUpdateId + "' rows='5' cols='100'></textarea></div>";
 
 	    var target = document.getElementById(elementId);
 
@@ -153,6 +168,7 @@ module.exports =
 	      if (target.innerHTML === "") {
 	        target.innerHTML = viewHtml;
 	        document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
+	        document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
 	      } else {
 	        updateView(modelAndUpdate, tracerModel);
 	      }

@@ -1,14 +1,7 @@
-const onSliderChange = (tracerModel, renderRoot) => evt => {
-  const index = parseInt(evt.target.value, 10);
-  const snapshot = tracerModel.tracerStates[index];
-  renderRoot(snapshot.model);
-  tracerModel.tracerIndex = index;
-  updateView(snapshot, tracerModel);
-};
-
 const tracerId = "tracerSlider";
 const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
+const tracerUpdateId = "tracerUpdate";
 
 const updateView = ({model, update}, tracerModel) => {
   const tracer = document.getElementById(tracerId);
@@ -18,9 +11,29 @@ const updateView = ({model, update}, tracerModel) => {
   const tracerIndex = document.getElementById(tracerIndexId);
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
-  const tracerModelLog = document.getElementById(tracerModelId);
-  tracerModelLog.innerHTML = "model: " + JSON.stringify(model) + "\n" +
-    "update: " + JSON.stringify(update);
+  const tracerModelEl = document.getElementById(tracerModelId);
+  tracerModelEl.innerHTML = JSON.stringify(model);
+
+  const tracerUpdateEl = document.getElementById(tracerUpdateId);
+  tracerUpdateEl.innerHTML = JSON.stringify(update);
+};
+
+const onSliderChange = (tracerModel, renderRoot) => evt => {
+  const index = parseInt(evt.target.value, 10);
+  const snapshot = tracerModel.tracerStates[index];
+  renderRoot(snapshot.model);
+  tracerModel.tracerIndex = index;
+  updateView(snapshot, tracerModel);
+};
+
+const onModelChange = renderRoot => evt => {
+  try {
+    const model = JSON.parse(evt.target.value);
+    renderRoot(model);
+  }
+  catch (err) {
+    // ignore invalid JSON
+  }
 };
 
 const view = (elementId, renderRoot) => (modelAndUpdate, tracerModel) => {
@@ -28,7 +41,8 @@ const view = (elementId, renderRoot) => (modelAndUpdate, tracerModel) => {
   const viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) +
     "' value='" + String(tracerModel.tracerIndex) + "'/>" +
     "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-    "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
+    "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea>" +
+    "<textarea id='" + tracerUpdateId + "' rows='5' cols='100'></textarea></div>";
 
   const target = document.getElementById(elementId);
 
@@ -36,6 +50,7 @@ const view = (elementId, renderRoot) => (modelAndUpdate, tracerModel) => {
     if (target.innerHTML === "") {
       target.innerHTML = viewHtml;
       document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
+      document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
     }
     else {
       updateView(modelAndUpdate, tracerModel);
