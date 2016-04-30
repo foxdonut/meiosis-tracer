@@ -1,11 +1,11 @@
 import { initialModel } from "./model";
 import view from "./view";
-import receivers from "./receivers";
+import receiveUpdate from "./receiveUpdate";
 
-const meiosisTracer = (createComponent, elementId) => createComponent({
-  initialModel,
-  view: view(elementId),
-  receivers
+const tracerModel = initialModel;
+
+const meiosisTracer = (createComponent, renderRoot, elementId) => createComponent({
+  receiveUpdate: receiveUpdate(tracerModel, view(elementId, renderRoot))
 });
 
 export { meiosisTracer };

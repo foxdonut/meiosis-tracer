@@ -1,43 +1,44 @@
-const onSliderChange = (model, actions) => evt => {
+const onSliderChange = (tracerModel, renderRoot) => evt => {
   const index = parseInt(evt.target.value, 10);
-  const snapshot = model.tracerStates[index];
-  snapshot.tracerIndexChange = index;
-  actions.next(snapshot);
+  const snapshot = tracerModel.tracerStates[index];
+  renderRoot(snapshot.model);
+  tracerModel.tracerIndex = index;
+  updateView(snapshot, tracerModel);
 };
 
-const view = elementId => ({model, actions}) => {
-  const tracerId = "tracerSlider";
-  const tracerIndexId = "tracerIndex";
-  const tracerModelId = "tracerModel";
+const tracerId = "tracerSlider";
+const tracerIndexId = "tracerIndex";
+const tracerModelId = "tracerModel";
 
-  const view = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(model.tracerStates.length - 1) +
-    "' value='" + String(model.tracerIndex) + "'/>" +
-    "<span id='" + tracerIndexId + "'>" + String(model.tracerIndex) + "</span><pre id='" + tracerModelId + "'></pre></div>";
+const updateView = ({model, update}, tracerModel) => {
+  const tracer = document.getElementById(tracerId);
+  tracer.value = String(tracerModel.tracerIndex);
+  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+
+  const tracerIndex = document.getElementById(tracerIndexId);
+  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
+
+  const tracerModelLog = document.getElementById(tracerModelId);
+  tracerModelLog.innerHTML = "model: " + JSON.stringify(model) + "\n" +
+    "update: " + JSON.stringify(update);
+};
+
+const view = (elementId, renderRoot) => (modelAndUpdate, tracerModel) => {
+
+  const viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) +
+    "' value='" + String(tracerModel.tracerIndex) + "'/>" +
+    "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" +
+    "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
 
   const target = document.getElementById(elementId);
 
   if (target) {
     if (target.innerHTML === "") {
-      target.innerHTML = view;
-      document.getElementById(tracerId).addEventListener("input", onSliderChange(model, actions));
+      target.innerHTML = viewHtml;
+      document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
     }
     else {
-      const tracer = document.getElementById(tracerId);
-      tracer.value = String(model.tracerIndex);
-      tracer.setAttribute("max", String(model.tracerStates.length - 1));
-
-      const tracerIndex = document.getElementById(tracerIndexId);
-      tracerIndex.innerHTML = String(model.tracerIndex);
-
-      const tracerModel = document.getElementById(tracerModelId);
-      // FIXME
-      const saneModel = {};
-      for (var key in model) {
-        if (model.hasOwnProperty(key) && !key.startsWith("tracer")) {
-          saneModel[key] = model[key];
-        }
-      }
-      tracerModel.innerHTML = JSON.stringify(saneModel);
+      updateView(modelAndUpdate, tracerModel);
     }
   }
   return null;

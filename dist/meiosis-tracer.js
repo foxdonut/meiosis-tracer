@@ -72,17 +72,17 @@ module.exports =
 
 	var _view2 = _interopRequireDefault(_view);
 
-	var _receivers = __webpack_require__(4);
+	var _receiveUpdate = __webpack_require__(4);
 
-	var _receivers2 = _interopRequireDefault(_receivers);
+	var _receiveUpdate2 = _interopRequireDefault(_receiveUpdate);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var meiosisTracer = function meiosisTracer(createComponent, elementId) {
+	var tracerModel = _model.initialModel;
+
+	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, elementId) {
 	  return createComponent({
-	    initialModel: _model.initialModel,
-	    view: (0, _view2.default)(elementId),
-	    receivers: _receivers2.default
+	    receiveUpdate: (0, _receiveUpdate2.default)(tracerModel, (0, _view2.default)(elementId, renderRoot))
 	  });
 	};
 
@@ -113,49 +113,48 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var onSliderChange = function onSliderChange(model, actions) {
+	var onSliderChange = function onSliderChange(tracerModel, renderRoot) {
 	  return function (evt) {
 	    var index = parseInt(evt.target.value, 10);
-	    var snapshot = model.tracerStates[index];
-	    snapshot.tracerIndexChange = index;
-	    actions.next(snapshot);
+	    var snapshot = tracerModel.tracerStates[index];
+	    renderRoot(snapshot.model);
+	    tracerModel.tracerIndex = index;
+	    updateView(snapshot, tracerModel);
 	  };
 	};
 
-	var view = function view(elementId) {
-	  return function (_ref) {
-	    var model = _ref.model;
-	    var actions = _ref.actions;
+	var tracerId = "tracerSlider";
+	var tracerIndexId = "tracerIndex";
+	var tracerModelId = "tracerModel";
 
-	    var tracerId = "tracerSlider";
-	    var tracerIndexId = "tracerIndex";
-	    var tracerModelId = "tracerModel";
+	var updateView = function updateView(_ref, tracerModel) {
+	  var model = _ref.model;
+	  var update = _ref.update;
 
-	    var view = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(model.tracerStates.length - 1) + "' value='" + String(model.tracerIndex) + "'/>" + "<span id='" + tracerIndexId + "'>" + String(model.tracerIndex) + "</span><pre id='" + tracerModelId + "'></pre></div>";
+	  var tracer = document.getElementById(tracerId);
+	  tracer.value = String(tracerModel.tracerIndex);
+	  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+
+	  var tracerIndex = document.getElementById(tracerIndexId);
+	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
+
+	  var tracerModelLog = document.getElementById(tracerModelId);
+	  tracerModelLog.innerHTML = "model: " + JSON.stringify(model) + "\n" + "update: " + JSON.stringify(update);
+	};
+
+	var view = function view(elementId, renderRoot) {
+	  return function (modelAndUpdate, tracerModel) {
+
+	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" + "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
 
 	    var target = document.getElementById(elementId);
 
 	    if (target) {
 	      if (target.innerHTML === "") {
-	        target.innerHTML = view;
-	        document.getElementById(tracerId).addEventListener("input", onSliderChange(model, actions));
+	        target.innerHTML = viewHtml;
+	        document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
 	      } else {
-	        var tracer = document.getElementById(tracerId);
-	        tracer.value = String(model.tracerIndex);
-	        tracer.setAttribute("max", String(model.tracerStates.length - 1));
-
-	        var tracerIndex = document.getElementById(tracerIndexId);
-	        tracerIndex.innerHTML = String(model.tracerIndex);
-
-	        var tracerModel = document.getElementById(tracerModelId);
-	        // FIXME
-	        var saneModel = {};
-	        for (var key in model) {
-	          if (model.hasOwnProperty(key) && !key.startsWith("tracer")) {
-	            saneModel[key] = model[key];
-	          }
-	        }
-	        tracerModel.innerHTML = JSON.stringify(saneModel);
+	        updateView(modelAndUpdate, tracerModel);
 	      }
 	    }
 	    return null;
@@ -173,18 +172,19 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var receivers = [function (model, update) {
-	  var tracerIndexChange = parseInt(update.tracerIndexChange, 10);
-	  if (tracerIndexChange >= 0) {
-	    model.tracerIndex = tracerIndexChange;
-	  } else {
-	    model.tracerStates.push(model);
-	    model.tracerIndex = model.tracerStates.length - 1;
-	  }
-	  return model;
-	}];
+	var receiveUpdate = function receiveUpdate(tracerModel, view) {
+	  return function (model, update) {
+	    var modelAndUpdate = { model: model, update: update };
+	    tracerModel.tracerStates.push(modelAndUpdate);
+	    tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 
-	exports.default = receivers;
+	    view(modelAndUpdate, tracerModel);
+
+	    return model;
+	  };
+	};
+
+	exports.default = receiveUpdate;
 
 /***/ }
 /******/ ]);
