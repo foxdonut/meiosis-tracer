@@ -145,7 +145,7 @@ module.exports =
 	var view = function view(elementId, renderRoot) {
 	  return function (modelAndUpdate, tracerModel) {
 
-	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" + "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
+	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='100'></textarea></div>";
 
 	    var target = document.getElementById(elementId);
 
