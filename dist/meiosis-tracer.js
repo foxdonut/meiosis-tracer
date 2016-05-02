@@ -157,7 +157,6 @@ module.exports =
 	};
 
 	var initialView = function initialView(selector, renderRoot, tracerModel) {
-	  ;
 	  var target = document.querySelector(selector);
 
 	  if (target) {

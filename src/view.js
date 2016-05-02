@@ -36,7 +36,7 @@ const onModelChange = renderRoot => evt => {
   }
 };
 
-const initialView = (selector, renderRoot, tracerModel) => {;
+const initialView = (selector, renderRoot, tracerModel) => {
   const target = document.querySelector(selector);
 
   if (target) {
