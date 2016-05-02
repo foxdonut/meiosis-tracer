@@ -79,10 +79,10 @@ module.exports =
 	var tracerModel = _model.initialModel;
 
 	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector) {
-	  return createComponent({
-	    ready: (0, _view.initialView)(selector, renderRoot),
-	    receiveUpdate: (0, _receiveUpdate2.default)(tracerModel, (0, _view.updateView)(selector, renderRoot))
+	  createComponent({
+	    receiveUpdate: (0, _receiveUpdate2.default)(tracerModel, _view.updateView)
 	  });
+	  (0, _view.initialView)(selector, renderRoot, tracerModel);
 	};
 
 	exports.meiosisTracer = meiosisTracer;
@@ -117,27 +117,25 @@ module.exports =
 	var tracerModelId = "tracerModel";
 	var tracerUpdateId = "tracerUpdate";
 
-	var updateView = function updateView(selector, renderRoot) {
-	  return function (_ref, tracerModel) {
-	    var model = _ref.model;
-	    var update = _ref.update;
+	var updateView = function updateView(_ref, tracerModel) {
+	  var model = _ref.model;
+	  var update = _ref.update;
 
-	    var tracer = document.getElementById(tracerId);
-	    tracer.value = String(tracerModel.tracerIndex);
-	    tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+	  var tracer = document.getElementById(tracerId);
+	  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+	  tracer.value = String(tracerModel.tracerIndex);
 
-	    var tracerIndex = document.getElementById(tracerIndexId);
-	    tracerIndex.innerHTML = String(tracerModel.tracerIndex);
+	  var tracerIndex = document.getElementById(tracerIndexId);
+	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
-	    var tracerModelEl = document.getElementById(tracerModelId);
-	    tracerModelEl.innerHTML = JSON.stringify(model);
+	  var tracerModelEl = document.getElementById(tracerModelId);
+	  tracerModelEl.innerHTML = JSON.stringify(model);
 
-	    var tracerUpdateEl = document.getElementById(tracerUpdateId);
-	    tracerUpdateEl.innerHTML = JSON.stringify(update);
-	  };
+	  var tracerUpdateEl = document.getElementById(tracerUpdateId);
+	  tracerUpdateEl.innerHTML = JSON.stringify(update);
 	};
 
-	var onSliderChange = function onSliderChange(tracerModel, renderRoot) {
+	var onSliderChange = function onSliderChange(renderRoot, tracerModel) {
 	  return function (evt) {
 	    var index = parseInt(evt.target.value, 10);
 	    var snapshot = tracerModel.tracerStates[index];
@@ -158,18 +156,17 @@ module.exports =
 	  };
 	};
 
-	var initialView = function initialView(selector, renderRoot) {
-	  return function (modelAndUpdate, tracerModel) {
-	    var target = document.querySelector(selector);
+	var initialView = function initialView(selector, renderRoot, tracerModel) {
+	  ;
+	  var target = document.querySelector(selector);
 
-	    if (target) {
-	      var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerUpdateId + "' rows='1' cols='100'></textarea>" + "<textarea id='" + tracerModelId + "' rows='1' cols='100'></textarea></div>";
+	  if (target) {
+	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerUpdateId + "' rows='1' cols='100'></textarea>" + "<textarea id='" + tracerModelId + "' rows='1' cols='100'></textarea></div>";
 
-	      target.innerHTML = viewHtml;
-	      document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
-	      document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
-	    }
-	  };
+	    target.innerHTML = viewHtml;
+	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
+	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
+	  }
 	};
 
 	exports.initialView = initialView;

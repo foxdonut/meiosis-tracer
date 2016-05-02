@@ -3,10 +3,10 @@ const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
 const tracerUpdateId = "tracerUpdate";
 
-const updateView = (selector, renderRoot) => ({model, update}, tracerModel) => {
+const updateView = ({model, update}, tracerModel) => {
   const tracer = document.getElementById(tracerId);
-  tracer.value = String(tracerModel.tracerIndex);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+  tracer.value = String(tracerModel.tracerIndex);
 
   const tracerIndex = document.getElementById(tracerIndexId);
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
@@ -18,7 +18,7 @@ const updateView = (selector, renderRoot) => ({model, update}, tracerModel) => {
   tracerUpdateEl.innerHTML = JSON.stringify(update);
 };
 
-const onSliderChange = (tracerModel, renderRoot) => evt => {
+const onSliderChange = (renderRoot, tracerModel) => evt => {
   const index = parseInt(evt.target.value, 10);
   const snapshot = tracerModel.tracerStates[index];
   renderRoot(snapshot.model);
@@ -36,7 +36,7 @@ const onModelChange = renderRoot => evt => {
   }
 };
 
-const initialView = (selector, renderRoot) => (modelAndUpdate, tracerModel) => {
+const initialView = (selector, renderRoot, tracerModel) => {;
   const target = document.querySelector(selector);
 
   if (target) {
@@ -48,7 +48,7 @@ const initialView = (selector, renderRoot) => (modelAndUpdate, tracerModel) => {
       "<textarea id='" + tracerModelId + "' rows='1' cols='100'></textarea></div>";
 
     target.innerHTML = viewHtml;
-    document.getElementById(tracerId).addEventListener("input", onSliderChange(tracerModel, renderRoot));
+    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
     document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
   }
 };

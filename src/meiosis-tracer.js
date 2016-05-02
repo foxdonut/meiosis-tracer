@@ -4,9 +4,11 @@ import receiveUpdate from "./receiveUpdate";
 
 const tracerModel = initialModel;
 
-const meiosisTracer = (createComponent, renderRoot, selector) => createComponent({
-  ready: initialView(selector, renderRoot),
-  receiveUpdate: receiveUpdate(tracerModel, updateView(selector, renderRoot))
-});
+const meiosisTracer = (createComponent, renderRoot, selector) => {
+  createComponent({
+    receiveUpdate: receiveUpdate(tracerModel, updateView)
+  });
+  initialView(selector, renderRoot, tracerModel);
+};
 
 export { meiosisTracer };
