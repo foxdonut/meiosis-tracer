@@ -2,9 +2,9 @@
   "name": "meiosis-tracer",
   "version": "0.4.2",
   "description": "meiosis-tracer",
-  "main": "dist/meiosis-tracer.js",
+  "main": "lib/meiosis-tracer.js",
   "scripts": {
-    "start": "webpack && NODE_ENV=production webpack"
+    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack"
   },
   "repository": {
     "type": "git",

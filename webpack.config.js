@@ -1,15 +1,18 @@
 /*global process*/
-var isProduction = process.env.NODE_ENV === "production";
+var isProd = process.env.NODE_ENV === "prod";
+var isDev = process.env.NODE_ENV === "dev";
+var isLib = !(isProd || isDev);
+
 var webpack = require("webpack");
 
 module.exports = {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    path: "./dist",
-    filename: isProduction ? "meiosis-tracer.min.js" : "meiosis-tracer.js",
+    path: isLib ? "./lib" : "./dist",
+    filename: isProd ? "meiosis-tracer.min.js" : "meiosis-tracer.js",
     library: "meiosisTracer",
-    libraryTarget: "commonjs2"
+    libraryTarget: isLib ? "commonjs2" : "var"
   },
   module: {
     loaders: [
@@ -20,7 +23,7 @@ module.exports = {
       }
     ]
   },
-  plugins: isProduction ? [
+  plugins: isProd ? [
     new webpack.optimize.UglifyJsPlugin()
   ] : []
 };

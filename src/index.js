@@ -1,3 +1,3 @@
 import { meiosisTracer } from "./meiosis-tracer";
 
-export default meiosisTracer;
+module.exports = meiosisTracer;
