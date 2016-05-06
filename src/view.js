@@ -42,10 +42,10 @@ const initialView = (selector, renderRoot, tracerModel) => {
   if (target) {
     const viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" +
       String(tracerModel.tracerStates.length - 1) +
-      "' value='" + String(tracerModel.tracerIndex) + "'/>" +
+      "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<textarea id='" + tracerUpdateId + "' rows='1' cols='50' style='display: block'></textarea>" +
-      "<textarea id='" + tracerModelId + "' rows='1' cols='50' style='display: block'></textarea></div>";
+      "<textarea id='" + tracerUpdateId + "' rows='2' cols='40' style='display: block'></textarea>" +
+      "<textarea id='" + tracerModelId + "' rows='2' cols='40' style='display: block'></textarea></div>";
 
     target.innerHTML = viewHtml;
     document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
