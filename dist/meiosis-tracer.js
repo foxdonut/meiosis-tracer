@@ -47,13 +47,9 @@ var meiosisTracer =
 
 	"use strict";
 	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
 	var _meiosisTracer = __webpack_require__(1);
 	
-	exports.default = _meiosisTracer.meiosisTracer;
+	module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ },
 /* 1 */
@@ -160,7 +156,7 @@ var meiosisTracer =
 	  var target = document.querySelector(selector);
 	
 	  if (target) {
-	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerUpdateId + "' rows='1' cols='100'></textarea>" + "<textarea id='" + tracerModelId + "' rows='1' cols='100'></textarea></div>";
+	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerUpdateId + "' rows='1' cols='50' style='display: block'></textarea>" + "<textarea id='" + tracerModelId + "' rows='1' cols='50' style='display: block'></textarea></div>";
 	
 	    target.innerHTML = viewHtml;
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
@@ -182,7 +178,8 @@ var meiosisTracer =
 	});
 	var receiveUpdate = function receiveUpdate(tracerModel, view) {
 	  return function (model, update) {
-	    var modelAndUpdate = { model: model, update: update };
+	    var modelCopy = JSON.parse(JSON.stringify(model));
+	    var modelAndUpdate = { model: modelCopy, update: update };
 	    tracerModel.tracerStates.push(modelAndUpdate);
 	    tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 	

@@ -44,8 +44,8 @@ const initialView = (selector, renderRoot, tracerModel) => {
       String(tracerModel.tracerStates.length - 1) +
       "' value='" + String(tracerModel.tracerIndex) + "'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<textarea id='" + tracerUpdateId + "' rows='1' cols='100'></textarea>" +
-      "<textarea id='" + tracerModelId + "' rows='1' cols='100'></textarea></div>";
+      "<textarea id='" + tracerUpdateId + "' rows='1' cols='50' style='display: block'></textarea>" +
+      "<textarea id='" + tracerModelId + "' rows='1' cols='50' style='display: block'></textarea></div>";
 
     target.innerHTML = viewHtml;
     document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));

@@ -1,5 +1,6 @@
 const receiveUpdate = (tracerModel, view) => (model, update) => {
-  const modelAndUpdate = { model, update };
+  const modelCopy = JSON.parse(JSON.stringify(model));
+  const modelAndUpdate = { model: modelCopy, update };
   tracerModel.tracerStates.push(modelAndUpdate);
   tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 
