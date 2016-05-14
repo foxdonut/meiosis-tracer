@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+
+  "name": "Meiosis Tracer",
+  "description": "Adds Meiosis Tracer to Chrome DevTools",
+  "version": "0.4.4",
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "devtools_page": "devtool.html"
+}
