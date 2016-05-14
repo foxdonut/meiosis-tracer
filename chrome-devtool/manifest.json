@@ -4,6 +4,7 @@
   "name": "Meiosis Tracer",
   "description": "Adds Meiosis Tracer to Chrome DevTools",
   "version": "0.4.4",
+  "author": "foxdonut",
 
   "permissions": [
     "activeTab"

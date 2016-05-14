@@ -9,7 +9,13 @@
       }
     </style>
 
+    <script src="json-format.js"></script>
     <script src="devtool.js"></script>
+    <script type="text/javascript">
+      var obj = {list:[{id: 1, label: "one"}, {id: 2, label: "two"}], meta: {"4413": true}};
+      console.log(JSON.stringify(obj));
+      console.log(JSONFormat(JSON.stringify(obj)));
+    </script>
   </head>
   <body>
     <div id="devtool"></div>
