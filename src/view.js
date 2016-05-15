@@ -19,10 +19,10 @@ const updateView = ({model, update}, tracerModel) => {
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
   const tracerModelEl = document.getElementById(tracerModelId);
-  tracerModelEl.innerHTML = jsonFormat(model, jsonFormatConfig);
+  tracerModelEl.value = jsonFormat(model, jsonFormatConfig);
 
   const tracerUpdateEl = document.getElementById(tracerUpdateId);
-  tracerUpdateEl.innerHTML = jsonFormat(update, jsonFormatConfig);
+  tracerUpdateEl.value = jsonFormat(update, jsonFormatConfig);
 };
 
 const onSliderChange = (renderRoot, tracerModel) => evt => {
