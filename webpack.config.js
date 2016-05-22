@@ -12,7 +12,7 @@ module.exports = {
     path: isLib ? "./lib" : "./dist",
     filename: isProd ? "meiosis-tracer.min.js" : "meiosis-tracer.js",
     library: "meiosisTracer",
-    libraryTarget: isLib ? "commonjs2" : "var"
+    libraryTarget: isLib ? "commonjs2" : "umd"
   },
   module: {
     loaders: [
