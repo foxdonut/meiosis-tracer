@@ -22,6 +22,7 @@ Then, create the tracer by passing it the `createComponent` and `renderRoot` fun
 
 ```javascript
 import { init } from "meiosis";
+import { renderer } from "meiosis-react";
 import meiosisTracer from "meiosis-tracer";
 
 const Meiosis = init(renderer.intoId("app"));
