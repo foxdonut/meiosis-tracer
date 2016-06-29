@@ -8,9 +8,9 @@ const jsonFormatConfig = {
 const tracerId = "tracerSlider";
 const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
-const tracerUpdateId = "tracerUpdate";
+const tracerProposalId = "tracerProposal";
 
-const updateView = ({model, update}, tracerModel) => {
+const proposalView = ({model, proposal}, tracerModel) => {
   const tracer = document.getElementById(tracerId);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
   tracer.value = String(tracerModel.tracerIndex);
@@ -21,8 +21,8 @@ const updateView = ({model, update}, tracerModel) => {
   const tracerModelEl = document.getElementById(tracerModelId);
   tracerModelEl.value = jsonFormat(model, jsonFormatConfig);
 
-  const tracerUpdateEl = document.getElementById(tracerUpdateId);
-  tracerUpdateEl.value = jsonFormat(update, jsonFormatConfig);
+  const tracerProposalEl = document.getElementById(tracerProposalId);
+  tracerProposalEl.value = jsonFormat(proposal, jsonFormatConfig);
 };
 
 const onSliderChange = (renderRoot, tracerModel) => evt => {
@@ -30,7 +30,7 @@ const onSliderChange = (renderRoot, tracerModel) => evt => {
   const snapshot = tracerModel.tracerStates[index];
   renderRoot(snapshot.model);
   tracerModel.tracerIndex = index;
-  updateView(snapshot, tracerModel);
+  proposalView(snapshot, tracerModel);
 };
 
 const onModelChange = renderRoot => evt => {
@@ -51,7 +51,7 @@ const initialView = (selector, renderRoot, tracerModel) => {
       String(tracerModel.tracerStates.length - 1) +
       "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<textarea id='" + tracerUpdateId + "' rows='5' cols='40' style='display: block'></textarea>" +
+      "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" +
       "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
 
     target.innerHTML = viewHtml;
@@ -60,4 +60,4 @@ const initialView = (selector, renderRoot, tracerModel) => {
   }
 };
 
-export { initialView, updateView };
+export { initialView, proposalView };
