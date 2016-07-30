@@ -1,6 +1,6 @@
 # Meiosis-Tracer
 
-Meiosis-Tracer is a learning and debugging tool that traces, rewinds, and replays updates in a
+Meiosis-Tracer is a development and debugging tool that traces, rewinds, and replays snapshots in a
 [Meiosis](http://meiosis.js.org) application. You can also directly enter your own model snapshots
 and see the resulting view.
 
@@ -21,14 +21,12 @@ Then, create the tracer by passing it the `createComponent` and `renderRoot` fun
 `Meiosis` instance, along with the selector for the element where the tracer will be rendered:
 
 ```javascript
-import { init } from "meiosis";
+import { createComponent, run } from "meiosis";
 import { renderer } from "meiosis-react";
 import meiosisTracer from "meiosis-tracer";
 
-const Meiosis = init(renderer.intoId("app"));
-const createComponent = Meiosis.createComponent;
 const Main = createComponent({...});
-const renderRoot = Meiosis.run(Main);
+const renderRoot = run(renderer.intoId(document, "app"), Main);
 meiosisTracer(createComponent, renderRoot, "#tracer");
 ```
 
@@ -37,7 +35,7 @@ This will render the tracer into the element that has the `tracer` id.
 You can also download the JavaScript file from the [Meiosis builds](http://meiosis.js.org/builds) and add it to your page with a plain `<script>` tag. In that case it will be available as the `meiosisTracer` global variable.
 
 The [Meiosis Guide](https://www.gitbook.com/book/foxdonut/meiosis-guide/) contains a
-[chapter on Meiosis-Tracer](https://foxdonut.gitbooks.io/meiosis-guide/content/tracing_and_debugging_with_meiosis-tracer.html).
+[section on Meiosis-Tracer](https://foxdonut.gitbooks.io/meiosis-guide/content/tracing_and_debugging.html).
 
 You will also find [TodoMVC](http://todomvc.com) examples in the
 [meiosis-examples repository](https://github.com/foxdonut/meiosis-examples/tree/master/examples/todomvc) which use Meiosis-Tracer.
