@@ -1,6 +1,6 @@
 {
   "name": "meiosis-tracer",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "meiosis-tracer",
   "main": "lib/meiosis-tracer.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "eslint": "^2.13.1",
-    "meiosis": "^0.7.0",
+    "meiosis": "^0.7.1",
     "webpack": "^1.13.1"
   },
   "dependencies": {
