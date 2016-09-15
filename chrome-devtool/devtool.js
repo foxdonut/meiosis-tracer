@@ -1,5 +1,5 @@
 /*global chrome*/
-chrome.devtools.panels.create("Meiosis Tracer",
+chrome.devtools.panels.create("Meiosis",
   "meiosis.png",
   "tracer.html",
   function(_panel) {

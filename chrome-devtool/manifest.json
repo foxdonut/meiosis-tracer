@@ -3,12 +3,18 @@
 
   "name": "Meiosis Tracer",
   "description": "Adds Meiosis Tracer to Chrome DevTools",
-  "version": "0.4.4",
+  "version": "0.7.2",
   "author": "foxdonut",
 
   "permissions": [
     "activeTab"
   ],
+
+  "icons": {
+    "16": "meiosis16.png",
+    "48": "meiosis48.png",
+    "128": "meiosis128.png"
+  },
 
   "devtools_page": "devtool.html"
 }
