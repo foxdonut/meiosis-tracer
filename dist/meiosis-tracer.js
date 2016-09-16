@@ -132,7 +132,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  size: 2
 	};
 	
+	var tracerContainerId = "tracerContainer";
 	var tracerId = "tracerSlider";
+	var tracerToggleId = "tracerToggle";
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
 	var tracerProposalId = "tracerProposal";
@@ -176,15 +178,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	};
 	
+	var onToggle = function onToggle(tracerContainer) {
+	  return function (evt) {
+	    var button = evt.target;
+	
+	    if (tracerContainer.style.display === "none") {
+	      tracerContainer.style.display = "block";
+	      button.innerHTML = "Hide";
+	    } else {
+	      tracerContainer.style.display = "none";
+	      button.innerHTML = "Show";
+	    }
+	  };
+	};
+	
 	var initialView = function initialView(selector, renderRoot, tracerModel) {
 	  var target = document.querySelector(selector);
 	
 	  if (target) {
-	    var viewHtml = "<div><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" + "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" + "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
 	
 	    target.innerHTML = viewHtml;
+	
+	    var tracerContainer = document.getElementById(tracerContainerId);
+	
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
 	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
+	    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
 	  }
 	};
 	
