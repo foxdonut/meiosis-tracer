@@ -16,5 +16,19 @@
     "128": "meiosis128.png"
   },
 
-  "devtools_page": "devtool.html"
+  "devtools_page": "devtool.html",
+
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": [ "content-script.js" ],
+      "all_frames": false,
+      "run_at": "document_start"
+    }
+  ],
+
+  "background": {
+    "scripts": [ "background.js" ],
+    "persistent": true
+  }
 }
