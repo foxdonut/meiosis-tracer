@@ -4,8 +4,8 @@ import receive from "./receive";
 
 const tracerModel = initialModel;
 
-const meiosisTracer = (createComponent, renderRoot, selector) => {
-  const receiver = receive(tracerModel, proposalView);
+const meiosisTracer = (createComponent, renderRoot, selector, viewProxy) => {
+  const receiver = receive(tracerModel, viewProxy || proposalView);
   createComponent({
     receive: receiver
   });

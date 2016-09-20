@@ -83,8 +83,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var tracerModel = _model.initialModel;
 	
-	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector) {
-	  var receiver = (0, _receive2.default)(tracerModel, _view.proposalView);
+	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector, viewProxy) {
+	  var receiver = (0, _receive2.default)(tracerModel, viewProxy || _view.proposalView);
 	  createComponent({
 	    receive: receiver
 	  });

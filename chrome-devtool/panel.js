@@ -1,13 +1,22 @@
-/*
-document.getElementById("meiosis-tracer").innerHTML = "Hello, devtool";
-var obj = {list:[{id: 1, label: "one"}, {id: 2, label: "two"}], meta: {"4413": true}};
-var result1 = JSON.stringify(obj);
-var result2 = JSONFormat(JSON.stringify(obj));
-document.getElementById("meiosis-tracer").innerHTML = result1 + " ; " + result2;
-*/
-//console.log("extension.js");
-document.getElementById("meiosis-tracer").innerHTML = "exists - " +
-  "cc:" + (window.createComponent !== undefined) + " " +
-  "rr:" + (window.renderRoot !== undefined) + " " +
-  "mt:" + (window.meiosisTracer !== undefined) + " " +
-  "hk:" + (window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"] !== undefined);
+/*global chrome*/
+// Credit: https://github.com/thingsinjars/devtools-extension
+// This sends an object to the background page where it can be relayed to the inspected page
+var sendObjectToInspectedPage = function(message) {
+  message.tabId = chrome.devtools.inspectedWindow.tabId;
+  chrome.extension.sendMessage(message);
+};
+
+// window.meiosisTracer !== undefined
+
+document.querySelector("#executescript").addEventListener("click", function() {
+  sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
+}, false);
+
+document.querySelector("#insertscript").addEventListener("click", function() {
+  sendObjectToInspectedPage({action: "script", content: "inserted-script.js"});
+}, false);
+
+document.querySelector("#insertmessagebutton").addEventListener("click", function() {
+  sendObjectToInspectedPage({action: "code", content: "document.body.innerHTML='<button>Send message to DevTools</button>'"});
+  sendObjectToInspectedPage({action: "script", content: "messageback-script.js"});
+}, false);
