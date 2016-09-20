@@ -6,8 +6,8 @@ var result2 = JSONFormat(JSON.stringify(obj));
 document.getElementById("meiosis-tracer").innerHTML = result1 + " ; " + result2;
 */
 //console.log("extension.js");
-document.getElementById("meiosis-tracer").innerHTML = "cc and rr and mt exist:" +
-  (window.createComponent !== undefined) + " " +
-  (window.renderRoot !== undefined) + " " +
-  (window.meiosisTracer !== undefined) + " " +
-  window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"];
+document.getElementById("meiosis-tracer").innerHTML = "exists - " +
+  "cc:" + (window.createComponent !== undefined) + " " +
+  "rr:" + (window.renderRoot !== undefined) + " " +
+  "mt:" + (window.meiosisTracer !== undefined) + " " +
+  "hk:" + (window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"] !== undefined);

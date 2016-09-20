@@ -1,7 +1,7 @@
 /*global chrome*/
 chrome.devtools.panels.create("Meiosis",
   "meiosis.png",
-  "meiosis-tracer.html",
+  "panel.html",
   function(_panel) {
   }
 );

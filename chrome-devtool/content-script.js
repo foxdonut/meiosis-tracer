@@ -1,8 +1,12 @@
 var initializeHook = function(window) {
-  window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"] = function(createComponent, renderRoot) {
-    window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"].createComponent = createComponent;
-    window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"].renderRoot = renderRoot;
+  var hook = {};
+
+  hook.setup = function(createComponent, renderRoot) {
+    hook.createComponent = createComponent;
+    hook.renderRoot = renderRoot;
   };
+
+  window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"] = hook;
 };
 
 var js = ";(" + initializeHook.toString() + "(window))";
