@@ -2,10 +2,29 @@
 var isProd = process.env.NODE_ENV === "prod";
 var isDev = process.env.NODE_ENV === "dev";
 var isLib = !(isProd || isDev);
+var isDevtool = process.env.NODE_ENV === "devtool";
 
 var webpack = require("webpack");
 
-module.exports = {
+module.exports = isDevtool ? {
+  entry: "./src/index.js",
+  devtool: "source-map",
+  output: {
+    path: "./chrome-devtool",
+    filename: "meiosis-tracer.js",
+    library: "meiosisTracer",
+    libraryTarget: "var"
+  },
+  module: {
+    loaders: [
+      {
+        loader: "babel",
+        test: /\.js$/,
+        exclude: /node_modules/
+      }
+    ]
+  }
+} : {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {

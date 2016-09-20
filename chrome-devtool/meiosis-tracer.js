@@ -1,14 +1,5 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["meiosisTracer"] = factory();
-	else
-		root["meiosisTracer"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
+var meiosisTracer =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -55,9 +46,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	var _meiosisTracer = __webpack_require__(1);
-	
+
 	module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ },
@@ -65,24 +56,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.meiosisTracer = undefined;
-	
+
 	var _model = __webpack_require__(2);
-	
+
 	var _view = __webpack_require__(3);
-	
+
 	var _receive = __webpack_require__(5);
-	
+
 	var _receive2 = _interopRequireDefault(_receive);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+
 	var tracerModel = _model.initialModel;
-	
+
 	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector) {
 	  var receiver = (0, _receive2.default)(tracerModel, _view.proposalView);
 	  createComponent({
@@ -91,7 +82,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  (0, _view.initialView)(selector, renderRoot, tracerModel);
 	  receiver(renderRoot.initialModel, "initialModel");
 	};
-	
+
 	exports.meiosisTracer = meiosisTracer;
 
 /***/ },
@@ -99,7 +90,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -107,7 +98,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  tracerStates: [],
 	  tracerIndex: 0
 	};
-	
+
 	exports.initialModel = initialModel;
 
 /***/ },
@@ -115,48 +106,48 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.proposalView = exports.initialView = undefined;
-	
+
 	var _jsonFormat = __webpack_require__(4);
-	
+
 	var _jsonFormat2 = _interopRequireDefault(_jsonFormat);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+
 	var jsonFormatConfig = {
 	  type: "space",
 	  size: 2
 	};
-	
+
 	var tracerContainerId = "tracerContainer";
 	var tracerId = "tracerSlider";
 	var tracerToggleId = "tracerToggle";
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
 	var tracerProposalId = "tracerProposal";
-	
+
 	var proposalView = function proposalView(_ref, tracerModel) {
 	  var model = _ref.model;
 	  var proposal = _ref.proposal;
-	
+
 	  var tracer = document.getElementById(tracerId);
 	  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
 	  tracer.value = String(tracerModel.tracerIndex);
-	
+
 	  var tracerIndex = document.getElementById(tracerIndexId);
 	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
-	
+
 	  var tracerModelEl = document.getElementById(tracerModelId);
 	  tracerModelEl.value = (0, _jsonFormat2.default)(model, jsonFormatConfig);
-	
+
 	  var tracerProposalEl = document.getElementById(tracerProposalId);
 	  tracerProposalEl.value = (0, _jsonFormat2.default)(proposal, jsonFormatConfig);
 	};
-	
+
 	var onSliderChange = function onSliderChange(renderRoot, tracerModel) {
 	  return function (evt) {
 	    var index = parseInt(evt.target.value, 10);
@@ -166,7 +157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    proposalView(snapshot, tracerModel);
 	  };
 	};
-	
+
 	var onModelChange = function onModelChange(renderRoot) {
 	  return function (evt) {
 	    try {
@@ -177,11 +168,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 	};
-	
+
 	var onToggle = function onToggle(tracerContainer) {
 	  return function (evt) {
 	    var button = evt.target;
-	
+
 	    if (tracerContainer.style.display === "none") {
 	      tracerContainer.style.display = "block";
 	      button.innerHTML = "Hide";
@@ -191,23 +182,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 	};
-	
+
 	var initialView = function initialView(selector, renderRoot, tracerModel) {
 	  var target = document.querySelector(selector);
-	
+
 	  if (target) {
 	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" + "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
-	
+
 	    target.innerHTML = viewHtml;
-	
+
 	    var tracerContainer = document.getElementById(tracerContainerId);
-	
+
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
 	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
 	    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
 	  }
 	};
-	
+
 	exports.initialView = initialView;
 	exports.proposalView = proposalView;
 
@@ -218,10 +209,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*
 	  change for npm modules.
 	  by Luiz Estácio.
-	
+
 	  json-format v.1.1
 	  http://github.com/phoboslab/json-format
-	
+
 	  Released under MIT license:
 	  http://www.opensource.org/licenses/mit-license.php
 	*/
@@ -236,22 +227,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  push = function( m ) { return '\\' + p.push( m ) + '\\'; },
 	  pop = function( m, i ) { return p[i-1] },
 	  tabs = function( count, indentType) { return new Array( count + 1 ).join( indentType ); };
-	
+
 	function JSONFormat ( json, indentType ) {
 	  p = [];
 	  var out = "",
 	      indent = 0;
-	
+
 	  // Extract backslashes and strings
 	  json = json
 	    .replace( /\\./g, push )
 	    .replace( /(".*?"|'.*?')/g, push )
-	    .replace( /\s+/, '' );    
-	
+	    .replace( /\s+/, '' );
+
 	  // Indent and insert newlines
 	  for( var i = 0; i < json.length; i++ ) {
 	    var c = json.charAt(i);
-	
+
 	    switch(c) {
 	      case '{':
 	      case '[':
@@ -269,24 +260,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        break;
 	      default:
 	        out += c;
-	        break;      
-	    }         
+	        break;
+	    }
 	  }
-	
-	  // Strip whitespace from numeric arrays and put backslashes 
+
+	  // Strip whitespace from numeric arrays and put backslashes
 	  // and strings back in
 	  out = out
 	    .replace( /\[[\d,\s]+?\]/g, function(m){ return m.replace(/\s/g,''); } )
 	    .replace( /\\(\d+)\\/g, pop ) // strings
 	    .replace( /\\(\d+)\\/g, pop ); // backslashes in strings
-	
+
 	  return out;
 	};
-	
+
 	module.exports = function(json, config){
 	  config = config || configDefault;
 	  var indent = indentConfig[config.type];
-	
+
 	  if ( indent == null ) {
 	    throw new Error('Unrecognized ident type: "' + config.type + '"');
 	  }
@@ -300,7 +291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	"use strict";
-	
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -310,17 +301,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var modelAndProposal = { model: modelCopy, proposal: proposal };
 	    tracerModel.tracerStates.push(modelAndProposal);
 	    tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
-	
+
 	    view(modelAndProposal, tracerModel);
-	
+
 	    return model;
 	  };
 	};
-	
+
 	exports.default = receive;
 
 /***/ }
-/******/ ])
-});
-;
+/******/ ]);
 //# sourceMappingURL=meiosis-tracer.js.map

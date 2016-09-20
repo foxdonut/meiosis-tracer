@@ -4,7 +4,7 @@
   "description": "meiosis-tracer",
   "main": "lib/meiosis-tracer.js",
   "scripts": {
-    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack"
+    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack && NODE_ENV=devtool webpack"
   },
   "repository": {
     "type": "git",

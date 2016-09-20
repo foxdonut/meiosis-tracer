@@ -16,12 +16,14 @@
     "128": "meiosis128.png"
   },
 
+  "web_accessible_resources": [ "extension.js" ],
+
   "devtools_page": "devtool.html",
 
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "js": [ "content-script.js" ],
+      "js": [ "meiosis-tracer.js", "content-script.js" ],
       "all_frames": false,
       "run_at": "document_start"
     }
