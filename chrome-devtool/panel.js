@@ -9,14 +9,5 @@ var sendObjectToInspectedPage = function(message) {
 // window.meiosisTracer !== undefined
 
 document.querySelector("#startbutton").addEventListener("click", function() {
-  sendObjectToInspectedPage({action: "script", content: "hook-inspectedPage.js"});
+  sendObjectToInspectedPage({action: "script", content: "injected.js"});
 }, false);
-
-chrome.devtools.inspectedWindow.eval("window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__", function(hook) {
-  console.log("hook:", hook);
-  hook.createComponent({
-    receive: function(model, proposal) {
-      console.log("model:", model, "proposal:", proposal);
-    }
-  });
-});

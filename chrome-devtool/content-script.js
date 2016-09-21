@@ -1,12 +1,5 @@
 var initializeHook = function(window) {
-  var hook = {};
-
-  hook.setup = function(createComponent, renderRoot) {
-    hook.createComponent = createComponent;
-    hook.renderRoot = renderRoot;
-  };
-
-  window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__ = hook;
+  window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__ = true;
 };
 
 var js = ";(" + initializeHook.toString() + "(window))";
