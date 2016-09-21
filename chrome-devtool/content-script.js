@@ -6,7 +6,7 @@ var initializeHook = function(window) {
     hook.renderRoot = renderRoot;
   };
 
-  window["__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__"] = hook;
+  window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__ = hook;
 };
 
 var js = ";(" + initializeHook.toString() + "(window))";
