@@ -58,17 +58,22 @@ const onToggle = tracerContainer => evt => {
   }
 };
 
-const initialView = (selector, renderRoot, tracerModel) => {
+const initialView = (selector, renderRoot, tracerModel, horizontal) => {
   const target = document.querySelector(selector);
 
   if (target) {
+    const modelRows = horizontal ? "5" : "20";
+    const divStyle = horizontal ? " style='float: left'" : "";
+
     const viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
       "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" +
       String(tracerModel.tracerStates.length - 1) +
       "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" +
-      "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
+      "<div" + divStyle + "><div>Proposal:</div>" +
+      "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" +
+      "<div" + divStyle + "><div>Model: (you can type into this box)</div>" +
+      "<textarea id='" + tracerModelId + "' rows='" + modelRows + "' cols='40'></textarea></div></div>";
 
     target.innerHTML = viewHtml;
 

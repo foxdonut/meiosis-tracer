@@ -4,12 +4,12 @@ import receive from "./receive";
 
 const tracerModel = initialModel;
 
-const meiosisTracer = (createComponent, renderRoot, selector, viewProxy) => {
-  const receiver = receive(tracerModel, viewProxy || proposalView);
+const meiosisTracer = (createComponent, renderRoot, selector, horizontal) => {
+  const receiver = receive(tracerModel, proposalView);
   createComponent({
     receive: receiver
   });
-  initialView(selector, renderRoot, tracerModel);
+  initialView(selector, renderRoot, tracerModel, horizontal);
   receiver(renderRoot.initialModel, "initialModel");
 };
 

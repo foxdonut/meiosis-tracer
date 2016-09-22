@@ -74,12 +74,12 @@ var meiosisTracer =
 	
 	var tracerModel = _model.initialModel;
 	
-	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector, viewProxy) {
-	  var receiver = (0, _receive2.default)(tracerModel, viewProxy || _view.proposalView);
+	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector, horizontal) {
+	  var receiver = (0, _receive2.default)(tracerModel, _view.proposalView);
 	  createComponent({
 	    receive: receiver
 	  });
-	  (0, _view.initialView)(selector, renderRoot, tracerModel);
+	  (0, _view.initialView)(selector, renderRoot, tracerModel, horizontal);
 	  receiver(renderRoot.initialModel, "initialModel");
 	};
 	
@@ -183,11 +183,14 @@ var meiosisTracer =
 	  };
 	};
 	
-	var initialView = function initialView(selector, renderRoot, tracerModel) {
+	var initialView = function initialView(selector, renderRoot, tracerModel, horizontal) {
 	  var target = document.querySelector(selector);
 	
 	  if (target) {
-	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40' style='display: block'></textarea>" + "<textarea id='" + tracerModelId + "' rows='20' cols='40' style='display: block'></textarea></div>";
+	    var modelRows = horizontal ? "5" : "20";
+	    var divStyle = horizontal ? " style='float: left'" : "";
+	
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='" + modelRows + "' cols='40'></textarea></div></div>";
 	
 	    target.innerHTML = viewHtml;
 	

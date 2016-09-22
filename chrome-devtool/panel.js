@@ -40,11 +40,7 @@
       };
       renderRoot.initialModel = model;
 
-      var selector = "#meiosis-tracer";
-
-      var viewProxy = null;
-
-      window.meiosisTracer(createComponent, renderRoot, selector, viewProxy);
+      window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
     }
     else if (data.type === "MEIOSIS_RECEIVE" && receive) {
       receive(model, proposal);
