@@ -62,7 +62,9 @@
 
   //window.meiosisTracer(createComponent, renderRoot, selector, viewProxy);
 
+/*
   console.log("panel inject script");
   sendObjectToInspectedPage({action: "script", content: "injected.js"});
+*/
 
 })();

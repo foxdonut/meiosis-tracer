@@ -13,7 +13,7 @@
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [ "devtools.html", "injected.js" ],
+  "web_accessible_resources": [ "devtools.html" ],
 
   "icons": {
     "16": "meiosis16.png",
