@@ -1,5 +1,4 @@
 /*global chrome*/
-// Credit: https://github.com/thingsinjars/devtools-extension
 
 // This creates and maintains the communication channel between the inspectedPage and the dev tools panel.
 //

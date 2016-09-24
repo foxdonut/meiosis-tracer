@@ -1,5 +1,4 @@
 /*global chrome*/
-// Credit: https://github.com/thingsinjars/devtools-extension
 
 chrome.extension.onConnect.addListener(function(port) {
   var extensionListener = function(message, sender, sendResponse) {

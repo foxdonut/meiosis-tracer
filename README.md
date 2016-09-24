@@ -43,6 +43,15 @@ You will also find [TodoMVC](http://todomvc.com) examples in the
 Finally, the [todo-list example](https://github.com/foxdonut/meiosis-examples/tree/master/examples/todo-list)
 also uses Meiosis-Tracer.
 
+## Credits
+
+The following repositories were very helpful in developing the Chrome extension for Meiosis-Tracer. My thanks and appreciation go to their authors!
+
+- https://github.com/thingsinjars/devtools-extension
+- https://github.com/psykhi/chrome-devtools-extension
+- https://github.com/vuejs/vue-devtools
+- https://github.com/cerebral/cerebral-debugger
+
 --
 
 _Meiosis is developed by [foxdonut](https://github.com/foxdonut)
