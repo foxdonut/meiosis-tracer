@@ -90,6 +90,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	  (0, _view.initialView)(selector, renderRoot, tracerModel, horizontal);
 	  receiver(renderRoot.initialModel, "initialModel");
+	
+	  return { reset: function reset() {
+	      return (0, _view.reset)(tracerModel);
+	    } };
 	};
 	
 	exports.meiosisTracer = meiosisTracer;
@@ -119,7 +123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.proposalView = exports.initialView = undefined;
+	exports.reset = exports.proposalView = exports.initialView = undefined;
 	
 	var _jsonFormat = __webpack_require__(4);
 	
@@ -135,6 +139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var tracerContainerId = "tracerContainer";
 	var tracerId = "tracerSlider";
 	var tracerToggleId = "tracerToggle";
+	var tracerResetId = "tracerReset";
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
 	var tracerProposalId = "tracerProposal";
@@ -192,6 +197,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	};
 	
+	var onReset = function onReset(tracerModel) {
+	  return function () {
+	    reset(tracerModel);
+	  };
+	};
+	
+	var reset = function reset(tracerModel) {
+	  tracerModel.tracerStates.length = 0;
+	  tracerModel.tracerIndex = 0;
+	  proposalView({ model: {}, proposal: {} }, tracerModel);
+	};
+	
 	var initialView = function initialView(selector, renderRoot, tracerModel, horizontal) {
 	  var target = document.querySelector(selector);
 	
@@ -199,7 +216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var modelRows = horizontal ? "5" : "20";
 	    var divStyle = horizontal ? " style='float: left'" : "";
 	
-	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='" + modelRows + "' cols='40'></textarea></div></div>";
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='" + modelRows + "' cols='40'></textarea></div></div>";
 	
 	    target.innerHTML = viewHtml;
 	
@@ -208,11 +225,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
 	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
 	    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
+	    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
 	  }
 	};
 	
 	exports.initialView = initialView;
 	exports.proposalView = proposalView;
+	exports.reset = reset;
 
 /***/ },
 /* 4 */

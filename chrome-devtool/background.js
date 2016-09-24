@@ -38,3 +38,11 @@ chrome.extension.onConnect.addListener(function(port) {
 chrome.runtime.onMessage.addListener(function(_request, _sender, _sendResponse) {
   return true;
 });
+
+chrome.webNavigation.onBeforeNavigate.addListener(function() {
+  console.log("bgd nav");
+  /*
+  console.log("reload!");
+  chrome.runtime.reload();
+  */
+});

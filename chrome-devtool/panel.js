@@ -21,6 +21,7 @@
     name: "Meiosis-Tracer Channel"
   });
 
+  var tracer = null;
   var receive = null;
 
   // Listen to messages from the background page
@@ -40,11 +41,16 @@
       };
       renderRoot.initialModel = model;
 
-      window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
+      tracer = window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
     }
     else if (data.type === "MEIOSIS_RECEIVE" && receive) {
       receive(model, proposal);
     }
   });
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
+
+  chrome.devtools.network.onNavigated.addListener(function() {
+    console.log("panel nav");
+    //tracer.reset();
+  });
 })();

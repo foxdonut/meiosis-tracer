@@ -8,6 +8,7 @@ const jsonFormatConfig = {
 const tracerContainerId = "tracerContainer";
 const tracerId = "tracerSlider";
 const tracerToggleId = "tracerToggle";
+const tracerResetId = "tracerReset";
 const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
 const tracerProposalId = "tracerProposal";
@@ -58,6 +59,16 @@ const onToggle = tracerContainer => evt => {
   }
 };
 
+const onReset = tracerModel => () => {
+  reset(tracerModel);
+};
+
+const reset = tracerModel => {
+  tracerModel.tracerStates.length = 0;
+  tracerModel.tracerIndex = 0;
+  proposalView({model: {}, proposal: {}}, tracerModel);
+};
+
 const initialView = (selector, renderRoot, tracerModel, horizontal) => {
   const target = document.querySelector(selector);
 
@@ -66,7 +77,9 @@ const initialView = (selector, renderRoot, tracerModel, horizontal) => {
     const divStyle = horizontal ? " style='float: left'" : "";
 
     const viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
-      "<div id='" + tracerContainerId + "'><input id='" + tracerId + "' type='range' min='0' max='" +
+      "<div id='" + tracerContainerId + "'>" +
+      "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" +
+      "<input id='" + tracerId + "' type='range' min='0' max='" +
       String(tracerModel.tracerStates.length - 1) +
       "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
@@ -82,7 +95,8 @@ const initialView = (selector, renderRoot, tracerModel, horizontal) => {
     document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
     document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
     document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
+    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
   }
 };
 
-export { initialView, proposalView };
+export { initialView, proposalView, reset };

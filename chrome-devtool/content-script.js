@@ -15,11 +15,9 @@ var sendObjectToDevTools = function(message) {
 };
 
 window.addEventListener("message", function(evt) {
-  /*
   if (evt.source != window) {
     return;
   }
-  */
   if (evt.data.type === "MEIOSIS_RECEIVE") {
     sendObjectToDevTools({data: evt.data});
   }
@@ -36,33 +34,3 @@ chrome.runtime.onMessage.addListener(function(message) {
     window.postMessage({ type: "MEIOSIS_RENDER_ROOT", model: message.content.model }, "*");
   }
 });
-
-/*
-window.postMessage({
-  type: "MEIOSIS_RENDER_ROOT",
-  model: {
-    "store": {
-      "form": {
-        "todo": {
-          "id": "",
-          "priority": "1",
-          "description": "Chrome extension"
-        },
-        "validationErrors": {
-
-        }
-      },
-      "list": {
-        "todos": [
-          {
-            "id": 1,
-            "priority": 1,
-            "description": "Buy beer"
-          }
-        ],
-        "message": ""
-      }
-    }
-  }
-}, "*");
-*/
