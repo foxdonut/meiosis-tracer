@@ -9,9 +9,6 @@
 //   tabId: [Automatically added]
 // }
 
-var ts = function() { return new Date().toISOString().substring(11); }
-console.log(ts(), "initialize panel.js");
-
 // This sends an object to the background page where it can be relayed to the inspected page
 var sendObjectToInspectedPage = function(message) {
   message.tabId = chrome.devtools.inspectedWindow.tabId;
@@ -51,10 +48,7 @@ port.onMessage.addListener(function(evt) {
 });
 
 chrome.devtools.network.onNavigated.addListener(function() {
-  console.log(new Date().toISOString().substring(11), "panel nav");
-  // sendObjectToInspectedPage({ action: "script", content: "hook.js" });
   tracer.reset();
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
 });
 sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
-console.log(ts(), "done initialize panel.js");

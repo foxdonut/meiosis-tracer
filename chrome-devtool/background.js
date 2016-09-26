@@ -37,7 +37,3 @@ chrome.extension.onConnect.addListener(function(port) {
 chrome.runtime.onMessage.addListener(function(_request, _sender, _sendResponse) {
   return true;
 });
-
-chrome.webNavigation.onBeforeNavigate.addListener(function() {
-  console.log(new Date().toISOString().substring(11), "bgd nav");
-});
