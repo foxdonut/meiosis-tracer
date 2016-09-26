@@ -15,7 +15,9 @@ var sendObjectToDevTools = function(message) {
 };
 
 window.addEventListener("message", function(evt) {
+  console.log("received message from app window");
   if (evt.source != window) {
+    console.log("- from another source");
     return;
   }
   if (evt.data.type === "MEIOSIS_RECEIVE") {

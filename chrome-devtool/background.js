@@ -5,11 +5,11 @@ chrome.extension.onConnect.addListener(function(port) {
     if (message.tabId && message.content) {
       // Evaluate script in inspectedPage
       if (message.action === "code") {
-        chrome.tabs.executeScript(message.tabId, {code: message.content});
+        chrome.tabs.executeScript(message.tabId, { code: message.content });
       }
       // Attach script to inspectedPage
       else if (message.action === "script") {
-        chrome.tabs.executeScript(message.tabId, {file: message.content});
+        chrome.tabs.executeScript(message.tabId, { file: message.content });
       }
       // Pass message to inspectedPage
       else {
@@ -40,8 +40,4 @@ chrome.runtime.onMessage.addListener(function(_request, _sender, _sendResponse) 
 
 chrome.webNavigation.onBeforeNavigate.addListener(function() {
   console.log("bgd nav");
-  /*
-  console.log("reload!");
-  chrome.runtime.reload();
-  */
 });

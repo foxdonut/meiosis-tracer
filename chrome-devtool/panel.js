@@ -46,10 +46,11 @@
       receive(model, proposal);
     }
   });
-  sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
 
   chrome.devtools.network.onNavigated.addListener(function() {
     console.log("panel nav");
+    sendObjectToInspectedPage({ action: "script", content: "hook.js" });
+    sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
     //tracer.reset();
   });
 })();
