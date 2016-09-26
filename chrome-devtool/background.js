@@ -39,5 +39,5 @@ chrome.runtime.onMessage.addListener(function(_request, _sender, _sendResponse) 
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener(function() {
-  console.log("bgd nav");
+  console.log(new Date().toISOString().substring(11), "bgd nav");
 });

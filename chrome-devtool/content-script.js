@@ -1,4 +1,6 @@
 /*global chrome*/
+var ts = function() { return new Date().toISOString().substring(11); }
+console.log(ts(), "initializeHook from content script");
 var initializeHook = function(window) {
   window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__ = true;
 };
@@ -9,15 +11,16 @@ var script = document.createElement("script");
 script.textContent = js;
 document.documentElement.appendChild(script);
 script.parentNode.removeChild(script);
+console.log(ts(), "- done");
 
 var sendObjectToDevTools = function(message) {
   chrome.extension.sendMessage(message);
 };
 
 window.addEventListener("message", function(evt) {
-  console.log("received message from app window");
+  console.log(ts(), "received message from app window");
   if (evt.source != window) {
-    console.log("- from another source");
+    console.log(ts(), "- from another source");
     return;
   }
   if (evt.data.type === "MEIOSIS_RECEIVE") {

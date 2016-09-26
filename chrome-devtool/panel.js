@@ -8,49 +8,53 @@
 //   content: [String|Path to script|Object], // data to be passed through
 //   tabId: [Automatically added]
 // }
-(function() {
-  // This sends an object to the background page where it can be relayed to the inspected page
-  var sendObjectToInspectedPage = function(message) {
-    message.tabId = chrome.devtools.inspectedWindow.tabId;
-    chrome.extension.sendMessage(message);
-  };
 
-  //Create a port with background page for continous message communication
-  var port = chrome.extension.connect({
-    name: "Meiosis-Tracer Channel"
-  });
+var ts = function() { return new Date().toISOString().substring(11); }
+console.log(ts(), "initialize panel.js");
 
-  var tracer = null;
-  var receive = null;
+// This sends an object to the background page where it can be relayed to the inspected page
+var sendObjectToInspectedPage = function(message) {
+  message.tabId = chrome.devtools.inspectedWindow.tabId;
+  chrome.extension.sendMessage(message);
+};
 
-  // Listen to messages from the background page
-  port.onMessage.addListener(function(evt) {
-    var data = JSON.parse(evt).message.data;
-    var model = data.model;
-    var proposal = data.proposal;
+//Create a port with background page for continous message communication
+var port = chrome.extension.connect({
+  name: "Meiosis-Tracer Channel"
+});
 
-    if (data.type === "MEIOSIS_INITIAL_MODEL") {
-      var createComponent = function(config) {
-        receive = config.receive;
-      };
+var tracer = null;
+var receive = null;
 
-      // To re-render the view, send a message.
-      var renderRoot = function(model) {
-        sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_ROOT", model: model } });
-      };
-      renderRoot.initialModel = model;
+// Listen to messages from the background page
+port.onMessage.addListener(function(evt) {
+  var data = JSON.parse(evt).message.data;
+  var model = data.model;
+  var proposal = data.proposal;
 
-      tracer = window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
-    }
-    else if (data.type === "MEIOSIS_RECEIVE" && receive) {
-      receive(model, proposal);
-    }
-  });
+  if (data.type === "MEIOSIS_INITIAL_MODEL") {
+    var createComponent = function(config) {
+      receive = config.receive;
+    };
 
-  chrome.devtools.network.onNavigated.addListener(function() {
-    console.log("panel nav");
-    sendObjectToInspectedPage({ action: "script", content: "hook.js" });
-    sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
-    //tracer.reset();
-  });
-})();
+    // To re-render the view, send a message.
+    var renderRoot = function(model) {
+      sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_ROOT", model: model } });
+    };
+    renderRoot.initialModel = model;
+
+    tracer = window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
+  }
+  else if (data.type === "MEIOSIS_RECEIVE" && receive) {
+    receive(model, proposal);
+  }
+});
+
+chrome.devtools.network.onNavigated.addListener(function() {
+  console.log(new Date().toISOString().substring(11), "panel nav");
+  // sendObjectToInspectedPage({ action: "script", content: "hook.js" });
+  tracer.reset();
+  sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
+});
+sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
+console.log(ts(), "done initialize panel.js");
