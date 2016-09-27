@@ -4,7 +4,9 @@ Meiosis-Tracer is a development and debugging tool that traces, rewinds, and rep
 [Meiosis](http://meiosis.js.org) application. You can also directly enter your own model snapshots
 and see the resulting view.
 
-You can install it with `npm`:
+**NEW**: you can now use Meiosis-Tracer as a Chrome DevTools Extension! See `Chrome DevTools Extension` further down the page for details.
+
+You can install Meiosis-Tracer with `npm`:
 
 ```
 npm i --save meiosis-tracer
@@ -42,6 +44,31 @@ You will also find [TodoMVC](http://todomvc.com) examples in the
 
 Finally, the [todo-list example](https://github.com/foxdonut/meiosis-examples/tree/master/examples/todo-list)
 also uses Meiosis-Tracer.
+
+## Chrome DevTools Extension
+
+Meiosis-Tracer is now also available as a Chrome DevTools Extension, so that you can use it without needing to add it to your page.
+
+You can [get it from the Chrome Web Store](https://chrome.google.com/webstore/detail/meiosis-tracer/dkopklbedmgjejahhfkfklpkgdnigjii).
+
+Once installed:
+
+- If DevTools was already open, close it
+- When you open DevTools, you should have a `Meiosis` tab.
+
+Alternatively, you can run it directly from the source code. To do so, clone the repository:
+
+```
+git clone https://github.com/foxdonut/meiosis-tracer
+```
+
+- In Chrome, open `chrome://extensions`
+- Press **Load unpacked extension...**
+- Select the `chrome-devtool` directory under `meiosis-tracer`
+- If DevTools was already open, close it
+- When you open DevTools, you should have a `Meiosis` tab.
+
+Meiosis-Tracer works in the same way either added to the page, or in DevTools. Enjoy!
 
 ## Credits
 

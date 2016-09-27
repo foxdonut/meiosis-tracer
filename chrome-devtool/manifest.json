@@ -2,6 +2,7 @@
   "manifest_version": 2,
 
   "name": "Meiosis Tracer",
+  "short_name": "Meiosis",
   "version": "0.7.3",
 
   "description": "Adds Meiosis Tracer to Chrome DevTools",
@@ -33,5 +34,7 @@
   "background": {
     "scripts": [ "background.js" ],
     "persistent": false
-  }
+  },
+
+  "homepage_url": "https://github.com/foxdonut/meiosis-tracer"
 }
