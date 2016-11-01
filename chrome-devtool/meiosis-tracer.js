@@ -75,15 +75,13 @@ var meiosisTracer =
 	var tracerModel = _model.initialModel;
 	
 	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector, horizontal) {
-	  var receiver = (0, _receive2.default)(tracerModel, _view.proposalView);
-	  createComponent({
-	    receive: receiver
-	  });
+	  var receiver = (0, _receive2.default)(tracerModel, (0, _view.proposalView)(renderRoot));
+	  createComponent({ receive: receiver });
 	  (0, _view.initialView)(selector, renderRoot, tracerModel, horizontal);
 	  receiver(renderRoot.initialModel, "initialModel");
 	
 	  return { reset: function reset() {
-	      return (0, _view.reset)(tracerModel);
+	      return (0, _view.reset)(renderRoot, tracerModel);
 	    } };
 	};
 	
@@ -133,33 +131,40 @@ var meiosisTracer =
 	var tracerResetId = "tracerReset";
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
+	var tracerStateId = "tracerState";
 	var tracerProposalId = "tracerProposal";
 	
-	var proposalView = function proposalView(_ref, tracerModel) {
-	  var model = _ref.model;
-	  var proposal = _ref.proposal;
+	var proposalView = function proposalView(renderRoot) {
+	  return function (_ref, tracerModel) {
+	    var model = _ref.model,
+	        proposal = _ref.proposal;
 	
-	  var tracer = document.getElementById(tracerId);
-	  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
-	  tracer.value = String(tracerModel.tracerIndex);
+	    var tracer = document.getElementById(tracerId);
+	    tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+	    tracer.value = String(tracerModel.tracerIndex);
 	
-	  var tracerIndex = document.getElementById(tracerIndexId);
-	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
+	    var tracerIndex = document.getElementById(tracerIndexId);
+	    tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 	
-	  var tracerModelEl = document.getElementById(tracerModelId);
-	  tracerModelEl.value = (0, _jsonFormat2.default)(model, jsonFormatConfig);
+	    var tracerProposalEl = document.getElementById(tracerProposalId);
+	    tracerProposalEl.value = (0, _jsonFormat2.default)(proposal, jsonFormatConfig);
 	
-	  var tracerProposalEl = document.getElementById(tracerProposalId);
-	  tracerProposalEl.value = (0, _jsonFormat2.default)(proposal, jsonFormatConfig);
+	    var tracerModelEl = document.getElementById(tracerModelId);
+	    tracerModelEl.value = (0, _jsonFormat2.default)(model, jsonFormatConfig);
+	
+	    var tracerStateEl = document.getElementById(tracerStateId);
+	    tracerStateEl.value = (0, _jsonFormat2.default)(renderRoot.state(model), jsonFormatConfig);
+	  };
 	};
 	
 	var onSliderChange = function onSliderChange(renderRoot, tracerModel) {
 	  return function (evt) {
 	    var index = parseInt(evt.target.value, 10);
 	    var snapshot = tracerModel.tracerStates[index];
-	    renderRoot(snapshot.model);
+	    var state = renderRoot.state(snapshot.model);
+	    renderRoot(state);
 	    tracerModel.tracerIndex = index;
-	    proposalView(snapshot, tracerModel);
+	    proposalView(renderRoot)(snapshot, tracerModel);
 	  };
 	};
 	
@@ -167,7 +172,12 @@ var meiosisTracer =
 	  return function (evt) {
 	    try {
 	      var model = JSON.parse(evt.target.value);
-	      renderRoot(model);
+	      var state = renderRoot.state(model);
+	
+	      var tracerStateEl = document.getElementById(tracerStateId);
+	      tracerStateEl.value = (0, _jsonFormat2.default)(renderRoot.state(model), jsonFormatConfig);
+	
+	      renderRoot(state);
 	    } catch (err) {
 	      // ignore invalid JSON
 	    }
@@ -188,26 +198,25 @@ var meiosisTracer =
 	  };
 	};
 	
-	var onReset = function onReset(tracerModel) {
+	var onReset = function onReset(renderRoot, tracerModel) {
 	  return function () {
-	    reset(tracerModel);
+	    reset(renderRoot, tracerModel);
 	  };
 	};
 	
-	var reset = function reset(tracerModel) {
+	var reset = function reset(renderRoot, tracerModel) {
 	  tracerModel.tracerStates.length = 0;
 	  tracerModel.tracerIndex = 0;
-	  proposalView({ model: {}, proposal: {} }, tracerModel);
+	  proposalView(renderRoot)({ model: renderRoot.initialModel, proposal: {} }, tracerModel);
 	};
 	
 	var initialView = function initialView(selector, renderRoot, tracerModel, horizontal) {
 	  var target = document.querySelector(selector);
 	
 	  if (target) {
-	    var modelRows = horizontal ? "5" : "20";
 	    var divStyle = horizontal ? " style='float: left'" : "";
 	
-	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='" + modelRows + "' cols='40'></textarea></div></div>";
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea></div></div>" + "<div" + divStyle + "><div>State:</div>" + "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
 	
 	    target.innerHTML = viewHtml;
 	
@@ -216,7 +225,7 @@ var meiosisTracer =
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
 	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
 	    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
-	    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
+	    document.getElementById(tracerResetId).addEventListener("click", onReset(renderRoot, tracerModel));
 	  }
 	};
 	
