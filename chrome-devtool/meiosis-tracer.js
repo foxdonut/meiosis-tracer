@@ -205,9 +205,11 @@ var meiosisTracer =
 	};
 	
 	var reset = function reset(renderRoot, tracerModel) {
+	  var snapshot = tracerModel.tracerStates[0];
+	  renderRoot(renderRoot.state(snapshot.model));
 	  tracerModel.tracerStates.length = 0;
 	  tracerModel.tracerIndex = 0;
-	  proposalView(renderRoot)({ model: renderRoot.initialModel, proposal: {} }, tracerModel);
+	  proposalView(renderRoot)(snapshot, tracerModel);
 	};
 	
 	var initialView = function initialView(selector, renderRoot, tracerModel, horizontal) {
