@@ -24,6 +24,9 @@ window.addEventListener("message", function(evt) {
   else if (evt.data.type === "MEIOSIS_INITIAL_MODEL") {
     sendObjectToDevTools({data: evt.data});
   }
+  else if (evt.data.type === "MEIOSIS_STATE") {
+    sendObjectToDevTools({data: evt.data});
+  }
 });
 
 chrome.runtime.onMessage.addListener(function(message) {
@@ -31,6 +34,9 @@ chrome.runtime.onMessage.addListener(function(message) {
     window.postMessage({ type: "MEIOSIS_REQUEST_INITIAL_MODEL" }, "*");
   }
   else if (message.content.type === "MEIOSIS_RENDER_ROOT") {
-    window.postMessage({ type: "MEIOSIS_RENDER_ROOT", model: message.content.model }, "*");
+    window.postMessage({ type: "MEIOSIS_RENDER_ROOT", state: message.content.state }, "*");
+  }
+  else if (message.content.type === "MEIOSIS_REQUEST_STATE") {
+    window.postMessage({ type: "MEIOSIS_REQUEST_STATE", model: message.content.model, ts: message.content.ts }, "*");
   }
 });

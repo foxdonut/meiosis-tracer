@@ -22,6 +22,7 @@ var port = chrome.extension.connect({
 
 var tracer = null;
 var receive = null;
+var resolves = {};
 
 // Listen to messages from the background page
 port.onMessage.addListener(function(evt) {
@@ -35,20 +36,38 @@ port.onMessage.addListener(function(evt) {
     };
 
     // To re-render the view, send a message.
-    var renderRoot = function(model) {
-      sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_ROOT", model: model } });
+    var renderRoot = function(state) {
+      sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_ROOT", state: state } });
     };
     renderRoot.initialModel = model;
+
+    // To obtain the state, send a message.
+    renderRoot.state = function(model) {
+      var ts = "ts_" + String(new Date().getTime());
+      sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_STATE", model: model, ts: ts } });
+      return new Promise(function(res) {
+        resolves[ts] = res;
+      });
+    };
 
     tracer = window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
   }
   else if (data.type === "MEIOSIS_RECEIVE" && receive) {
     receive(model, proposal);
   }
+  else if (data.type === "MEIOSIS_STATE") {
+    var resolve = resolves[data.ts];
+    if (typeof resolve === "function") {
+      resolve(data.state);
+      delete resolves[data.ts];
+    }
+  }
 });
 
 chrome.devtools.network.onNavigated.addListener(function() {
-  tracer.reset();
+  if (tracer) {
+    tracer.reset();
+  }
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });
 });
 sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_INITIAL_MODEL" } });

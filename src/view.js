@@ -14,6 +14,19 @@ const tracerModelId = "tracerModel";
 const tracerStateId = "tracerState";
 const tracerProposalId = "tracerProposal";
 
+const stateFunction = (renderRoot, model, callback) => {
+  const stateResult = renderRoot.state(model);
+
+  if (typeof stateResult.then === "function") {
+    stateResult.then(function(state) {
+      callback(state);
+    });
+  }
+  else {
+    callback(stateResult);
+  }
+};
+
 const proposalView = renderRoot => ({model, proposal}, tracerModel) => {
   const tracer = document.getElementById(tracerId);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
@@ -29,14 +42,13 @@ const proposalView = renderRoot => ({model, proposal}, tracerModel) => {
   tracerModelEl.value = jsonFormat(model, jsonFormatConfig);
 
   const tracerStateEl = document.getElementById(tracerStateId);
-  tracerStateEl.value = jsonFormat(renderRoot.state(model), jsonFormatConfig);
+  stateFunction(renderRoot, model, state => tracerStateEl.value = jsonFormat(state, jsonFormatConfig));
 };
 
 const onSliderChange = (renderRoot, tracerModel) => evt => {
   const index = parseInt(evt.target.value, 10);
   const snapshot = tracerModel.tracerStates[index];
-  const state = renderRoot.state(snapshot.model);
-  renderRoot(state);
+  stateFunction(renderRoot, snapshot.model, renderRoot);
   tracerModel.tracerIndex = index;
   proposalView(renderRoot)(snapshot, tracerModel);
 };
@@ -44,12 +56,12 @@ const onSliderChange = (renderRoot, tracerModel) => evt => {
 const onModelChange = renderRoot => evt => {
   try {
     const model = JSON.parse(evt.target.value);
-    const state = renderRoot.state(model);
+    stateFunction(renderRoot, model, state => {
+      const tracerStateEl = document.getElementById(tracerStateId);
+      tracerStateEl.value = jsonFormat(state, jsonFormatConfig);
 
-    const tracerStateEl = document.getElementById(tracerStateId);
-    tracerStateEl.value = jsonFormat(renderRoot.state(model), jsonFormatConfig);
-
-    renderRoot(state);
+      renderRoot(state);
+    });
   }
   catch (err) {
     // ignore invalid JSON
@@ -75,10 +87,13 @@ const onReset = (renderRoot, tracerModel) => () => {
 
 const reset = (renderRoot, tracerModel) => {
   const snapshot = tracerModel.tracerStates[0];
-  renderRoot(renderRoot.state(snapshot.model));
+  if (snapshot) {
+    stateFunction(renderRoot, snapshot.model, renderRoot);
+    proposalView(renderRoot)(snapshot, tracerModel);
+  }
+
   tracerModel.tracerStates.length = 0;
   tracerModel.tracerIndex = 0;
-  proposalView(renderRoot)(snapshot, tracerModel);
 };
 
 const initialView = (selector, renderRoot, tracerModel, horizontal) => {
@@ -97,7 +112,7 @@ const initialView = (selector, renderRoot, tracerModel, horizontal) => {
       "<div" + divStyle + "><div>Proposal:</div>" +
       "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" +
       "<div" + divStyle + "><div>Model: (you can type into this box)</div>" +
-      "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea></div></div>" +
+      "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea></div>" +
       "<div" + divStyle + "><div>State:</div>" +
       "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
 
