@@ -28,7 +28,7 @@ import { renderer } from "meiosis-react";
 import meiosisTracer from "meiosis-tracer";
 
 const Main = createComponent({...});
-const renderRoot = run(renderer.intoId(document, "app"), Main);
+const renderRoot = run({ renderer: renderer.intoId(document, "app"), rootComponent: Main });
 meiosisTracer(createComponent, renderRoot, "#tracer");
 ```
 
