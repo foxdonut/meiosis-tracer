@@ -86,14 +86,12 @@ const onReset = (renderRoot, tracerModel) => () => {
 };
 
 const reset = (renderRoot, tracerModel) => {
-  const snapshot = tracerModel.tracerStates[0];
-  if (snapshot) {
-    stateFunction(renderRoot, snapshot.model, renderRoot);
-    proposalView(renderRoot)(snapshot, tracerModel);
-  }
-
-  tracerModel.tracerStates.length = 0;
+  const snapshot = tracerModel.tracerStates[tracerModel.tracerStates.length - 1];
+  tracerModel.tracerStates.length = 1;
+  tracerModel.tracerStates[0] = snapshot;
   tracerModel.tracerIndex = 0;
+  stateFunction(renderRoot, snapshot.model, renderRoot);
+  proposalView(renderRoot)(snapshot, tracerModel);
 };
 
 const initialView = (selector, renderRoot, tracerModel, horizontal) => {
