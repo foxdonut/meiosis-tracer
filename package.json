@@ -1,6 +1,6 @@
 {
   "name": "meiosis-tracer",
-  "version": "0.8.1",
+  "version": "0.10.0",
   "description": "meiosis-tracer",
   "main": "lib/meiosis-tracer.js",
   "scripts": {
@@ -23,16 +23,12 @@
     "url": "https://github.com/foxdonut/meiosis-tracer/issues"
   },
   "homepage": "https://github.com/foxdonut/meiosis-tracer#readme",
-  "peerDependencies": {
-    "meiosis": "*"
-  },
   "devDependencies": {
-    "babel-core": "^6.18.0",
-    "babel-loader": "^6.2.7",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.18.0",
-    "eslint": "^3.9.1",
-    "meiosis": "^0.8.0",
-    "webpack": "^1.13.3"
+    "eslint": "^3.12.2",
+    "webpack": "^1.14.0"
   },
   "dependencies": {
     "json-format": "^0.1.2"
