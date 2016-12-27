@@ -14,16 +14,25 @@ const tracerModelId = "tracerModel";
 const tracerStateId = "tracerState";
 const tracerProposalId = "tracerProposal";
 
-const stateFunction = (renderRoot, model, callback) => {
-  const stateResult = renderRoot.state(model);
+let stateFn = null;
 
-  if (typeof stateResult.then === "function") {
-    stateResult.then(function(state) {
-      callback(state);
-    });
+const setStateFn = fn => stateFn = fn;
+
+const stateFunction = (renderRoot, model, callback) => {
+  if (stateFn) {
+    const stateResult = stateFn(model);
+
+    if (typeof stateResult.then === "function") {
+      stateResult.then(function(state) {
+        callback(state);
+      });
+    }
+    else {
+      callback(stateResult);
+    }
   }
   else {
-    callback(stateResult);
+    callback(model);
   }
 };
 
@@ -125,4 +134,4 @@ const initialView = (selector, renderRoot, tracerModel, horizontal) => {
   }
 };
 
-export { initialView, proposalView, reset };
+export { initialView, proposalView, reset, setStateFn };

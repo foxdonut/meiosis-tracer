@@ -83,15 +83,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var tracerModel = _model.initialModel;
 	
-	var meiosisTracer = function meiosisTracer(createComponent, renderRoot, selector, horizontal) {
-	  var receiver = (0, _receive2.default)(tracerModel, (0, _view.proposalView)(renderRoot));
-	  createComponent({ receive: receiver });
-	  (0, _view.initialView)(selector, renderRoot, tracerModel, horizontal);
-	  receiver(renderRoot.initialModel, "initialModel");
+	var meiosisTracer = function meiosisTracer(_ref) {
+	  var selector = _ref.selector,
+	      initialModel = _ref.initialModel,
+	      render = _ref.render,
+	      horizontal = _ref.horizontal;
 	
-	  return { reset: function reset() {
-	      return (0, _view.reset)(renderRoot, tracerModel);
-	    } };
+	  var receiver = (0, _receive2.default)(tracerModel, (0, _view.proposalView)(render));
+	  var component = { receive: receiver };
+	  (0, _view.initialView)(selector, render, tracerModel, horizontal);
+	  receiver(initialModel, "initialModel");
+	
+	  return {
+	    component: component,
+	    reset: function reset() {
+	      return (0, _view.reset)(render, tracerModel);
+	    },
+	    setStateFn: _view.setStateFn
+	  };
 	};
 	
 	exports.meiosisTracer = meiosisTracer;
@@ -121,7 +130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.reset = exports.proposalView = exports.initialView = undefined;
+	exports.setStateFn = exports.reset = exports.proposalView = exports.initialView = undefined;
 	
 	var _jsonFormat = __webpack_require__(4);
 	
@@ -143,15 +152,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	var tracerStateId = "tracerState";
 	var tracerProposalId = "tracerProposal";
 	
-	var stateFunction = function stateFunction(renderRoot, model, callback) {
-	  var stateResult = renderRoot.state(model);
+	var stateFn = null;
 	
-	  if (typeof stateResult.then === "function") {
-	    stateResult.then(function (state) {
-	      callback(state);
-	    });
+	var setStateFn = function setStateFn(fn) {
+	  return stateFn = fn;
+	};
+	
+	var stateFunction = function stateFunction(renderRoot, model, callback) {
+	  if (stateFn) {
+	    var stateResult = stateFn(model);
+	
+	    if (typeof stateResult.then === "function") {
+	      stateResult.then(function (state) {
+	        callback(state);
+	      });
+	    } else {
+	      callback(stateResult);
+	    }
 	  } else {
-	    callback(stateResult);
+	    callback(model);
 	  }
 	};
 	
@@ -257,6 +276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.initialView = initialView;
 	exports.proposalView = proposalView;
 	exports.reset = reset;
+	exports.setStateFn = setStateFn;
 
 /***/ },
 /* 4 */

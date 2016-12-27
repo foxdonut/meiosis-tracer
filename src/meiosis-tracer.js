@@ -1,16 +1,20 @@
 import { initialModel } from "./model";
-import { initialView, proposalView, reset } from "./view";
+import { initialView, proposalView, reset, setStateFn } from "./view";
 import receive from "./receive";
 
 const tracerModel = initialModel;
 
-const meiosisTracer = (createComponent, renderRoot, selector, horizontal) => {
-  const receiver = receive(tracerModel, proposalView(renderRoot));
-  createComponent({ receive: receiver });
-  initialView(selector, renderRoot, tracerModel, horizontal);
-  receiver(renderRoot.initialModel, "initialModel");
+const meiosisTracer = ({ selector, initialModel, render, horizontal }) => {
+  const receiver = receive(tracerModel, proposalView(render));
+  const component = { receive: receiver };
+  initialView(selector, render, tracerModel, horizontal);
+  receiver(initialModel, "initialModel");
 
-  return { reset: () => reset(renderRoot, tracerModel) };
+  return {
+    component,
+    reset: () => reset(render, tracerModel),
+    setStateFn
+  };
 };
 
 export { meiosisTracer };

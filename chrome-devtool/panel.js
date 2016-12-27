@@ -31,18 +31,13 @@ port.onMessage.addListener(function(evt) {
   var proposal = data.proposal;
 
   if (data.type === "MEIOSIS_INITIAL_MODEL") {
-    var createComponent = function(config) {
-      receive = config.receive;
-    };
-
     // To re-render the view, send a message.
-    var renderRoot = function(state) {
+    var render = function(state) {
       sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_ROOT", state: state } });
     };
-    renderRoot.initialModel = model;
 
     // To obtain the state, send a message.
-    renderRoot.state = function(model) {
+    var state = function(model) {
       var ts = "ts_" + String(new Date().getTime());
       sendObjectToInspectedPage({ content: { type: "MEIOSIS_REQUEST_STATE", model: model, ts: ts } });
       return new Promise(function(res) {
@@ -50,7 +45,9 @@ port.onMessage.addListener(function(evt) {
       });
     };
 
-    tracer = window.meiosisTracer(createComponent, renderRoot, "#meiosis-tracer", true);
+    tracer = window.meiosisTracer({ selector: "#meiosis-tracer", render: render, initialModel: model, horizontal: true });
+    receive = tracer.component.receive;
+    tracer.setStateFn(state);
   }
   else if (data.type === "MEIOSIS_RECEIVE" && receive) {
     receive(model, proposal);
