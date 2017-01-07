@@ -11,7 +11,7 @@ const meiosisTracer = ({ selector, horizontal }) => {
 
   window.addEventListener("message", evt => {
     if (evt.data.type === "MEIOSIS_VALUES") {
-      receiveValues(evt.data.values);
+      receiveValues(evt.data.values, evt.data.update);
     }
   });
 

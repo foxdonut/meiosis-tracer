@@ -80,7 +80,7 @@ var meiosisTracer =
 	
 	  window.addEventListener("message", function (evt) {
 	    if (evt.data.type === "MEIOSIS_VALUES") {
-	      receiveValues(evt.data.values);
+	      receiveValues(evt.data.values, evt.data.update);
 	    }
 	  });
 	
@@ -328,9 +328,11 @@ var meiosisTracer =
 	  value: true
 	});
 	var createReceiveValues = function createReceiveValues(tracerModel, view) {
-	  return function (values) {
-	    tracerModel.tracerStates.push(values);
-	    tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
+	  return function (values, update) {
+	    if (update) {
+	      tracerModel.tracerStates.push(values);
+	      tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
+	    }
 	
 	    view(values, tracerModel);
 	  };
