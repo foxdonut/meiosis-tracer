@@ -2,11 +2,11 @@ import { tracerModel } from "./model";
 import { initialView, tracerView, reset } from "./view";
 import { createReceiveValues } from "./receive";
 
-const meiosisTracer = ({ selector, horizontal }) => {
+const meiosisTracer = ({ selector, renderModel, horizontal }) => {
   const receiveValues = createReceiveValues(tracerModel, tracerView);
-  const renderModel = model => {
+  renderModel = renderModel || (model => {
     window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model }, "*");
-  };
+  });
   initialView(selector, tracerModel, renderModel, horizontal);
 
   window.addEventListener("message", evt => {

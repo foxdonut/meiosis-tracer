@@ -70,10 +70,11 @@ var meiosisTracer =
 	
 	var meiosisTracer = function meiosisTracer(_ref) {
 	  var selector = _ref.selector,
+	      renderModel = _ref.renderModel,
 	      horizontal = _ref.horizontal;
 	
 	  var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
-	  var renderModel = function renderModel(model) {
+	  renderModel = renderModel || function (model) {
 	    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model }, "*");
 	  };
 	  (0, _view.initialView)(selector, _model.tracerModel, renderModel, horizontal);

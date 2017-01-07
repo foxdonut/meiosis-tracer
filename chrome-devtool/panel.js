@@ -21,25 +21,12 @@ var port = chrome.extension.connect({
 });
 
 var tracer = null;
-var receive = null;
 
 // Listen to messages from the background page
 port.onMessage.addListener(function(evt) {
   var data = JSON.parse(evt).message.data;
-  var model = data.model;
-  var proposal = data.proposal;
-
   if (data.type === "MEIOSIS_VALUES") {
-    // To re-render the view, send a message.
-    var render = function(model) {
-      sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_MODEL", model: model } });
-    };
-
-    tracer = window.meiosisTracer({ selector: "#meiosis-tracer", render: render, initialModel: model, horizontal: true });
-    receive = tracer.component.receive;
-  }
-  else if (data.type === "MEIOSIS_VALUES" && receive) {
-    receive(model, proposal);
+    tracer.receiveValues(data.values, data.update);
   }
 });
 
@@ -47,6 +34,11 @@ chrome.devtools.network.onNavigated.addListener(function() {
   if (tracer) {
     tracer.reset();
   }
+  var renderModel = function(model) {
+    sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_MODEL", model: model } });
+  };
+  tracer = window.meiosisTracer({ selector: "#meiosis-tracer", renderModel: renderModel, horizontal: true });
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
 });
+tracer = window.meiosisTracer({ selector: "#meiosis-tracer", horizontal: true });
 sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
