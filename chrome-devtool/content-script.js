@@ -1,6 +1,7 @@
 /*global chrome*/
+//FIXME -- might no longer be necessary
 var initializeHook = function(window) {
-  window.__MEIOSIS_TRACER_DEVTOOLS_GLOBAL_HOOK__ = true;
+  window.__MEIOSIS_TRACER_GLOBAL_HOOK__ = true;
 };
 
 var js = ";(" + initializeHook.toString() + "(window))";
@@ -18,25 +19,16 @@ window.addEventListener("message", function(evt) {
   if (evt.source != window) {
     return;
   }
-  if (evt.data.type === "MEIOSIS_RECEIVE") {
-    sendObjectToDevTools({data: evt.data});
-  }
-  else if (evt.data.type === "MEIOSIS_INITIAL_MODEL") {
-    sendObjectToDevTools({data: evt.data});
-  }
-  else if (evt.data.type === "MEIOSIS_STATE") {
+  if (evt.data.type === "MEIOSIS_VALUES") {
     sendObjectToDevTools({data: evt.data});
   }
 });
 
 chrome.runtime.onMessage.addListener(function(message) {
-  if (message.content.type === "MEIOSIS_REQUEST_INITIAL_MODEL") {
-    window.postMessage({ type: "MEIOSIS_REQUEST_INITIAL_MODEL" }, "*");
+  if (message.content.type === "MEIOSIS_TRACER_INIT") {
+    window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
   }
-  else if (message.content.type === "MEIOSIS_RENDER_ROOT") {
-    window.postMessage({ type: "MEIOSIS_RENDER_ROOT", state: message.content.state }, "*");
-  }
-  else if (message.content.type === "MEIOSIS_REQUEST_STATE") {
-    window.postMessage({ type: "MEIOSIS_REQUEST_STATE", model: message.content.model, ts: message.content.ts }, "*");
+  else if (message.content.type === "MEIOSIS_RENDER_MODEL") {
+    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: message.content.model }, "*");
   }
 });

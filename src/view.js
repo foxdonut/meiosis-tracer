@@ -14,29 +14,7 @@ const tracerModelId = "tracerModel";
 const tracerStateId = "tracerState";
 const tracerProposalId = "tracerProposal";
 
-let stateFn = null;
-
-const setStateFn = fn => stateFn = fn;
-
-const stateFunction = (renderRoot, model, callback) => {
-  if (stateFn) {
-    const stateResult = stateFn(model);
-
-    if (typeof stateResult.then === "function") {
-      stateResult.then(function(state) {
-        callback(state);
-      });
-    }
-    else {
-      callback(stateResult);
-    }
-  }
-  else {
-    callback(model);
-  }
-};
-
-const proposalView = renderRoot => ({model, proposal}, tracerModel) => {
+const tracerView = (values, tracerModel) => {
   const tracer = document.getElementById(tracerId);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
   tracer.value = String(tracerModel.tracerIndex);
@@ -45,32 +23,28 @@ const proposalView = renderRoot => ({model, proposal}, tracerModel) => {
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
   const tracerProposalEl = document.getElementById(tracerProposalId);
-  tracerProposalEl.value = jsonFormat(proposal, jsonFormatConfig);
+  tracerProposalEl.value = jsonFormat(values[0].value || "", jsonFormatConfig);
 
   const tracerModelEl = document.getElementById(tracerModelId);
-  tracerModelEl.value = jsonFormat(model, jsonFormatConfig);
+  tracerModelEl.value = jsonFormat(values[1].value, jsonFormatConfig);
 
   const tracerStateEl = document.getElementById(tracerStateId);
-  stateFunction(renderRoot, model, state => tracerStateEl.value = jsonFormat(state, jsonFormatConfig));
+  tracerStateEl.value = jsonFormat(values[values.length - 1].value, jsonFormatConfig);
 };
 
-const onSliderChange = (renderRoot, tracerModel) => evt => {
+const onSliderChange = (renderModel, tracerModel) => evt => {
   const index = parseInt(evt.target.value, 10);
   const snapshot = tracerModel.tracerStates[index];
-  stateFunction(renderRoot, snapshot.model, renderRoot);
   tracerModel.tracerIndex = index;
-  proposalView(renderRoot)(snapshot, tracerModel);
+  const model = snapshot[1].value;
+  renderModel(model);
+  //tracerView(snapshot, tracerModel);
 };
 
-const onModelChange = renderRoot => evt => {
+const onModelChange = renderModel => evt => {
   try {
     const model = JSON.parse(evt.target.value);
-    stateFunction(renderRoot, model, state => {
-      const tracerStateEl = document.getElementById(tracerStateId);
-      tracerStateEl.value = jsonFormat(state, jsonFormatConfig);
-
-      renderRoot(state);
-    });
+    renderModel(model);
   }
   catch (err) {
     // ignore invalid JSON
@@ -90,20 +64,19 @@ const onToggle = tracerContainer => evt => {
   }
 };
 
-const onReset = (renderRoot, tracerModel) => () => {
-  reset(renderRoot, tracerModel);
+const onReset = tracerModel => () => {
+  reset(tracerModel);
 };
 
-const reset = (renderRoot, tracerModel) => {
+const reset = (tracerModel) => {
   const snapshot = tracerModel.tracerStates[tracerModel.tracerStates.length - 1];
   tracerModel.tracerStates.length = 1;
   tracerModel.tracerStates[0] = snapshot;
   tracerModel.tracerIndex = 0;
-  stateFunction(renderRoot, snapshot.model, renderRoot);
-  proposalView(renderRoot)(snapshot, tracerModel);
+  tracerView(snapshot, tracerModel);
 };
 
-const initialView = (selector, renderRoot, tracerModel, horizontal) => {
+const initialView = (selector, tracerModel, renderModel, horizontal) => {
   const target = document.querySelector(selector);
 
   if (target) {
@@ -127,11 +100,11 @@ const initialView = (selector, renderRoot, tracerModel, horizontal) => {
 
     const tracerContainer = document.getElementById(tracerContainerId);
 
-    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
-    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
+    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel));
+    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));
     document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
-    document.getElementById(tracerResetId).addEventListener("click", onReset(renderRoot, tracerModel));
+    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
   }
 };
 
-export { initialView, proposalView, reset, setStateFn };
+export { initialView, tracerView, reset };

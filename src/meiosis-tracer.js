@@ -1,19 +1,25 @@
-import { initialModel } from "./model";
-import { initialView, proposalView, reset, setStateFn } from "./view";
-import receive from "./receive";
+import { tracerModel } from "./model";
+import { initialView, tracerView, reset } from "./view";
+import { createReceiveValues } from "./receive";
 
-const tracerModel = initialModel;
+const meiosisTracer = ({ selector, horizontal }) => {
+  const receiveValues = createReceiveValues(tracerModel, tracerView);
+  const renderModel = model => {
+    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model }, "*");
+  };
+  initialView(selector, tracerModel, renderModel, horizontal);
 
-const meiosisTracer = ({ selector, initialModel, render, horizontal }) => {
-  const receiver = receive(tracerModel, proposalView(render));
-  const component = { receive: receiver };
-  initialView(selector, render, tracerModel, horizontal);
-  receiver(initialModel, "initialModel");
+  window.addEventListener("message", evt => {
+    if (evt.data.type === "MEIOSIS_VALUES") {
+      receiveValues(evt.data.values);
+    }
+  });
+
+  window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
 
   return {
-    component,
-    reset: () => reset(render, tracerModel),
-    setStateFn
+    receiveValues,
+    reset: () => reset(tracerModel)
   };
 };
 

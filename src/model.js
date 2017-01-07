@@ -1,6 +1,6 @@
-const initialModel = {
+const tracerModel = {
   tracerStates: [],
   tracerIndex: 0
 };
 
-export { initialModel };
+export { tracerModel };

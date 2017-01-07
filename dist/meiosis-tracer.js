@@ -77,29 +77,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _receive = __webpack_require__(5);
 	
-	var _receive2 = _interopRequireDefault(_receive);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var tracerModel = _model.initialModel;
-	
 	var meiosisTracer = function meiosisTracer(_ref) {
 	  var selector = _ref.selector,
-	      initialModel = _ref.initialModel,
-	      render = _ref.render,
 	      horizontal = _ref.horizontal;
 	
-	  var receiver = (0, _receive2.default)(tracerModel, (0, _view.proposalView)(render));
-	  var component = { receive: receiver };
-	  (0, _view.initialView)(selector, render, tracerModel, horizontal);
-	  receiver(initialModel, "initialModel");
+	  var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
+	  var renderModel = function renderModel(model) {
+	    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model }, "*");
+	  };
+	  (0, _view.initialView)(selector, _model.tracerModel, renderModel, horizontal);
+	
+	  window.addEventListener("message", function (evt) {
+	    if (evt.data.type === "MEIOSIS_VALUES") {
+	      receiveValues(evt.data.values);
+	    }
+	  });
+	
+	  window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
 	
 	  return {
-	    component: component,
+	    receiveValues: receiveValues,
 	    reset: function reset() {
-	      return (0, _view.reset)(render, tracerModel);
-	    },
-	    setStateFn: _view.setStateFn
+	      return (0, _view.reset)(_model.tracerModel);
+	    }
 	  };
 	};
 	
@@ -114,12 +114,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var initialModel = {
+	var tracerModel = {
 	  tracerStates: [],
 	  tracerIndex: 0
 	};
 	
-	exports.initialModel = initialModel;
+	exports.tracerModel = tracerModel;
 
 /***/ },
 /* 3 */
@@ -130,7 +130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setStateFn = exports.reset = exports.proposalView = exports.initialView = undefined;
+	exports.reset = exports.tracerView = exports.initialView = undefined;
 	
 	var _jsonFormat = __webpack_require__(4);
 	
@@ -152,73 +152,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	var tracerStateId = "tracerState";
 	var tracerProposalId = "tracerProposal";
 	
-	var stateFn = null;
+	var tracerView = function tracerView(values, tracerModel) {
+	  var tracer = document.getElementById(tracerId);
+	  tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
+	  tracer.value = String(tracerModel.tracerIndex);
 	
-	var setStateFn = function setStateFn(fn) {
-	  return stateFn = fn;
+	  var tracerIndex = document.getElementById(tracerIndexId);
+	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
+	
+	  var tracerProposalEl = document.getElementById(tracerProposalId);
+	  tracerProposalEl.value = (0, _jsonFormat2.default)(values[0].value || "", jsonFormatConfig);
+	
+	  var tracerModelEl = document.getElementById(tracerModelId);
+	  tracerModelEl.value = (0, _jsonFormat2.default)(values[1].value, jsonFormatConfig);
+	
+	  var tracerStateEl = document.getElementById(tracerStateId);
+	  tracerStateEl.value = (0, _jsonFormat2.default)(values[values.length - 1].value, jsonFormatConfig);
 	};
 	
-	var stateFunction = function stateFunction(renderRoot, model, callback) {
-	  if (stateFn) {
-	    var stateResult = stateFn(model);
-	
-	    if (typeof stateResult.then === "function") {
-	      stateResult.then(function (state) {
-	        callback(state);
-	      });
-	    } else {
-	      callback(stateResult);
-	    }
-	  } else {
-	    callback(model);
-	  }
-	};
-	
-	var proposalView = function proposalView(renderRoot) {
-	  return function (_ref, tracerModel) {
-	    var model = _ref.model,
-	        proposal = _ref.proposal;
-	
-	    var tracer = document.getElementById(tracerId);
-	    tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
-	    tracer.value = String(tracerModel.tracerIndex);
-	
-	    var tracerIndex = document.getElementById(tracerIndexId);
-	    tracerIndex.innerHTML = String(tracerModel.tracerIndex);
-	
-	    var tracerProposalEl = document.getElementById(tracerProposalId);
-	    tracerProposalEl.value = (0, _jsonFormat2.default)(proposal, jsonFormatConfig);
-	
-	    var tracerModelEl = document.getElementById(tracerModelId);
-	    tracerModelEl.value = (0, _jsonFormat2.default)(model, jsonFormatConfig);
-	
-	    var tracerStateEl = document.getElementById(tracerStateId);
-	    stateFunction(renderRoot, model, function (state) {
-	      return tracerStateEl.value = (0, _jsonFormat2.default)(state, jsonFormatConfig);
-	    });
-	  };
-	};
-	
-	var onSliderChange = function onSliderChange(renderRoot, tracerModel) {
+	var onSliderChange = function onSliderChange(renderModel, tracerModel) {
 	  return function (evt) {
 	    var index = parseInt(evt.target.value, 10);
 	    var snapshot = tracerModel.tracerStates[index];
-	    stateFunction(renderRoot, snapshot.model, renderRoot);
 	    tracerModel.tracerIndex = index;
-	    proposalView(renderRoot)(snapshot, tracerModel);
+	    var model = snapshot[1].value;
+	    renderModel(model);
+	    //tracerView(snapshot, tracerModel);
 	  };
 	};
 	
-	var onModelChange = function onModelChange(renderRoot) {
+	var onModelChange = function onModelChange(renderModel) {
 	  return function (evt) {
 	    try {
 	      var model = JSON.parse(evt.target.value);
-	      stateFunction(renderRoot, model, function (state) {
-	        var tracerStateEl = document.getElementById(tracerStateId);
-	        tracerStateEl.value = (0, _jsonFormat2.default)(state, jsonFormatConfig);
-	
-	        renderRoot(state);
-	      });
+	      renderModel(model);
 	    } catch (err) {
 	      // ignore invalid JSON
 	    }
@@ -239,22 +206,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	};
 	
-	var onReset = function onReset(renderRoot, tracerModel) {
+	var onReset = function onReset(tracerModel) {
 	  return function () {
-	    reset(renderRoot, tracerModel);
+	    reset(tracerModel);
 	  };
 	};
 	
-	var reset = function reset(renderRoot, tracerModel) {
+	var reset = function reset(tracerModel) {
 	  var snapshot = tracerModel.tracerStates[tracerModel.tracerStates.length - 1];
 	  tracerModel.tracerStates.length = 1;
 	  tracerModel.tracerStates[0] = snapshot;
 	  tracerModel.tracerIndex = 0;
-	  stateFunction(renderRoot, snapshot.model, renderRoot);
-	  proposalView(renderRoot)(snapshot, tracerModel);
+	  tracerView(snapshot, tracerModel);
 	};
 	
-	var initialView = function initialView(selector, renderRoot, tracerModel, horizontal) {
+	var initialView = function initialView(selector, tracerModel, renderModel, horizontal) {
 	  var target = document.querySelector(selector);
 	
 	  if (target) {
@@ -266,17 +232,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var tracerContainer = document.getElementById(tracerContainerId);
 	
-	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderRoot, tracerModel));
-	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderRoot));
+	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel));
+	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));
 	    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
-	    document.getElementById(tracerResetId).addEventListener("click", onReset(renderRoot, tracerModel));
+	    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
 	  }
 	};
 	
 	exports.initialView = initialView;
-	exports.proposalView = proposalView;
+	exports.tracerView = tracerView;
 	exports.reset = reset;
-	exports.setStateFn = setStateFn;
 
 /***/ },
 /* 4 */
@@ -371,20 +336,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var receive = function receive(tracerModel, view) {
-	  return function (model, proposal) {
-	    var modelCopy = JSON.parse(JSON.stringify(model));
-	    var modelAndProposal = { model: modelCopy, proposal: proposal };
-	    tracerModel.tracerStates.push(modelAndProposal);
+	var createReceiveValues = function createReceiveValues(tracerModel, view) {
+	  return function (values) {
+	    tracerModel.tracerStates.push(values);
 	    tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 	
-	    view(modelAndProposal, tracerModel);
-	
-	    return model;
+	    view(values, tracerModel);
 	  };
 	};
 	
-	exports.default = receive;
+	exports.createReceiveValues = createReceiveValues;
 
 /***/ }
 /******/ ])

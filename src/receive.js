@@ -1,12 +1,8 @@
-const receive = (tracerModel, view) => (model, proposal) => {
-  const modelCopy = JSON.parse(JSON.stringify(model));
-  const modelAndProposal = { model: modelCopy, proposal };
-  tracerModel.tracerStates.push(modelAndProposal);
+const createReceiveValues = (tracerModel, view) => values => {
+  tracerModel.tracerStates.push(values);
   tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 
-  view(modelAndProposal, tracerModel);
-
-  return model;
+  view(values, tracerModel);
 };
 
-export default receive;
+export { createReceiveValues };
