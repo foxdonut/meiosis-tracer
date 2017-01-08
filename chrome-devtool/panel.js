@@ -30,15 +30,18 @@ port.onMessage.addListener(function(evt) {
   }
 });
 
-chrome.devtools.network.onNavigated.addListener(function() {
-  if (tracer) {
-    tracer.reset();
-  }
+var createTracer = function() {
   var renderModel = function(model) {
     sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_MODEL", model: model } });
   };
   tracer = window.meiosisTracer({ selector: "#meiosis-tracer", renderModel: renderModel, horizontal: true });
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
+};
+
+chrome.devtools.network.onNavigated.addListener(function() {
+  if (tracer) {
+    tracer.reset();//FIXME
+  }
+  createTracer();
 });
-tracer = window.meiosisTracer({ selector: "#meiosis-tracer", horizontal: true });
-sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
+createTracer();
