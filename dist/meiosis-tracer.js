@@ -83,8 +83,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      horizontal = _ref.horizontal;
 	
 	  var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
-	  renderModel = renderModel || function (model) {
-	    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model }, "*");
+	  renderModel = renderModel || function (model, sendValuesBack) {
+	    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model, sendValuesBack: sendValuesBack }, "*");
 	  };
 	  (0, _view.initialView)(selector, _model.tracerModel, renderModel, horizontal);
 	
@@ -177,8 +177,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var snapshot = tracerModel.tracerStates[index];
 	    tracerModel.tracerIndex = index;
 	    var model = snapshot[1].value;
-	    renderModel(model);
-	    //tracerView(snapshot, tracerModel);
+	    renderModel(model, false);
+	    tracerView(snapshot, tracerModel);
 	  };
 	};
 	
@@ -186,7 +186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return function (evt) {
 	    try {
 	      var model = JSON.parse(evt.target.value);
-	      renderModel(model);
+	      renderModel(model, true);
 	    } catch (err) {
 	      // ignore invalid JSON
 	    }
@@ -343,7 +343,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      tracerModel.tracerStates.push(values);
 	      tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
 	    }
-	
 	    view(values, tracerModel);
 	  };
 	};

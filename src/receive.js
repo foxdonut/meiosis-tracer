@@ -3,7 +3,6 @@ const createReceiveValues = (tracerModel, view) => (values, update) => {
     tracerModel.tracerStates.push(values);
     tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
   }
-
   view(values, tracerModel);
 };
 

@@ -37,14 +37,14 @@ const onSliderChange = (renderModel, tracerModel) => evt => {
   const snapshot = tracerModel.tracerStates[index];
   tracerModel.tracerIndex = index;
   const model = snapshot[1].value;
-  renderModel(model);
-  //tracerView(snapshot, tracerModel);
+  renderModel(model, false);
+  tracerView(snapshot, tracerModel);
 };
 
 const onModelChange = renderModel => evt => {
   try {
     const model = JSON.parse(evt.target.value);
-    renderModel(model);
+    renderModel(model, true);
   }
   catch (err) {
     // ignore invalid JSON

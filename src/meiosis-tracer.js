@@ -4,8 +4,8 @@ import { createReceiveValues } from "./receive";
 
 const meiosisTracer = ({ selector, renderModel, horizontal }) => {
   const receiveValues = createReceiveValues(tracerModel, tracerView);
-  renderModel = renderModel || (model => {
-    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model }, "*");
+  renderModel = renderModel || ((model, sendValuesBack) => {
+    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model, sendValuesBack }, "*");
   });
   initialView(selector, tracerModel, renderModel, horizontal);
 

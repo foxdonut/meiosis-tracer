@@ -31,8 +31,12 @@ port.onMessage.addListener(function(evt) {
 });
 
 var createTracer = function() {
-  var renderModel = function(model) {
-    sendObjectToInspectedPage({ content: { type: "MEIOSIS_RENDER_MODEL", model: model } });
+  var renderModel = function(model, sendValuesBack) {
+    sendObjectToInspectedPage({ content: {
+      type: "MEIOSIS_RENDER_MODEL",
+      model: model,
+      sendValuesBack: sendValuesBack
+    } });
   };
   tracer = window.meiosisTracer({ selector: "#meiosis-tracer", renderModel: renderModel, horizontal: true });
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
