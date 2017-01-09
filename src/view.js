@@ -13,6 +13,8 @@ const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
 const tracerStateId = "tracerState";
 const tracerProposalId = "tracerProposal";
+const errorMessageId = "errorMessage";
+let errorMessage = null;
 
 const tracerView = (values, tracerModel) => {
   const tracer = document.getElementById(tracerId);
@@ -45,9 +47,10 @@ const onModelChange = renderModel => evt => {
   try {
     const model = JSON.parse(evt.target.value);
     renderModel(model, true);
+    errorMessage.style.display = "none";
   }
   catch (err) {
-    // ignore invalid JSON
+    errorMessage.style.display = "block";
   }
 };
 
@@ -92,13 +95,15 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
       "<div" + divStyle + "><div>Proposal:</div>" +
       "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" +
       "<div" + divStyle + "><div>Model: (you can type into this box)</div>" +
-      "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea></div>" +
+      "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
+      "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" +
       "<div" + divStyle + "><div>State:</div>" +
       "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
 
     target.innerHTML = viewHtml;
 
     const tracerContainer = document.getElementById(tracerContainerId);
+    errorMessage = document.getElementById(errorMessageId);
 
     document.getElementById(tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel));
     document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));

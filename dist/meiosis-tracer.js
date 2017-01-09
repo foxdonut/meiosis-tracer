@@ -152,6 +152,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var tracerModelId = "tracerModel";
 	var tracerStateId = "tracerState";
 	var tracerProposalId = "tracerProposal";
+	var errorMessageId = "errorMessage";
+	var errorMessage = null;
 	
 	var tracerView = function tracerView(values, tracerModel) {
 	  var tracer = document.getElementById(tracerId);
@@ -187,8 +189,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    try {
 	      var model = JSON.parse(evt.target.value);
 	      renderModel(model, true);
+	      errorMessage.style.display = "none";
 	    } catch (err) {
-	      // ignore invalid JSON
+	      errorMessage.style.display = "block";
 	    }
 	  };
 	};
@@ -227,11 +230,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (target) {
 	    var divStyle = horizontal ? " style='float: left'" : "";
 	
-	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>State:</div>" + "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" + "<div" + divStyle + "><div>State:</div>" + "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
 	
 	    target.innerHTML = viewHtml;
 	
 	    var tracerContainer = document.getElementById(tracerContainerId);
+	    errorMessage = document.getElementById(errorMessageId);
 	
 	    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel));
 	    document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));
