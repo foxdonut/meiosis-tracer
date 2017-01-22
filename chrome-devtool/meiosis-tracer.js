@@ -68,6 +68,8 @@ var meiosisTracer =
 	
 	var _receive = __webpack_require__(5);
 	
+	window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
+	
 	var meiosisTracer = function meiosisTracer(_ref) {
 	  var selector = _ref.selector,
 	      renderModel = _ref.renderModel,
