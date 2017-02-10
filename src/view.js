@@ -12,7 +12,6 @@ const tracerResetId = "tracerReset";
 const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
 const tracerStateId = "tracerState";
-const tracerProposalId = "tracerProposal";
 const errorMessageId = "errorMessage";
 let errorMessage = null;
 
@@ -24,11 +23,8 @@ const tracerView = (values, tracerModel) => {
   const tracerIndex = document.getElementById(tracerIndexId);
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
-  const tracerProposalEl = document.getElementById(tracerProposalId);
-  tracerProposalEl.value = jsonFormat(values[0].value || "", jsonFormatConfig);
-
   const tracerModelEl = document.getElementById(tracerModelId);
-  tracerModelEl.value = jsonFormat(values[1].value, jsonFormatConfig);
+  tracerModelEl.value = jsonFormat(values[0].value, jsonFormatConfig);
 
   const tracerStateEl = document.getElementById(tracerStateId);
   tracerStateEl.value = jsonFormat(values[values.length - 1].value, jsonFormatConfig);
@@ -38,7 +34,7 @@ const onSliderChange = (renderModel, tracerModel) => evt => {
   const index = parseInt(evt.target.value, 10);
   const snapshot = tracerModel.tracerStates[index];
   tracerModel.tracerIndex = index;
-  const model = snapshot[1].value;
+  const model = snapshot[0].value;
   renderModel(model, false);
   tracerView(snapshot, tracerModel);
 };
@@ -92,8 +88,6 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
       String(tracerModel.tracerStates.length - 1) +
       "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
       "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<div" + divStyle + "><div>Proposal:</div>" +
-      "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" +
       "<div" + divStyle + "><div>Model: (you can type into this box)</div>" +
       "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
       "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" +

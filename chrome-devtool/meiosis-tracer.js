@@ -144,7 +144,6 @@ var meiosisTracer =
 	var tracerIndexId = "tracerIndex";
 	var tracerModelId = "tracerModel";
 	var tracerStateId = "tracerState";
-	var tracerProposalId = "tracerProposal";
 	var errorMessageId = "errorMessage";
 	var errorMessage = null;
 	
@@ -156,11 +155,8 @@ var meiosisTracer =
 	  var tracerIndex = document.getElementById(tracerIndexId);
 	  tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 	
-	  var tracerProposalEl = document.getElementById(tracerProposalId);
-	  tracerProposalEl.value = (0, _jsonFormat2.default)(values[0].value || "", jsonFormatConfig);
-	
 	  var tracerModelEl = document.getElementById(tracerModelId);
-	  tracerModelEl.value = (0, _jsonFormat2.default)(values[1].value, jsonFormatConfig);
+	  tracerModelEl.value = (0, _jsonFormat2.default)(values[0].value, jsonFormatConfig);
 	
 	  var tracerStateEl = document.getElementById(tracerStateId);
 	  tracerStateEl.value = (0, _jsonFormat2.default)(values[values.length - 1].value, jsonFormatConfig);
@@ -171,7 +167,7 @@ var meiosisTracer =
 	    var index = parseInt(evt.target.value, 10);
 	    var snapshot = tracerModel.tracerStates[index];
 	    tracerModel.tracerIndex = index;
-	    var model = snapshot[1].value;
+	    var model = snapshot[0].value;
 	    renderModel(model, false);
 	    tracerView(snapshot, tracerModel);
 	  };
@@ -223,7 +219,7 @@ var meiosisTracer =
 	  if (target) {
 	    var divStyle = horizontal ? " style='float: left'" : "";
 	
-	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Proposal:</div>" + "<textarea id='" + tracerProposalId + "' rows='5' cols='40'></textarea></div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" + "<div" + divStyle + "><div>State:</div>" + "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
+	    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + "><div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" + "<div" + divStyle + "><div>State:</div>" + "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
 	
 	    target.innerHTML = viewHtml;
 	
