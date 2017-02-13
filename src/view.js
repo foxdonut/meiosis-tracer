@@ -6,14 +6,15 @@ const jsonFormatConfig = {
 };
 
 const tracerContainerId = "tracerContainer";
+const streamContainerId = "streamContainer";
 const tracerId = "tracerSlider";
 const tracerToggleId = "tracerToggle";
 const tracerResetId = "tracerReset";
 const tracerIndexId = "tracerIndex";
 const tracerModelId = "tracerModel";
-const tracerStateId = "tracerState";
 const errorMessageId = "errorMessage";
 let errorMessage = null;
+let divStyle = null;
 
 const tracerView = (values, tracerModel) => {
   const tracer = document.getElementById(tracerId);
@@ -26,8 +27,25 @@ const tracerView = (values, tracerModel) => {
   const tracerModelEl = document.getElementById(tracerModelId);
   tracerModelEl.value = jsonFormat(values[0].value, jsonFormatConfig);
 
-  const tracerStateEl = document.getElementById(tracerStateId);
-  tracerStateEl.value = jsonFormat(values[values.length - 1].value, jsonFormatConfig);
+  var streamValueDivs = document.querySelectorAll("div.stream");
+
+  if (streamValueDivs.length === 0) {
+    var streamValueDivsMarkup = "";
+
+    for (var i = 0, t = values.length - 1; i < t; i++) {
+      streamValueDivsMarkup +=
+        "<div class='stream'>" +
+          "<textarea rows='5' cols='40'></textarea>" +
+        "</div>";
+    }
+    document.getElementById(streamContainerId).innerHTML = streamValueDivsMarkup;
+  }
+
+  var streamTextareas = document.querySelectorAll("div.stream textarea");
+
+  for (i = 0, t = values.length - 1; i < t; i++) {
+    streamTextareas[i].value = jsonFormat(values[i].value, jsonFormatConfig);
+  }
 };
 
 const onSliderChange = (renderModel, tracerModel) => evt => {
@@ -79,20 +97,23 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
   const target = document.querySelector(selector);
 
   if (target) {
-    const divStyle = horizontal ? " style='float: left'" : "";
+    divStyle = horizontal ? " style='float: left'" : "";
 
-    const viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
+    const viewHtml =
+      "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
       "<div id='" + tracerContainerId + "'>" +
-      "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" +
-      "<input id='" + tracerId + "' type='range' min='0' max='" +
-      String(tracerModel.tracerStates.length - 1) +
-      "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
-      "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
-      "<div" + divStyle + "><div>Model: (you can type into this box)</div>" +
-      "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
-      "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div></div>" +
-      "<div" + divStyle + "><div>State:</div>" +
-      "<textarea id='" + tracerStateId + "' rows='5' cols='40'></textarea></div></div>";
+        "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" +
+        "<input id='" + tracerId + "' type='range' min='0' max='" +
+          String(tracerModel.tracerStates.length - 1) +
+          "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
+        "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
+        "<div" + divStyle + ">" +
+          "<div>Model: (you can type into this box)</div>" +
+          "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
+          "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" +
+        "</div>" +
+        "<span id='" + streamContainerId + "'></span>" +
+      "</div>";
 
     target.innerHTML = viewHtml;
 
