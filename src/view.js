@@ -32,7 +32,7 @@ const tracerView = (values, tracerModel) => {
   if (streamValueDivs.length === 0) {
     var streamValueDivsMarkup = "";
 
-    for (var i = 0, t = values.length - 1; i < t; i++) {
+    for (var i = 1, t = values.length; i < t; i++) {
       streamValueDivsMarkup +=
         "<div class='stream'>" +
           "<textarea rows='5' cols='40'></textarea>" +
@@ -43,8 +43,8 @@ const tracerView = (values, tracerModel) => {
 
   var streamTextareas = document.querySelectorAll("div.stream textarea");
 
-  for (i = 0, t = values.length - 1; i < t; i++) {
-    streamTextareas[i].value = jsonFormat(values[i].value, jsonFormatConfig);
+  for (i = 1, t = values.length; i < t; i++) {
+    streamTextareas[i - 1].value = jsonFormat(values[i].value, jsonFormatConfig);
   }
 };
 
