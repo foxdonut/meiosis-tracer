@@ -16,9 +16,9 @@ module.exports = isDevtool ? {
     libraryTarget: "var"
   },
   module: {
-    loaders: [
+    rules: [
       {
-        loader: "babel",
+        loader: "babel-loader",
         test: /\.js$/,
         exclude: /node_modules/
       }
@@ -34,9 +34,9 @@ module.exports = isDevtool ? {
     libraryTarget: isLib ? "commonjs2" : "umd"
   },
   module: {
-    loaders: [
+    rules: [
       {
-        loader: "babel",
+        loader: "babel-loader",
         test: /\.js$/,
         exclude: /node_modules/
       }
