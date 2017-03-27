@@ -6,7 +6,8 @@ const jsonFormatConfig = {
 };
 
 const tracerContainerId = "tracerContainer";
-const streamContainerId = "streamContainer";
+const dataStreamContainerId = "dataStreamContainer";
+const otherStreamContainerId = "otherStreamContainer";
 const tracerId = "tracerSlider";
 const tracerToggleId = "tracerToggle";
 const tracerResetId = "tracerReset";
@@ -27,18 +28,18 @@ const tracerView = (values, tracerModel) => {
   const tracerModelEl = document.getElementById(tracerModelId);
   tracerModelEl.value = jsonFormat(values[0].value, jsonFormatConfig);
 
-  var streamValueDivs = document.querySelectorAll("div.stream");
+  var streamValueDivs = document.querySelectorAll("div.dataStream");
 
   if (streamValueDivs.length === 0) {
     var streamValueDivsMarkup = "";
 
     for (var i = 1, t = values.length; i < t; i++) {
       streamValueDivsMarkup +=
-        "<div class='stream'>" +
+        "<div class='dataStream'>" +
           "<textarea rows='5' cols='40'></textarea>" +
         "</div>";
     }
-    document.getElementById(streamContainerId).innerHTML = streamValueDivsMarkup;
+    document.getElementById(dataStreamContainerId).innerHTML = streamValueDivsMarkup;
   }
 
   var streamTextareas = document.querySelectorAll("div.stream textarea");
@@ -55,6 +56,26 @@ const onSliderChange = (renderModel, tracerModel) => evt => {
   const model = snapshot[0].value;
   renderModel(model, false);
   tracerView(snapshot, tracerModel);
+};
+
+const onStreamSliderChange = (streamModel, streamId) => evt => {
+  const streamState = streamModel[streamId];
+  const index = parseInt(evt.target.value, 10);
+
+  streamState.index = index;
+
+  updateStreamValue(streamId, streamState);
+};
+
+const onStreamValueChange = (streamId, textarea, triggerStreamValue) => () => {
+  try {
+    const value = JSON.parse(textarea.value);
+    triggerStreamValue(streamId, value);
+    errorMessage.style.display = "none";
+  }
+  catch (err) {
+    errorMessage.style.display = "block";
+  }
 };
 
 const onModelChange = renderModel => evt => {
@@ -103,6 +124,7 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
       "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
       "<div id='" + tracerContainerId + "'>" +
         "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" +
+        "<div>Data streams:</div>" +
         "<input id='" + tracerId + "' type='range' min='0' max='" +
           String(tracerModel.tracerStates.length - 1) +
           "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
@@ -112,7 +134,8 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
           "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
           "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" +
         "</div>" +
-        "<span id='" + streamContainerId + "'></span>" +
+        "<span id='" + dataStreamContainerId + "'></span>" +
+        "<span id='" + otherStreamContainerId + "'></span>" +
       "</div>";
 
     target.innerHTML = viewHtml;
@@ -127,4 +150,42 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
   }
 };
 
-export { initialView, tracerView, reset };
+const initStreamIds = (streamIds, streamModel, triggerStreamValue) => {
+  var streamValueDivsMarkup = "<div>Other streams:</div>";
+
+  streamIds.forEach(streamId =>
+    streamValueDivsMarkup +=
+      "<div class='otherStream' id='" + streamId + "'>" +
+        "<input type='range' min='0' max='0' value='0' style='width: 100%'/>" +
+        "<div>0</div>" +
+        "<textarea rows='5' cols='40'></textarea>" +
+        "<div><button>Trigger</button></div>" +
+      "</div>"
+  );
+  document.getElementById(otherStreamContainerId).innerHTML = streamValueDivsMarkup;
+
+  streamIds.forEach(streamId => {
+    const container = document.getElementById(streamId);
+
+    const input = container.getElementsByTagName("input")[0];
+    input.addEventListener("input", onStreamSliderChange(streamModel, streamId));
+
+    const button = container.getElementsByTagName("button")[0];
+    const textarea = container.getElementsByTagName("textarea")[0];
+    button.addEventListener("click", onStreamValueChange(streamId, textarea, triggerStreamValue));
+  });
+};
+
+const updateStreamValue = (streamId, streamState) => {
+  const container = document.getElementById(streamId);
+  const textarea = container.getElementsByTagName("textarea")[0];
+  const input = container.getElementsByTagName("input")[0];
+  const div = container.getElementsByTagName("div")[0];
+
+  textarea.value = jsonFormat(streamState.values[streamState.index], jsonFormatConfig);
+  input.setAttribute("max", String(streamState.values.length - 1));
+  input.value = String(streamState.index);
+  div.innerHTML = String(streamState.index);
+};
+
+export { initialView, tracerView, reset, initStreamIds, updateStreamValue };

@@ -64,7 +64,7 @@ var meiosisTracer =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,11 +79,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.meiosisTracer = undefined;
 
-var _model = __webpack_require__(1);
+var _model = __webpack_require__(2);
 
-var _view = __webpack_require__(3);
+var _view = __webpack_require__(4);
 
-var _receive = __webpack_require__(2);
+var _receive = __webpack_require__(3);
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
@@ -93,14 +93,35 @@ var meiosisTracer = function meiosisTracer(_ref) {
       horizontal = _ref.horizontal;
 
   var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
+
   renderModel = renderModel || function (model, sendValuesBack) {
-    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model, sendValuesBack: sendValuesBack }, "*");
+    return window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: model, sendValuesBack: sendValuesBack }, "*");
   };
+
   (0, _view.initialView)(selector, _model.tracerModel, renderModel, horizontal);
+
+  var triggerStreamValue = function triggerStreamValue(streamId, value) {
+    return window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", streamId: streamId, value: value }, "*");
+  };
 
   window.addEventListener("message", function (evt) {
     if (evt.data.type === "MEIOSIS_VALUES") {
       receiveValues(evt.data.values, evt.data.update);
+    } else if (evt.data.type === "MEIOSIS_STREAM_IDS") {
+      var streamIds = evt.data.streamIds;
+
+      streamIds.forEach(function (streamId) {
+        return _model.tracerModel.streams[streamId] = { index: 0, values: [] };
+      });
+      (0, _view.initStreamIds)(streamIds, _model.tracerModel.streams, triggerStreamValue);
+    } else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
+      var streamId = evt.data.streamId;
+      var streamState = _model.tracerModel.streams[streamId];
+
+      streamState.values.push(evt.data.value);
+      streamState.index = streamState.values.length - 1;
+
+      (0, _view.updateStreamValue)(streamId, streamState);
     }
   });
 
@@ -123,18 +144,48 @@ exports.meiosisTracer = meiosisTracer;
 "use strict";
 
 
+var _meiosisTracer = __webpack_require__(0);
+
+/*
+1. Live change
+- receive values from meiosis with update=true. This will add to the tracer's history
+  and increase the slider max.
+- re-render the tracer view with update=true.
+
+2. Time-travel change
+- send MEIOSIS_RENDER_MODEL with sendValuesBack=false
+- we already have the values in the snapshot, so don't need anything back
+- re-render the tracer view with update=false.
+
+3. Typing in model textarea
+- send MEIOSIS_RENDER_MODEL with sendValuesBack=true. The tracer needs to get
+  the computed values from the other streams.
+- receive values from meiosis with update=false so this will not add to the tracer's history.
+- re-render the tracer view with update=false.
+*/
+
+module.exports = _meiosisTracer.meiosisTracer;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var tracerModel = {
   tracerStates: [],
-  tracerIndex: 0
+  tracerIndex: 0,
+  streams: {} // id: { index: N, values: [] }
 };
 
 exports.tracerModel = tracerModel;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -156,7 +207,7 @@ var createReceiveValues = function createReceiveValues(tracerModel, view) {
 exports.createReceiveValues = createReceiveValues;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -165,9 +216,9 @@ exports.createReceiveValues = createReceiveValues;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.reset = exports.tracerView = exports.initialView = undefined;
+exports.updateStreamValue = exports.initStreamIds = exports.reset = exports.tracerView = exports.initialView = undefined;
 
-var _jsonFormat = __webpack_require__(4);
+var _jsonFormat = __webpack_require__(5);
 
 var _jsonFormat2 = _interopRequireDefault(_jsonFormat);
 
@@ -179,7 +230,8 @@ var jsonFormatConfig = {
 };
 
 var tracerContainerId = "tracerContainer";
-var streamContainerId = "streamContainer";
+var dataStreamContainerId = "dataStreamContainer";
+var otherStreamContainerId = "otherStreamContainer";
 var tracerId = "tracerSlider";
 var tracerToggleId = "tracerToggle";
 var tracerResetId = "tracerReset";
@@ -200,15 +252,15 @@ var tracerView = function tracerView(values, tracerModel) {
   var tracerModelEl = document.getElementById(tracerModelId);
   tracerModelEl.value = (0, _jsonFormat2.default)(values[0].value, jsonFormatConfig);
 
-  var streamValueDivs = document.querySelectorAll("div.stream");
+  var streamValueDivs = document.querySelectorAll("div.dataStream");
 
   if (streamValueDivs.length === 0) {
     var streamValueDivsMarkup = "";
 
     for (var i = 1, t = values.length; i < t; i++) {
-      streamValueDivsMarkup += "<div class='stream'>" + "<textarea rows='5' cols='40'></textarea>" + "</div>";
+      streamValueDivsMarkup += "<div class='dataStream'>" + "<textarea rows='5' cols='40'></textarea>" + "</div>";
     }
-    document.getElementById(streamContainerId).innerHTML = streamValueDivsMarkup;
+    document.getElementById(dataStreamContainerId).innerHTML = streamValueDivsMarkup;
   }
 
   var streamTextareas = document.querySelectorAll("div.stream textarea");
@@ -226,6 +278,29 @@ var onSliderChange = function onSliderChange(renderModel, tracerModel) {
     var model = snapshot[0].value;
     renderModel(model, false);
     tracerView(snapshot, tracerModel);
+  };
+};
+
+var onStreamSliderChange = function onStreamSliderChange(streamModel, streamId) {
+  return function (evt) {
+    var streamState = streamModel[streamId];
+    var index = parseInt(evt.target.value, 10);
+
+    streamState.index = index;
+
+    updateStreamValue(streamId, streamState);
+  };
+};
+
+var onStreamValueChange = function onStreamValueChange(streamId, textarea, triggerStreamValue) {
+  return function () {
+    try {
+      var value = JSON.parse(textarea.value);
+      triggerStreamValue(streamId, value);
+      errorMessage.style.display = "none";
+    } catch (err) {
+      errorMessage.style.display = "block";
+    }
   };
 };
 
@@ -275,7 +350,7 @@ var initialView = function initialView(selector, tracerModel, renderModel, horiz
   if (target) {
     divStyle = horizontal ? " style='float: left'" : "";
 
-    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + ">" + "<div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" + "</div>" + "<span id='" + streamContainerId + "'></span>" + "</div>";
+    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<div>Data streams:</div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + ">" + "<div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" + "</div>" + "<span id='" + dataStreamContainerId + "'></span>" + "<span id='" + otherStreamContainerId + "'></span>" + "</div>";
 
     target.innerHTML = viewHtml;
 
@@ -289,12 +364,46 @@ var initialView = function initialView(selector, tracerModel, renderModel, horiz
   }
 };
 
+var initStreamIds = function initStreamIds(streamIds, streamModel, triggerStreamValue) {
+  var streamValueDivsMarkup = "<div>Other streams:</div>";
+
+  streamIds.forEach(function (streamId) {
+    return streamValueDivsMarkup += "<div class='otherStream' id='" + streamId + "'>" + "<input type='range' min='0' max='0' value='0' style='width: 100%'/>" + "<div>0</div>" + "<textarea rows='5' cols='40'></textarea>" + "<div><button>Trigger</button></div>" + "</div>";
+  });
+  document.getElementById(otherStreamContainerId).innerHTML = streamValueDivsMarkup;
+
+  streamIds.forEach(function (streamId) {
+    var container = document.getElementById(streamId);
+
+    var input = container.getElementsByTagName("input")[0];
+    input.addEventListener("input", onStreamSliderChange(streamModel, streamId));
+
+    var button = container.getElementsByTagName("button")[0];
+    var textarea = container.getElementsByTagName("textarea")[0];
+    button.addEventListener("click", onStreamValueChange(streamId, textarea, triggerStreamValue));
+  });
+};
+
+var updateStreamValue = function updateStreamValue(streamId, streamState) {
+  var container = document.getElementById(streamId);
+  var textarea = container.getElementsByTagName("textarea")[0];
+  var input = container.getElementsByTagName("input")[0];
+  var div = container.getElementsByTagName("div")[0];
+
+  textarea.value = (0, _jsonFormat2.default)(streamState.values[streamState.index], jsonFormatConfig);
+  input.setAttribute("max", String(streamState.values.length - 1));
+  input.value = String(streamState.index);
+  div.innerHTML = String(streamState.index);
+};
+
 exports.initialView = initialView;
 exports.tracerView = tracerView;
 exports.reset = reset;
+exports.initStreamIds = initStreamIds;
+exports.updateStreamValue = updateStreamValue;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 /*
@@ -376,17 +485,6 @@ module.exports = function(json, config){
   return JSONFormat(JSON.stringify(json), indentType);
 }
 
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _meiosisTracer = __webpack_require__(0);
-
-module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ })
 /******/ ]);

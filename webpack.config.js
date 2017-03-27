@@ -10,7 +10,7 @@ module.exports = isDevtool ? {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    path: "./chrome-devtool",
+    path: __dirname + "/chrome-devtool",
     filename: "meiosis-tracer.js",
     library: "meiosisTracer",
     libraryTarget: "var"
@@ -28,7 +28,7 @@ module.exports = isDevtool ? {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    path: isLib ? "./lib" : "./dist",
+    path: __dirname + (isLib ? "/lib" : "/dist"),
     filename: isProd ? "meiosis-tracer.min.js" : "meiosis-tracer.js",
     library: "meiosisTracer",
     libraryTarget: isLib ? "commonjs2" : "umd"

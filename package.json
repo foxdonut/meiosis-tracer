@@ -28,7 +28,7 @@
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
     "eslint": "^3.18.0",
-    "webpack": "^2.2.1"
+    "webpack": "^2.3.2"
   },
   "dependencies": {
     "json-format": "^1.0.0"
