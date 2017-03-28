@@ -64,7 +64,7 @@ var meiosisTracer =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,11 +79,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.meiosisTracer = undefined;
 
-var _model = __webpack_require__(2);
+var _model = __webpack_require__(1);
 
-var _view = __webpack_require__(4);
+var _view = __webpack_require__(3);
 
-var _receive = __webpack_require__(3);
+var _receive = __webpack_require__(2);
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
@@ -144,35 +144,6 @@ exports.meiosisTracer = meiosisTracer;
 "use strict";
 
 
-var _meiosisTracer = __webpack_require__(0);
-
-/*
-1. Live change
-- receive values from meiosis with update=true. This will add to the tracer's history
-  and increase the slider max.
-- re-render the tracer view with update=true.
-
-2. Time-travel change
-- send MEIOSIS_RENDER_MODEL with sendValuesBack=false
-- we already have the values in the snapshot, so don't need anything back
-- re-render the tracer view with update=false.
-
-3. Typing in model textarea
-- send MEIOSIS_RENDER_MODEL with sendValuesBack=true. The tracer needs to get
-  the computed values from the other streams.
-- receive values from meiosis with update=false so this will not add to the tracer's history.
-- re-render the tracer view with update=false.
-*/
-
-module.exports = _meiosisTracer.meiosisTracer;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -185,7 +156,7 @@ var tracerModel = {
 exports.tracerModel = tracerModel;
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,7 +178,7 @@ var createReceiveValues = function createReceiveValues(tracerModel, view) {
 exports.createReceiveValues = createReceiveValues;
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -218,7 +189,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateStreamValue = exports.initStreamIds = exports.reset = exports.tracerView = exports.initialView = undefined;
 
-var _jsonFormat = __webpack_require__(5);
+var _jsonFormat = __webpack_require__(4);
 
 var _jsonFormat2 = _interopRequireDefault(_jsonFormat);
 
@@ -403,7 +374,7 @@ exports.initStreamIds = initStreamIds;
 exports.updateStreamValue = updateStreamValue;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /*
@@ -485,6 +456,35 @@ module.exports = function(json, config){
   return JSONFormat(JSON.stringify(json), indentType);
 }
 
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _meiosisTracer = __webpack_require__(0);
+
+/*
+1. Live change
+- receive values from meiosis with update=true. This will add to the tracer's history
+  and increase the slider max.
+- re-render the tracer view with update=true.
+
+2. Time-travel change
+- send MEIOSIS_RENDER_MODEL with sendValuesBack=false
+- we already have the values in the snapshot, so don't need anything back
+- re-render the tracer view with update=false.
+
+3. Typing in model textarea
+- send MEIOSIS_RENDER_MODEL with sendValuesBack=true. The tracer needs to get
+  the computed values from the other streams.
+- receive values from meiosis with update=false so this will not add to the tracer's history.
+- re-render the tracer view with update=false.
+*/
+
+module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ })
 /******/ ]);
