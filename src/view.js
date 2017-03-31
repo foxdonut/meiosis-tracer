@@ -42,7 +42,7 @@ const tracerView = (values, tracerModel) => {
     document.getElementById(dataStreamContainerId).innerHTML = streamValueDivsMarkup;
   }
 
-  var streamTextareas = document.querySelectorAll("div.stream textarea");
+  var streamTextareas = document.querySelectorAll("div.dataStream textarea");
 
   for (i = 1, t = values.length; i < t; i++) {
     streamTextareas[i - 1].value = jsonFormat(values[i].value, jsonFormatConfig);
