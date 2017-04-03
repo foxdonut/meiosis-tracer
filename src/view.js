@@ -35,7 +35,7 @@ const tracerView = (values, tracerModel) => {
 
     for (var i = 1, t = values.length; i < t; i++) {
       streamValueDivsMarkup +=
-        "<div class='dataStream'>" +
+        "<div" + divStyle + " class='dataStream'>" +
           "<textarea rows='5' cols='40'></textarea>" +
         "</div>";
     }
@@ -155,7 +155,7 @@ const initStreamIds = (streamIds, streamModel, triggerStreamValue) => {
 
   streamIds.forEach(streamId =>
     streamValueDivsMarkup +=
-      "<div class='otherStream' id='" + streamId + "'>" +
+      "<div" + divStyle + " class='otherStream' id='" + streamId + "'>" +
         "<input type='range' min='0' max='0' value='0' style='width: 100%'/>" +
         "<div>0</div>" +
         "<textarea rows='5' cols='40'></textarea>" +

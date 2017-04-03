@@ -28,6 +28,12 @@ port.onMessage.addListener(function(evt) {
   if (data.type === "MEIOSIS_VALUES") {
     tracer.receiveValues(data.values, data.update);
   }
+  else if (data.type === "MEIOSIS_STREAM_IDS") {
+    tracer.initStreamIdModel(data.streamIds);
+  }
+  else if (data.type === "MEIOSIS_STREAM_VALUE") {
+    tracer.receiveStreamValue(data.streamId, data.value);
+  }
 });
 
 var createTracer = function() {
@@ -38,13 +44,26 @@ var createTracer = function() {
       sendValuesBack: sendValuesBack
     } });
   };
-  tracer = window.meiosisTracer({ selector: "#meiosis-tracer", renderModel: renderModel, horizontal: true });
+  var triggerStreamValue = function(streamId, value) {
+    sendObjectToInspectedPage({ content: {
+      type: "MEIOSIS_TRIGGER_STREAM_VALUE",
+      streamId: streamId,
+      value: value
+    } });
+  };
+
+  tracer = window.meiosisTracer({
+    selector: "#meiosis-tracer",
+    renderModel: renderModel,
+    triggerStreamValue: triggerStreamValue,
+    horizontal: true
+  });
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
 };
 
 chrome.devtools.network.onNavigated.addListener(function() {
   if (tracer) {
-    tracer.reset();//FIXME
+    tracer.reset();
   }
   createTracer();
 });

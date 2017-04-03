@@ -18,7 +18,10 @@ window.addEventListener("message", function(evt) {
   if (evt.source != window) {
     return;
   }
-  if (evt.data.type === "MEIOSIS_VALUES") {
+  if (evt.data.type === "MEIOSIS_VALUES" ||
+      evt.data.type === "MEIOSIS_STREAM_IDS" ||
+      evt.data.type === "MEIOSIS_STREAM_VALUE")
+  {
     sendObjectToDevTools({data: evt.data});
   }
 });
@@ -29,5 +32,9 @@ chrome.runtime.onMessage.addListener(function(message) {
   }
   else if (message.content.type === "MEIOSIS_RENDER_MODEL") {
     window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: message.content.model }, "*");
+  }
+  else if (message.content.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
+    window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE",
+      streamId: message.content.streamId, value: message.content.value }, "*");
   }
 });

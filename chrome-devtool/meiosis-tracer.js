@@ -90,6 +90,7 @@ window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 var meiosisTracer = function meiosisTracer(_ref) {
   var selector = _ref.selector,
       renderModel = _ref.renderModel,
+      triggerStreamValue = _ref.triggerStreamValue,
       horizontal = _ref.horizontal;
 
   var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
@@ -100,8 +101,24 @@ var meiosisTracer = function meiosisTracer(_ref) {
 
   (0, _view.initialView)(selector, _model.tracerModel, renderModel, horizontal);
 
-  var triggerStreamValue = function triggerStreamValue(streamId, value) {
+  triggerStreamValue = triggerStreamValue || function (streamId, value) {
     return window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", streamId: streamId, value: value }, "*");
+  };
+
+  var initStreamIdModel = function initStreamIdModel(streamIds) {
+    streamIds.forEach(function (streamId) {
+      return _model.tracerModel.streams[streamId] = { index: 0, values: [] };
+    });
+    (0, _view.initStreamIds)(streamIds, _model.tracerModel.streams, triggerStreamValue);
+  };
+
+  var receiveStreamValue = function receiveStreamValue(streamId, value) {
+    var streamState = _model.tracerModel.streams[streamId];
+
+    streamState.values.push(value);
+    streamState.index = streamState.values.length - 1;
+
+    (0, _view.updateStreamValue)(streamId, streamState);
   };
 
   window.addEventListener("message", function (evt) {
@@ -109,19 +126,9 @@ var meiosisTracer = function meiosisTracer(_ref) {
       receiveValues(evt.data.values, evt.data.update);
     } else if (evt.data.type === "MEIOSIS_STREAM_IDS") {
       var streamIds = evt.data.streamIds;
-
-      streamIds.forEach(function (streamId) {
-        return _model.tracerModel.streams[streamId] = { index: 0, values: [] };
-      });
-      (0, _view.initStreamIds)(streamIds, _model.tracerModel.streams, triggerStreamValue);
+      initStreamIdModel(streamIds);
     } else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
-      var streamId = evt.data.streamId;
-      var streamState = _model.tracerModel.streams[streamId];
-
-      streamState.values.push(evt.data.value);
-      streamState.index = streamState.values.length - 1;
-
-      (0, _view.updateStreamValue)(streamId, streamState);
+      receiveStreamValue(evt.data.streamId, evt.data.value);
     }
   });
 
@@ -129,6 +136,8 @@ var meiosisTracer = function meiosisTracer(_ref) {
 
   return {
     receiveValues: receiveValues,
+    initStreamIdModel: initStreamIdModel,
+    receiveStreamValue: receiveStreamValue,
     reset: function reset() {
       return (0, _view.reset)(_model.tracerModel);
     }
@@ -258,7 +267,7 @@ var tracerView = function tracerView(values, tracerModel) {
     var streamValueDivsMarkup = "";
 
     for (var i = 1, t = values.length; i < t; i++) {
-      streamValueDivsMarkup += "<div class='dataStream'>" + "<textarea rows='5' cols='40'></textarea>" + "</div>";
+      streamValueDivsMarkup += "<div" + divStyle + " class='dataStream'>" + "<textarea rows='5' cols='40'></textarea>" + "</div>";
     }
     document.getElementById(dataStreamContainerId).innerHTML = streamValueDivsMarkup;
   }
@@ -368,7 +377,7 @@ var initStreamIds = function initStreamIds(streamIds, streamModel, triggerStream
   var streamValueDivsMarkup = "<div>Other streams:</div>";
 
   streamIds.forEach(function (streamId) {
-    return streamValueDivsMarkup += "<div class='otherStream' id='" + streamId + "'>" + "<input type='range' min='0' max='0' value='0' style='width: 100%'/>" + "<div>0</div>" + "<textarea rows='5' cols='40'></textarea>" + "<div><button>Trigger</button></div>" + "</div>";
+    return streamValueDivsMarkup += "<div" + divStyle + " class='otherStream' id='" + streamId + "'>" + "<input type='range' min='0' max='0' value='0' style='width: 100%'/>" + "<div>0</div>" + "<textarea rows='5' cols='40'></textarea>" + "<div><button>Trigger</button></div>" + "</div>";
   });
   document.getElementById(otherStreamContainerId).innerHTML = streamValueDivsMarkup;
 

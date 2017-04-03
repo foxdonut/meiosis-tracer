@@ -4,7 +4,7 @@ import { createReceiveValues } from "./receive";
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
-const meiosisTracer = ({ selector, renderModel, horizontal }) => {
+const meiosisTracer = ({ selector, renderModel, triggerStreamValue, horizontal }) => {
   const receiveValues = createReceiveValues(tracerModel, tracerView);
 
   renderModel = renderModel || ((model, sendValuesBack) =>
@@ -12,8 +12,24 @@ const meiosisTracer = ({ selector, renderModel, horizontal }) => {
 
   initialView(selector, tracerModel, renderModel, horizontal);
 
-  const triggerStreamValue = (streamId, value) =>
-    window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", streamId, value }, "*");
+  triggerStreamValue = triggerStreamValue || ((streamId, value) =>
+    window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", streamId, value }, "*"));
+
+  const initStreamIdModel = (streamIds) => {
+    streamIds.forEach(streamId =>
+      tracerModel.streams[streamId] = { index: 0, values: [] }
+    );
+    initStreamIds(streamIds, tracerModel.streams, triggerStreamValue);
+  };
+
+  const receiveStreamValue = (streamId, value) => {
+    const streamState = tracerModel.streams[streamId];
+
+    streamState.values.push(value);
+    streamState.index = streamState.values.length - 1;
+
+    updateStreamValue(streamId, streamState);
+  };
 
   window.addEventListener("message", evt => {
     if (evt.data.type === "MEIOSIS_VALUES") {
@@ -21,20 +37,10 @@ const meiosisTracer = ({ selector, renderModel, horizontal }) => {
     }
     else if (evt.data.type === "MEIOSIS_STREAM_IDS") {
       const streamIds = evt.data.streamIds;
-
-      streamIds.forEach(streamId =>
-        tracerModel.streams[streamId] = { index: 0, values: [] }
-      );
-      initStreamIds(streamIds, tracerModel.streams, triggerStreamValue);
+      initStreamIdModel(streamIds);
     }
     else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
-      const streamId = evt.data.streamId;
-      const streamState = tracerModel.streams[streamId];
-
-      streamState.values.push(evt.data.value);
-      streamState.index = streamState.values.length - 1;
-
-      updateStreamValue(streamId, streamState);
+      receiveStreamValue(evt.data.streamId, evt.data.value);
     }
   });
 
@@ -42,6 +48,8 @@ const meiosisTracer = ({ selector, renderModel, horizontal }) => {
 
   return {
     receiveValues,
+    initStreamIdModel,
+    receiveStreamValue,
     reset: () => reset(tracerModel)
   };
 };
