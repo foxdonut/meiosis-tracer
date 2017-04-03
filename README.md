@@ -19,8 +19,10 @@ to be rendered, and give it a way to identify it via a selector. For example:
 <div id="tracer" style="position: fixed; top: 0px; right: 0px;"></div>
 ```
 
-Then, create the tracer by passing it the `createComponent` and `renderRoot` functions from your
-`Meiosis` instance, along with the selector for the element where the tracer will be rendered:
+Call the Meiosis `trace` function by passing it the `update` stream and the `dataStreams` that you
+want to trace. Optionally, specify `otherStreams` for other streams to trace, such as an
+`eventStream`.
+Then, create the tracer by passing it the selector for the element where the tracer will be rendered:
 
 ```javascript
 import { trace } from "meiosis";
