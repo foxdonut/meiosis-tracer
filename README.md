@@ -26,6 +26,7 @@ Then, create the tracer by passing it the `createComponent` and `renderRoot` fun
 import { trace } from "meiosis";
 import meiosisTracer from "meiosis-tracer";
 
+const update = ...;
 const model = ...;
 const viewModel = model.map(...);
 const eventStream = ...;
