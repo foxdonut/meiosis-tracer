@@ -45,7 +45,7 @@ You can also download the JavaScript file from the [Meiosis downloads page](http
 
 Meiosis-Tracer is now also available as a Chrome DevTools Extension, so that you can use it without needing to add it to your page.
 
-You can [get it from the Chrome Web Store](https://chrome.google.com/webstore/detail/meiosis-tracer/dkopklbedmgjejahhfkfklpkgdnigjii).
+You can [get it from the Chrome Web Store] (https://chrome.google.com/webstore/detail/meiosis-tracer/lcomllmppaiciocfbeefdeoplnfpnnfl).
 
 Once installed:
 
