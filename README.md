@@ -23,27 +23,20 @@ Then, create the tracer by passing it the `createComponent` and `renderRoot` fun
 `Meiosis` instance, along with the selector for the element where the tracer will be rendered:
 
 ```javascript
-import { createComponent, run } from "meiosis";
-import { renderer } from "meiosis-react";
+import { trace } from "meiosis";
 import meiosisTracer from "meiosis-tracer";
 
-const Main = createComponent({...});
-const renderRoot = run({ renderer: renderer().intoId(document, "app"), rootComponent: Main });
-meiosisTracer(createComponent, renderRoot, "#tracer");
+const model = ...;
+const viewModel = model.map(...);
+const eventStream = ...;
+
+trace({ update, dataStreams: [ model, viewModel ], otherStreams: [ eventStream ]});
+meiosisTracer({ selector: "#tracer" });
 ```
 
 This will render the tracer into the element that has the `tracer` id.
 
-You can also download the JavaScript file from the [Meiosis builds](http://meiosis.js.org/builds) and add it to your page with a plain `<script>` tag. In that case it will be available as the `meiosisTracer` global variable.
-
-The [Meiosis Guide](https://www.gitbook.com/book/foxdonut/meiosis-guide/) contains a
-[section on Meiosis-Tracer](https://foxdonut.gitbooks.io/meiosis-guide/content/tracing_and_debugging.html).
-
-You will also find [TodoMVC](http://todomvc.com) examples in the
-[meiosis-examples repository](https://github.com/foxdonut/meiosis-examples/tree/master/examples/todomvc) which use Meiosis-Tracer.
-
-Finally, the [todo-list example](https://github.com/foxdonut/meiosis-examples/tree/master/examples/todo-list)
-also uses Meiosis-Tracer.
+You can also download the JavaScript file from the [Meiosis downloads page](http://meiosis.js.org/download) and add it to your page with a plain `<script>` tag. In that case it will be available as the `meiosisTracer` global variable.
 
 ## Chrome DevTools Extension
 
