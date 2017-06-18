@@ -7,9 +7,9 @@ var meiosisTracer =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -346,9 +346,8 @@ var onReset = function onReset(tracerModel) {
 };
 
 var reset = function reset(tracerModel) {
-  var snapshot = tracerModel.tracerStates[tracerModel.tracerStates.length - 1];
-  tracerModel.tracerStates.length = 1;
-  tracerModel.tracerStates[0] = snapshot;
+  var snapshot = tracerModel.tracerStates[0];
+  tracerModel.tracerStates.length = 0;
   tracerModel.tracerIndex = 0;
   tracerView(snapshot, tracerModel);
 };

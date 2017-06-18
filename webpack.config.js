@@ -1,4 +1,4 @@
-/*global process*/
+/*global process, __dirname*/
 var isProd = process.env.NODE_ENV === "prod";
 var isDev = process.env.NODE_ENV === "dev";
 var isLib = !(isProd || isDev);

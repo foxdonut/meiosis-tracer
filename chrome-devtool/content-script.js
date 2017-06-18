@@ -18,7 +18,8 @@ window.addEventListener("message", function(evt) {
   if (evt.source != window) {
     return;
   }
-  if (evt.data.type === "MEIOSIS_VALUES" ||
+  if (evt.data.type === "MEIOSIS_PING" ||
+      evt.data.type === "MEIOSIS_VALUES" ||
       evt.data.type === "MEIOSIS_STREAM_IDS" ||
       evt.data.type === "MEIOSIS_STREAM_VALUE")
   {

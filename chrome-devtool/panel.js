@@ -25,7 +25,10 @@ var tracer = null;
 // Listen to messages from the background page
 port.onMessage.addListener(function(evt) {
   var data = JSON.parse(evt).message.data;
-  if (data.type === "MEIOSIS_VALUES") {
+  if (data.type === "MEIOSIS_PING") {
+    sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } });
+  }
+  else if (data.type === "MEIOSIS_VALUES") {
     tracer.receiveValues(data.values, data.update);
   }
   else if (data.type === "MEIOSIS_STREAM_IDS") {

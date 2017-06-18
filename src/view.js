@@ -107,9 +107,8 @@ const onReset = tracerModel => () => {
 };
 
 const reset = (tracerModel) => {
-  const snapshot = tracerModel.tracerStates[tracerModel.tracerStates.length - 1];
-  tracerModel.tracerStates.length = 1;
-  tracerModel.tracerStates[0] = snapshot;
+  const snapshot = tracerModel.tracerStates[0];
+  tracerModel.tracerStates.length = 0;
   tracerModel.tracerIndex = 0;
   tracerView(snapshot, tracerModel);
 };
