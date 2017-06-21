@@ -3,7 +3,7 @@
 
   "name": "Meiosis Tracer",
   "short_name": "Meiosis",
-  "version": "1.0.2",
+  "version": "1.0.3",
 
   "description": "Adds Meiosis Tracer to Chrome DevTools",
   "author": "foxdonut",
