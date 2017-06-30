@@ -1,6 +1,6 @@
 {
   "name": "meiosis-tracer",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "meiosis-tracer",
   "main": "lib/meiosis-tracer.js",
   "scripts": {
