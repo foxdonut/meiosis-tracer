@@ -32,7 +32,8 @@ chrome.runtime.onMessage.addListener(function(message) {
     window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
   }
   else if (message.content.type === "MEIOSIS_RENDER_MODEL") {
-    window.postMessage({ type: "MEIOSIS_RENDER_MODEL", model: message.content.model }, "*");
+    window.postMessage({ type: "MEIOSIS_RENDER_MODEL",
+      model: message.content.model, sendValuesBack: message.content.sendValuesBack }, "*");
   }
   else if (message.content.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
     window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE",
