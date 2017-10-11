@@ -6,6 +6,8 @@ and see the resulting view.
 
 **NEW**: you can now use Meiosis-Tracer as a Chrome DevTools Extension! See `Chrome DevTools Extension` further down the page for details.
 
+**VERSION 1.2.0 RELEASED**: see what's new in this [short screencast on YouTube](https://www.youtube.com/watch?v=2T7faqh3unc)
+
 You can install Meiosis-Tracer with `npm`:
 
 ```
