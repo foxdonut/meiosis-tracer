@@ -5,6 +5,12 @@ import { createReceiveValues } from "./receive";
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
 const meiosisTracer = ({ selector, renderModel, triggerStreamValue, horizontal }) => {
+  const target = document.querySelector(selector);
+
+  if (!target) {
+    return;
+  }
+
   const receiveValues = createReceiveValues(tracerModel, tracerView);
 
   renderModel = renderModel || ((model, sendValuesBack) =>

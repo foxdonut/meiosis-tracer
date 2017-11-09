@@ -128,6 +128,12 @@ var meiosisTracer = function meiosisTracer(_ref) {
       triggerStreamValue = _ref.triggerStreamValue,
       horizontal = _ref.horizontal;
 
+  var target = document.querySelector(selector);
+
+  if (!target) {
+    return;
+  }
+
   var receiveValues = (0, _receive.createReceiveValues)(_model.tracerModel, _view.tracerView);
 
   renderModel = renderModel || function (model, sendValuesBack) {
