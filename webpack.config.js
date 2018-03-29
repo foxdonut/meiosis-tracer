@@ -4,11 +4,10 @@ var isDev = process.env.NODE_ENV === "dev";
 var isLib = !(isProd || isDev);
 var isDevtool = process.env.NODE_ENV === "devtool";
 
-var webpack = require("webpack");
-
 module.exports = isDevtool ? {
   entry: "./src/index.js",
   devtool: "source-map",
+  mode: isDev ? "development" : "production",
   output: {
     path: __dirname + "/chrome-devtool",
     filename: "meiosis-tracer.js",
@@ -27,6 +26,7 @@ module.exports = isDevtool ? {
 } : {
   entry: "./src/index.js",
   devtool: "source-map",
+  mode: isDev ? "development" : "production",
   output: {
     path: __dirname + (isLib ? "/lib" : "/dist"),
     filename: isProd ? "meiosis-tracer.min.js" : "meiosis-tracer.js",
@@ -41,8 +41,5 @@ module.exports = isDevtool ? {
         exclude: /node_modules/
       }
     ]
-  },
-  plugins: isProd ? [
-    new webpack.optimize.UglifyJsPlugin()
-  ] : []
+  }
 };

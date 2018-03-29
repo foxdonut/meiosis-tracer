@@ -1,10 +1,3 @@
-import jsonFormat from "json-format";
-
-const jsonFormatConfig = {
-  type: "space",
-  size: 2
-};
-
 const tracerContainerId = "tracerContainer";
 const dataStreamContainerId = "dataStreamContainer";
 const otherStreamContainerId = "otherStreamContainer";
@@ -26,7 +19,7 @@ const tracerView = (values, tracerModel) => {
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
   const tracerModelEl = document.getElementById(tracerModelId);
-  tracerModelEl.value = jsonFormat(values[0].value, jsonFormatConfig);
+  tracerModelEl.value = JSON.stringify(values[0].value, null, 4);
 
   var streamValueDivs = document.querySelectorAll("div.dataStream");
 
@@ -45,7 +38,7 @@ const tracerView = (values, tracerModel) => {
   var streamTextareas = document.querySelectorAll("div.dataStream textarea");
 
   for (i = 1, t = values.length; i < t; i++) {
-    streamTextareas[i - 1].value = jsonFormat(values[i].value, jsonFormatConfig);
+    streamTextareas[i - 1].value = JSON.stringify(values[i].value, null, 4);
   }
 };
 
@@ -181,7 +174,7 @@ const updateStreamValue = (streamId, streamState) => {
   const input = container.getElementsByTagName("input")[0];
   const div = container.getElementsByTagName("div")[0];
 
-  textarea.value = jsonFormat(streamState.values[streamState.index], jsonFormatConfig);
+  textarea.value = JSON.stringify(streamState.values[streamState.index], null, 4);
   input.setAttribute("max", String(streamState.values.length - 1));
   input.value = String(streamState.index);
   div.innerHTML = String(streamState.index);

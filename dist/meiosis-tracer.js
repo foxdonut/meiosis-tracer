@@ -7,7 +7,7 @@
 		exports["meiosisTracer"] = factory();
 	else
 		root["meiosisTracer"] = factory();
-})(this, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -54,6 +54,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -69,18 +74,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./src/index.js":
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _meiosisTracer = __webpack_require__(1);
+var _meiosisTracer = __webpack_require__(/*! ./meiosis-tracer */ "./src/meiosis-tracer.js");
 
 /*
 1. Live change
@@ -103,7 +114,12 @@ var _meiosisTracer = __webpack_require__(1);
 module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ }),
-/* 1 */
+
+/***/ "./src/meiosis-tracer.js":
+/*!*******************************!*\
+  !*** ./src/meiosis-tracer.js ***!
+  \*******************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -114,11 +130,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.meiosisTracer = undefined;
 
-var _model = __webpack_require__(2);
+var _model = __webpack_require__(/*! ./model */ "./src/model.js");
 
-var _view = __webpack_require__(3);
+var _view = __webpack_require__(/*! ./view */ "./src/view.js");
 
-var _receive = __webpack_require__(5);
+var _receive = __webpack_require__(/*! ./receive */ "./src/receive.js");
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
@@ -188,7 +204,12 @@ var meiosisTracer = function meiosisTracer(_ref) {
 exports.meiosisTracer = meiosisTracer;
 
 /***/ }),
-/* 2 */
+
+/***/ "./src/model.js":
+/*!**********************!*\
+  !*** ./src/model.js ***!
+  \**********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -206,7 +227,12 @@ var tracerModel = {
 exports.tracerModel = tracerModel;
 
 /***/ }),
-/* 3 */
+
+/***/ "./src/receive.js":
+/*!************************!*\
+  !*** ./src/receive.js ***!
+  \************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -215,19 +241,36 @@ exports.tracerModel = tracerModel;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateStreamValue = exports.initStreamIds = exports.reset = exports.tracerView = exports.initialView = undefined;
-
-var _jsonFormat = __webpack_require__(4);
-
-var _jsonFormat2 = _interopRequireDefault(_jsonFormat);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var jsonFormatConfig = {
-  type: "space",
-  size: 2
+var createReceiveValues = function createReceiveValues(tracerModel, view) {
+  return function (values, update) {
+    if (update) {
+      if (tracerModel.tracerStates.length > 0) {
+        tracerModel.tracerStates.length = tracerModel.tracerIndex + 1;
+      }
+      tracerModel.tracerStates.push(values);
+      tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
+    }
+    view(values, tracerModel);
+  };
 };
 
+exports.createReceiveValues = createReceiveValues;
+
+/***/ }),
+
+/***/ "./src/view.js":
+/*!*********************!*\
+  !*** ./src/view.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 var tracerContainerId = "tracerContainer";
 var dataStreamContainerId = "dataStreamContainer";
 var otherStreamContainerId = "otherStreamContainer";
@@ -249,7 +292,7 @@ var tracerView = function tracerView(values, tracerModel) {
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
 
   var tracerModelEl = document.getElementById(tracerModelId);
-  tracerModelEl.value = (0, _jsonFormat2.default)(values[0].value, jsonFormatConfig);
+  tracerModelEl.value = JSON.stringify(values[0].value, null, 4);
 
   var streamValueDivs = document.querySelectorAll("div.dataStream");
 
@@ -265,7 +308,7 @@ var tracerView = function tracerView(values, tracerModel) {
   var streamTextareas = document.querySelectorAll("div.dataStream textarea");
 
   for (i = 1, t = values.length; i < t; i++) {
-    streamTextareas[i - 1].value = (0, _jsonFormat2.default)(values[i].value, jsonFormatConfig);
+    streamTextareas[i - 1].value = JSON.stringify(values[i].value, null, 4);
   }
 };
 
@@ -388,7 +431,7 @@ var updateStreamValue = function updateStreamValue(streamId, streamState) {
   var input = container.getElementsByTagName("input")[0];
   var div = container.getElementsByTagName("div")[0];
 
-  textarea.value = (0, _jsonFormat2.default)(streamState.values[streamState.index], jsonFormatConfig);
+  textarea.value = JSON.stringify(streamState.values[streamState.index], null, 4);
   input.setAttribute("max", String(streamState.values.length - 1));
   input.value = String(streamState.index);
   div.innerHTML = String(streamState.index);
@@ -400,116 +443,8 @@ exports.reset = reset;
 exports.initStreamIds = initStreamIds;
 exports.updateStreamValue = updateStreamValue;
 
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-/*
-  change for npm modules.
-  by Luiz Estácio.
-
-  json-format v.1.1
-  http://github.com/phoboslab/json-format
-
-  Released under MIT license:
-  http://www.opensource.org/licenses/mit-license.php
-*/
-var p = [],
-  indentConfig = {
-    tab: { char: '\t', size: 1 },
-    space: { char: ' ', size: 4 }
-  },
-  configDefault = {
-    type: 'tab'
-  },
-  push = function( m ) { return '\\' + p.push( m ) + '\\'; },
-  pop = function( m, i ) { return p[i-1] },
-  tabs = function( count, indentType) { return new Array( count + 1 ).join( indentType ); };
-
-function JSONFormat ( json, indentType ) {
-  p = [];
-  var out = "",
-      indent = 0;
-
-  // Extract backslashes and strings
-  json = json
-    .replace( /\\./g, push )
-    .replace( /(".*?"|'.*?')/g, push )
-    .replace( /\s+/, '' );    
-
-  // Indent and insert newlines
-  for( var i = 0; i < json.length; i++ ) {
-    var c = json.charAt(i);
-
-    switch(c) {
-      case '{':
-      case '[':
-        out += c + "\n" + tabs(++indent, indentType);
-        break;
-      case '}':
-      case ']':
-        out += "\n" + tabs(--indent, indentType) + c;
-        break;
-      case ',':
-        out += ",\n" + tabs(indent, indentType);
-        break;
-      case ':':
-        out += ": ";
-        break;
-      default:
-        out += c;
-        break;      
-    }         
-  }
-
-  // Strip whitespace from numeric arrays and put backslashes 
-  // and strings back in
-  out = out
-    .replace( /\[[\d,\s]+?\]/g, function(m){ return m.replace(/\s/g,''); } )
-    .replace( /\\(\d+)\\/g, pop ) // strings
-    .replace( /\\(\d+)\\/g, pop ); // backslashes in strings
-
-  return out;
-};
-
-module.exports = function(json, config){
-  config = config || configDefault;
-  var indent = indentConfig[config.type];
-
-  if ( indent == null ) {
-    throw new Error('Unrecognized indent type: "' + config.type + '"');
-  }
-  var indentType = new Array((config.size || indent.size) + 1).join(indent.char);
-  return JSONFormat(JSON.stringify(json), indentType);
-}
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var createReceiveValues = function createReceiveValues(tracerModel, view) {
-  return function (values, update) {
-    if (update) {
-      if (tracerModel.tracerStates.length > 0) {
-        tracerModel.tracerStates.length = tracerModel.tracerIndex + 1;
-      }
-      tracerModel.tracerStates.push(values);
-      tracerModel.tracerIndex = tracerModel.tracerStates.length - 1;
-    }
-    view(values, tracerModel);
-  };
-};
-
-exports.createReceiveValues = createReceiveValues;
-
 /***/ })
-/******/ ]);
+
+/******/ });
 });
 //# sourceMappingURL=meiosis-tracer.js.map
