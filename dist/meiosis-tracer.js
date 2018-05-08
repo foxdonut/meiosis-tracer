@@ -278,6 +278,8 @@ var tracerId = "tracerSlider";
 var tracerToggleId = "tracerToggle";
 var tracerResetId = "tracerReset";
 var tracerIndexId = "tracerIndex";
+var tracerStepBackId = "tracerStepBack";
+var tracerStepForwardId = "tracerStepForward";
 var tracerModelId = "tracerModel";
 var errorMessageId = "errorMessage";
 var errorMessage = null;
@@ -287,6 +289,8 @@ var tracerView = function tracerView(values, tracerModel) {
   var tracer = document.getElementById(tracerId);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
   tracer.value = String(tracerModel.tracerIndex);
+  document.getElementById(tracerStepBackId).disabled = tracerModel.tracerIndex === 0;
+  document.getElementById(tracerStepForwardId).disabled = tracerModel.tracerIndex === tracerModel.tracerStates.length - 1;
 
   var tracerIndex = document.getElementById(tracerIndexId);
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
@@ -391,7 +395,7 @@ var initialView = function initialView(selector, tracerModel, renderModel, horiz
   if (target) {
     divStyle = horizontal ? " style='float: left'" : "";
 
-    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<div>Data streams:</div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" + "<div" + divStyle + ">" + "<div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" + "</div>" + "<span id='" + dataStreamContainerId + "'></span>" + "<span id='" + otherStreamContainerId + "'></span>" + "</div>";
+    var viewHtml = "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" + "<div id='" + tracerContainerId + "'>" + "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" + "<div>Data streams:</div>" + "<input id='" + tracerId + "' type='range' min='0' max='" + String(tracerModel.tracerStates.length - 1) + "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" + "<button id='" + tracerStepBackId + "'>&lt;</button> <button id='" + tracerStepForwardId + "'>&gt;</button> " + "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" + "<div" + divStyle + ">" + "<div>Model: (you can type into this box)</div>" + "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" + "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" + "</div>" + "<span id='" + dataStreamContainerId + "'></span>" + "<span id='" + otherStreamContainerId + "'></span>" + "</div>";
 
     target.innerHTML = viewHtml;
 
@@ -402,6 +406,12 @@ var initialView = function initialView(selector, tracerModel, renderModel, horiz
     document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));
     document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
     document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
+    document.getElementById(tracerStepBackId).addEventListener("click", function () {
+      onSliderChange(renderModel, tracerModel)({ target: { value: Math.max(0, tracerModel.tracerIndex - 1) } });
+    });
+    document.getElementById(tracerStepForwardId).addEventListener("click", function () {
+      onSliderChange(renderModel, tracerModel)({ target: { value: Math.min(tracerModel.tracerStates.length - 1, tracerModel.tracerIndex + 1) } });
+    });
   }
 };
 

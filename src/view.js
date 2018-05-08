@@ -5,6 +5,8 @@ const tracerId = "tracerSlider";
 const tracerToggleId = "tracerToggle";
 const tracerResetId = "tracerReset";
 const tracerIndexId = "tracerIndex";
+const tracerStepBackId = "tracerStepBack";
+const tracerStepForwardId = "tracerStepForward";
 const tracerModelId = "tracerModel";
 const errorMessageId = "errorMessage";
 let errorMessage = null;
@@ -14,6 +16,9 @@ const tracerView = (values, tracerModel) => {
   const tracer = document.getElementById(tracerId);
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1));
   tracer.value = String(tracerModel.tracerIndex);
+  document.getElementById(tracerStepBackId).disabled = (tracerModel.tracerIndex === 0);
+  document.getElementById(tracerStepForwardId).disabled =
+    (tracerModel.tracerIndex === (tracerModel.tracerStates.length - 1));
 
   const tracerIndex = document.getElementById(tracerIndexId);
   tracerIndex.innerHTML = String(tracerModel.tracerIndex);
@@ -120,7 +125,8 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
         "<input id='" + tracerId + "' type='range' min='0' max='" +
           String(tracerModel.tracerStates.length - 1) +
           "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
-        "<div id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</div>" +
+        "<button id='" + tracerStepBackId + "'>&lt;</button> <button id='" + tracerStepForwardId + "'>&gt;</button> " +
+        "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" +
         "<div" + divStyle + ">" +
           "<div>Model: (you can type into this box)</div>" +
           "<textarea id='" + tracerModelId + "' rows='5' cols='40'></textarea>" +
@@ -139,6 +145,15 @@ const initialView = (selector, tracerModel, renderModel, horizontal) => {
     document.getElementById(tracerModelId).addEventListener("keyup", onModelChange(renderModel));
     document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer));
     document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel));
+    document.getElementById(tracerStepBackId).addEventListener("click", function() {
+      onSliderChange(renderModel, tracerModel)(
+        { target: { value: Math.max(0, tracerModel.tracerIndex - 1) }});
+    });
+    document.getElementById(tracerStepForwardId).addEventListener("click", function() {
+      onSliderChange(renderModel, tracerModel)(
+        { target: { value: Math.min(tracerModel.tracerStates.length - 1, tracerModel.tracerIndex + 1) }});
+    });
+
   }
 };
 
