@@ -1,5 +1,8 @@
 *.tgz
 .babelrc
 .eslintrc.js
+.vscode
+chrome-devtool
+meiosis-tracer.zip
 src
 webpack.config.js
