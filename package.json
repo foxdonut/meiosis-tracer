@@ -6,7 +6,9 @@
   "unpkg": "dist/meiosis-tracer.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack && NODE_ENV=devtool webpack"
+    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack && NODE_ENV=devtool webpack",
+    "test": "tead",
+    "test-watch": "tead --watch"
   },
   "repository": {
     "type": "git",
@@ -29,7 +31,9 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
+    "browser-env": "^3.2.5",
     "eslint": "^5.2.0",
+    "tead": "0.4.3",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0"
   }

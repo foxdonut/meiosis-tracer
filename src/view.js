@@ -1,16 +1,5 @@
-const tracerContainerId = "tracerContainer"
-const dataStreamContainerId = "dataStreamContainer"
-const otherStreamContainerId = "otherStreamContainer"
-const tracerId = "tracerSlider"
-const tracerToggleId = "tracerToggle"
-const tracerResetId = "tracerReset"
-const tracerIndexId = "tracerIndex"
-const tracerStepBackId = "tracerStepBack"
-const tracerStepForwardId = "tracerStepForward"
-const tracerAccumulHistoryId = "tracerAccumulHistory"
-const tracerRefreshViewId = "tracerRefreshView"
-const tracerModelId = "tracerModel"
-const errorMessageId = "errorMessage"
+import * as C from "./constants"
+
 let errorMessage = null
 let divStyle = null
 let rows = 0
@@ -26,17 +15,17 @@ const createTracerView = setter => {
 }
 
 const tracerView = (values, tracerModel) => {
-  const tracer = document.getElementById(tracerId)
+  const tracer = document.getElementById(C.tracerId)
   tracer.setAttribute("max", String(tracerModel.tracerStates.length - 1))
   tracer.value = String(tracerModel.tracerIndex)
-  document.getElementById(tracerStepBackId).disabled = (tracerModel.tracerIndex === 0)
-  document.getElementById(tracerStepForwardId).disabled =
+  document.getElementById(C.tracerStepBackId).disabled = (tracerModel.tracerIndex === 0)
+  document.getElementById(C.tracerStepForwardId).disabled =
     (tracerModel.tracerIndex === (tracerModel.tracerStates.length - 1))
 
-  const tracerIndex = document.getElementById(tracerIndexId)
+  const tracerIndex = document.getElementById(C.tracerIndexId)
   tracerIndex.innerHTML = String(tracerModel.tracerIndex)
 
-  const tracerModelEl = document.getElementById(tracerModelId)
+  const tracerModelEl = document.getElementById(C.tracerModelId)
   tracerModelEl.value = stringify(values[0].value)
 
   var streamValueDivs = document.querySelectorAll("div.dataStream")
@@ -50,7 +39,7 @@ const tracerView = (values, tracerModel) => {
           "<textarea rows='" + rows + "' cols='" + cols + "'></textarea>" +
         "</div>"
     }
-    document.getElementById(dataStreamContainerId).innerHTML = streamValueDivsMarkup
+    document.getElementById(C.dataStreamContainerId).innerHTML = streamValueDivsMarkup
   }
 
   var streamTextareas = document.querySelectorAll("div.dataStream textarea")
@@ -62,7 +51,7 @@ const tracerView = (values, tracerModel) => {
 
 const onRefresh = renderModel => {
   try {
-    const value = document.getElementById(tracerModelId).value
+    const value = document.getElementById(C.tracerModelId).value
     const model = parse(value)
     renderModel(model, true)
     errorMessage.style.display = "none"
@@ -136,48 +125,48 @@ const initialView = (selector, tracerModel, renderModel, horizontal, irows=5, ic
     divStyle = horizontal ? " style='float: left'" : ""
 
     const viewHtml =
-      "<div style='text-align: right'><button id='" + tracerToggleId + "'>Hide</button></div>" +
-      "<div id='" + tracerContainerId + "'>" +
-        "<div style='text-align: right'><button id='" + tracerResetId + "'>Reset</button></div>" +
+      "<div style='text-align: right'><button id='" + C.tracerToggleId + "'>Hide</button></div>" +
+      "<div id='" + C.tracerContainerId + "'>" +
+        "<div style='text-align: right'><button id='" + C.tracerResetId + "'>Reset</button></div>" +
         "<div>Data streams:</div>" +
-        "<input id='" + tracerId + "' type='range' min='0' max='" +
+        "<input id='" + C.tracerId + "' type='range' min='0' max='" +
           String(tracerModel.tracerStates.length - 1) +
           "' value='" + String(tracerModel.tracerIndex) + "' style='width: 100%'/>" +
-        "<button id='" + tracerStepBackId + "'>&lt</button> <button id='" + tracerStepForwardId + "'>&gt</button> " +
-        "<span id='" + tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" +
-        "<label><input style='margin-left: 16px' type='checkbox' id='" + tracerAccumulHistoryId + "' checked/>Accumulate history</label>" +
+        "<button id='" + C.tracerStepBackId + "'>&lt</button> <button id='" + C.tracerStepForwardId + "'>&gt</button> " +
+        "<span id='" + C.tracerIndexId + "'>" + String(tracerModel.tracerIndex) + "</span>" +
+        "<label><input style='margin-left: 16px' type='checkbox' id='" + C.tracerAccumulHistoryId + "' checked/>Accumulate history</label>" +
         "<div" + divStyle + ">" +
           "<div>" +
             "<span>Model: (type into this box) </span>" +
-            "<button style='margin-bottom: 4px' id='" + tracerRefreshViewId + "'>Refresh view</button>" +
+            "<button style='margin-bottom: 4px' id='" + C.tracerRefreshViewId + "'>Refresh view</button>" +
           "</div>" +
-          "<textarea id='" + tracerModelId + "' rows='" + rows + "' cols='" + cols + "'></textarea>" +
-          "<div id='" + errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" +
+          "<textarea id='" + C.tracerModelId + "' rows='" + rows + "' cols='" + cols + "'></textarea>" +
+          "<div id='" + C.errorMessageId + "' style='display: none'><span style='color:red'>Invalid JSON</span></div>" +
         "</div>" +
-        "<span id='" + dataStreamContainerId + "'></span>" +
-        "<span id='" + otherStreamContainerId + "'></span>" +
+        "<span id='" + C.dataStreamContainerId + "'></span>" +
+        "<span id='" + C.otherStreamContainerId + "'></span>" +
       "</div>"
 
     target.innerHTML = viewHtml
 
-    const tracerContainer = document.getElementById(tracerContainerId)
-    errorMessage = document.getElementById(errorMessageId)
+    const tracerContainer = document.getElementById(C.tracerContainerId)
+    errorMessage = document.getElementById(C.errorMessageId)
 
-    document.getElementById(tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel))
-    document.getElementById(tracerToggleId).addEventListener("click", onToggle(tracerContainer))
-    document.getElementById(tracerResetId).addEventListener("click", onReset(tracerModel))
-    document.getElementById(tracerStepBackId).addEventListener("click", function() {
+    document.getElementById(C.tracerId).addEventListener("input", onSliderChange(renderModel, tracerModel))
+    document.getElementById(C.tracerToggleId).addEventListener("click", onToggle(tracerContainer))
+    document.getElementById(C.tracerResetId).addEventListener("click", onReset(tracerModel))
+    document.getElementById(C.tracerStepBackId).addEventListener("click", function() {
       onSliderChange(renderModel, tracerModel)(
         { target: { value: Math.max(0, tracerModel.tracerIndex - 1) }})
     })
-    document.getElementById(tracerStepForwardId).addEventListener("click", function() {
+    document.getElementById(C.tracerStepForwardId).addEventListener("click", function() {
       onSliderChange(renderModel, tracerModel)(
         { target: { value: Math.min(tracerModel.tracerStates.length - 1, tracerModel.tracerIndex + 1) }})
     })
-    document.getElementById(tracerRefreshViewId).addEventListener("click", function() {
+    document.getElementById(C.tracerRefreshViewId).addEventListener("click", function() {
       onRefresh(renderModel)
     })
-    document.getElementById(tracerAccumulHistoryId).addEventListener("change", function() {
+    document.getElementById(C.tracerAccumulHistoryId).addEventListener("change", function() {
       accumulateHistory = !accumulateHistory
       setAccumulateHistory(accumulateHistory)
     })
@@ -196,7 +185,7 @@ const initStreamIds = (streamIds, streamModel, triggerStreamValue, rows=5, cols=
         "<div><button>Trigger</button></div>" +
       "</div>"
   )
-  document.getElementById(otherStreamContainerId).innerHTML = streamValueDivsMarkup
+  document.getElementById(C.otherStreamContainerId).innerHTML = streamValueDivsMarkup
 
   streamIds.forEach(streamId => {
     const container = document.getElementById(streamId)
