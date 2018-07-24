@@ -1,4 +1,4 @@
-import { meiosisTracer } from "./meiosis-tracer";
+import { meiosisTracer } from "./meiosis-tracer"
 
 /*
 1. Live change
@@ -18,4 +18,4 @@ import { meiosisTracer } from "./meiosis-tracer";
 - re-render the tracer view with update=false.
 */
 
-module.exports = meiosisTracer;
+module.exports = meiosisTracer
