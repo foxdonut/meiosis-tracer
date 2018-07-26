@@ -15,5 +15,4 @@ export const setup = () => {
 }
 
 export const getElement = id => document.getElementById(id)
-export const getText = id => getElement(id).textContent
 

@@ -1,4 +1,10 @@
 /*global chrome*/
+
+// Script for the inspected page.
+// Sets the tracer indicator to true.
+// Listens for incoming messages and sends them to the dev tool.
+// Listens for outgoing messages and sends them to the inspected page.
+
 var initializeHook = function(window) {
   window.__MEIOSIS_TRACER_GLOBAL_HOOK__ = true
 }

@@ -1,13 +1,10 @@
-export const tracerContainerId = "tracerContainer"
-export const dataStreamContainerId = "dataStreamContainer"
-export const otherStreamContainerId = "otherStreamContainer"
-export const tracerId = "tracerSlider"
-export const tracerToggleId = "tracerToggle"
-export const tracerResetId = "tracerReset"
-export const tracerIndexId = "tracerIndex"
-export const tracerStepBackId = "tracerStepBack"
-export const tracerStepForwardId = "tracerStepForward"
-export const tracerAccumulHistoryId = "tracerAccumulHistory"
-export const tracerRefreshViewId = "tracerRefreshView"
-export const tracerModelId = "tracerModel"
-export const errorMessageId = "errorMessage"
+export const rowsId = "tracerRows"
+export const colsId = "tracerCols"
+
+export const streamId = index => "tracerStreamContainer_ " + index
+export const modelId = index => "tracerModel_" + index
+export const sliderId = index => "tracerSlider_" + index
+export const stepBackId = index => "tracerStepBack_" + index
+export const stepForwardId = index => "tracerStepForward_" + index
+export const sliderValueId = index => "tracerSliderValue_" + index
+export const sendId = index => "tracerSend_" + index

@@ -1,8 +1,9 @@
 /*global chrome*/
 
-// This creates and maintains the communication channel between the inspectedPage and the dev tools panel.
+// Creates and maintains the communication channel between the inspectedPage and the dev tools panel.
+// Also creates the Tracer.
 //
-// In this example, messages are JSON objects
+// Messages are JSON objects
 // {
 //   action: ["code"|"script"|"message"], // What action to perform on the inspected page
 //   content: [String|Path to script|Object], // data to be passed through
@@ -15,7 +16,7 @@ var sendObjectToInspectedPage = function(message) {
   chrome.extension.sendMessage(message)
 }
 
-//Create a port with background page for continous message communication
+// Create a port with background page for continous message communication
 var port = chrome.extension.connect({
   name: "Meiosis-Tracer Channel"
 })
@@ -39,6 +40,7 @@ port.onMessage.addListener(function(evt) {
   }
 })
 
+// Create the Tracer
 var createTracer = function() {
   var renderModel = function(model, sendValuesBack) {
     sendObjectToInspectedPage({ content: {
@@ -61,13 +63,18 @@ var createTracer = function() {
     triggerStreamValue: triggerStreamValue,
     horizontal: true
   })
+
+  // Send initialization message
   sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
 }
 
+// Called when navigating to tab.
 chrome.devtools.network.onNavigated.addListener(function() {
   if (tracer) {
     tracer.reset()
   }
   createTracer()
 })
+
+// Initially create the tracer.
 createTracer()

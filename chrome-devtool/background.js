@@ -1,5 +1,7 @@
 /*global chrome*/
 
+// Manages and relays messages between the panel and the inspected page.
+
 chrome.extension.onConnect.addListener(function(port) {
   var extensionListener = function(message, sender, sendResponse) {
     if (message.tabId && message.content) {
