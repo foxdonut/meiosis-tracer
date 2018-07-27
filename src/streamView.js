@@ -12,9 +12,7 @@ export const streamView = ({ element, index, listeners, label = "", rows = 5, co
         "<button id='" + C.stepBackId(index) + "'>&lt</button> " +
         "<button id='" + C.stepForwardId(index) + "'>&gt</button> " +
         "<span id='" + C.sliderValueId(index) + "'>-1</span> " +
-        "<button id='" + C.sendId(index) + "' style='position:absolute;right:8px'>"
-          + "Send" +
-        "</button>" +
+        "<button id='" + C.sendId(index) + "'>Send</button>" +
       "</div>" +
     "</div>"
 

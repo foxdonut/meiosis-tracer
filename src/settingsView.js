@@ -3,10 +3,27 @@ import * as C from "./constants"
 export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
   element.innerHTML =
     "<div>" +
-      "<span>Rows: </span>" +
-      "<input id='" + C.rowsId + "' type='text' size='2' value='" + rows + "'/>" +
-      "<span> Cols: </span> " +
-      "<input id='" + C.colsId + "' type='text' size='2' value='" + cols + "'/>" +
+      "<label title='Align vertically'>" +
+        "<input type='radio' name='orient' value='column' checked />" +
+        "Ver " +
+      "</label>" +
+      "<label title='Align horizontally'>" +
+        "<input type='radio' name='orient' value='row' />" +
+        "Hor " +
+      "</label>" +
+      "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" +
+        " value='" + rows + "'/>" +
+      "<span> &times; </span> " +
+      "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" +
+        " value='" + cols + "'/>" +
+      "<label title='Toggle auto-send'>" +
+        "<input id='" + C.autoId + "' type='checkbox' />" +
+        " Auto " +
+      "</label>" +
+      "<label title='Toggle accumulate history'>" +
+        "<input id='" + C.histId + "' type='checkbox' checked />" +
+        " Hist " +
+      "</label>" +
     "</div>"
 
   document.getElementById(C.rowsId).addEventListener("input", evt => {
@@ -16,4 +33,11 @@ export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
   document.getElementById(C.colsId).addEventListener("input", evt => {
     listeners.onRowsColsChange(parseInt(document.getElementById(C.rowsId).value, 10), parseInt(evt.target.value, 10))
   })
+
+  const radios = document.querySelectorAll("input[name='orient']")
+  for (let i = 0, t = radios.length; i < t; i++) {
+    radios[i].addEventListener("change", evt => {
+      listeners.onOrientChange(evt.target.value)
+    })
+  }
 }

@@ -1,7 +1,7 @@
 /*global chrome*/
 
-// Creates and maintains the communication channel between the inspectedPage and the dev tools panel.
-// Also creates the Tracer.
+// Creates and maintains the communication channel from the devtools panel to the background script.
+// The panel is the page in the devtools tab, containing the Tracer.
 //
 // Messages are JSON objects
 // {
@@ -23,49 +23,39 @@ var port = chrome.extension.connect({
 
 var tracer = null
 
-// Listen to messages from the background page
+// Listen to messages from the inspected page, relayed by the background code
 port.onMessage.addListener(function(evt) {
   var data = JSON.parse(evt).message.data
   if (data.type === "MEIOSIS_PING") {
     sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
   }
-  else if (data.type === "MEIOSIS_VALUES") {
-    tracer.receiveValues(data.values, data.update)
-  }
-  else if (data.type === "MEIOSIS_STREAM_IDS") {
-    tracer.initStreamIdModel(data.streamIds)
+  else if (data.type === "MEIOSIS_STREAM_LABELS") {
+    tracer.receiveLabels(data.value)
   }
   else if (data.type === "MEIOSIS_STREAM_VALUE") {
-    tracer.receiveStreamValue(data.streamId, data.value)
+    tracer.receiveStreamValue(data.index, data.value)
   }
 })
 
 // Create the Tracer
 var createTracer = function() {
-  var renderModel = function(model, sendValuesBack) {
-    sendObjectToInspectedPage({ content: {
-      type: "MEIOSIS_RENDER_MODEL",
-      model: model,
-      sendValuesBack: sendValuesBack
-    } })
+  var sendTracerInit = function() {
+    sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
   }
-  var triggerStreamValue = function(streamId, value) {
+
+  var triggerStreamValue = function(index, value) {
     sendObjectToInspectedPage({ content: {
       type: "MEIOSIS_TRIGGER_STREAM_VALUE",
-      streamId: streamId,
+      index: index,
       value: value
     } })
   }
 
   tracer = window.meiosisTracer({
     selector: "#meiosis-tracer",
-    renderModel: renderModel,
-    triggerStreamValue: triggerStreamValue,
-    horizontal: true
+    sendTracerInit: sendTracerInit,
+    triggerStreamValue: triggerStreamValue
   })
-
-  // Send initialization message
-  sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
 }
 
 // Called when navigating to tab.

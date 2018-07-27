@@ -34,7 +34,6 @@ export const trace = ({
   }
   const bufferedStreamValues = []
   let devtoolInitialized = false
-  let lastIndex = -1
 
   const streamObjs = []
   const labels = []
@@ -53,15 +52,13 @@ export const trace = ({
 
   streamObjs.forEach(({ stream }, index) => {
     stream.map(value => {
-      if (lastIndex !== index) {
-        const data = { type: "MEIOSIS_STREAM_VALUE", index, value: stringify(value) }
+      const data = { type: "MEIOSIS_STREAM_VALUE", index, value: stringify(value) }
 
-        if (devtoolInitialized) {
-          window.postMessage(data, "*")
-        }
-        else {
-          bufferedStreamValues.push(data)
-        }
+      if (devtoolInitialized) {
+        window.postMessage(data, "*")
+      }
+      else {
+        bufferedStreamValues.push(data)
       }
     })
   })
@@ -75,9 +72,7 @@ export const trace = ({
     }
     else if (evt.data.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
       const { index, value } = evt.data
-      lastIndex = index
       streamObjs[index].stream(parse(value))
-      lastIndex = -1
     }
   })
 

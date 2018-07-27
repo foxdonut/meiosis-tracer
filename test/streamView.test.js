@@ -35,7 +35,7 @@ triggerEvent(getElement(C.sendId(index)), "click")
 export default {
   streamView: {
     basic: {
-      streamContainer: [
+      streamBox: [
         getElement(C.streamId(index)).id,
         C.streamId(index)
       ],

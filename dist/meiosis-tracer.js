@@ -111,9 +111,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 var rowsId = exports.rowsId = "tracerRows";
 var colsId = exports.colsId = "tracerCols";
+var streamContainerId = exports.streamContainerId = "tracerStreamContainer";
+var autoId = exports.autoId = "traceAutoSend";
+var histId = exports.histId = "tracerAccumulateHistory";
 
 var streamId = exports.streamId = function streamId(index) {
-  return "tracerStreamContainer_ " + index;
+  return "tracerStreamBox_ " + index;
 };
 var modelId = exports.modelId = function modelId(index) {
   return "tracerModel_" + index;
@@ -148,24 +151,6 @@ var sendId = exports.sendId = function sendId(index) {
 
 var _meiosisTracer = __webpack_require__(/*! ./meiosis-tracer */ "./src/meiosis-tracer.js");
 
-/*
-1. Live change
-- receive values from meiosis with update=true. This will add to the tracer's history
-  and increase the slider max.
-- re-render the tracer view with update=true.
-
-2. Time-travel change
-- send MEIOSIS_RENDER_MODEL with sendValuesBack=false
-- we already have the values in the snapshot, so don't need anything back
-- re-render the tracer view with update=false.
-
-3. Typing in model textarea
-- send MEIOSIS_RENDER_MODEL with sendValuesBack=true. The tracer needs to get
-  the computed values from the other streams.
-- receive values from meiosis with update=false so this will not add to the tracer's history.
-- re-render the tracer view with update=false.
-*/
-
 module.exports = _meiosisTracer.meiosisTracer;
 
 /***/ }),
@@ -190,8 +175,12 @@ var _trace = __webpack_require__(/*! ./trace */ "./src/trace.js");
 var _tracer = __webpack_require__(/*! ./tracer */ "./src/tracer.js");
 
 var meiosisTracer = exports.meiosisTracer = function meiosisTracer(params) {
-  (0, _trace.trace)(params);
-  (0, _tracer.tracer)(params);
+  if (params.streams != null) {
+    (0, _trace.trace)(params);
+  }
+  if (params.selector != null) {
+    return (0, _tracer.tracer)(params);
+  }
 };
 
 /***/ }),
@@ -225,7 +214,7 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       _ref$cols = _ref.cols,
       cols = _ref$cols === undefined ? 40 : _ref$cols;
 
-  element.innerHTML = "<div>" + "<span>Rows: </span>" + "<input id='" + C.rowsId + "' type='text' size='2' value='" + rows + "'/>" + "<span> Cols: </span> " + "<input id='" + C.colsId + "' type='text' size='2' value='" + cols + "'/>" + "</div>";
+  element.innerHTML = "<div>" + "<label title='Align vertically'>" + "<input type='radio' name='orient' value='column' checked />" + "Ver " + "</label>" + "<label title='Align horizontally'>" + "<input type='radio' name='orient' value='row' />" + "Hor " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
 
   document.getElementById(C.rowsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10));
@@ -234,6 +223,13 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
   document.getElementById(C.colsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(document.getElementById(C.rowsId).value, 10), parseInt(evt.target.value, 10));
   });
+
+  var radios = document.querySelectorAll("input[name='orient']");
+  for (var i = 0, t = radios.length; i < t; i++) {
+    radios[i].addEventListener("change", function (evt) {
+      listeners.onOrientChange(evt.target.value);
+    });
+  }
 };
 
 /***/ }),
@@ -270,7 +266,7 @@ var streamView = exports.streamView = function streamView(_ref) {
       _ref$cols = _ref.cols,
       cols = _ref$cols === undefined ? 40 : _ref$cols;
 
-  element.innerHTML = "<div id='" + C.streamId(index) + "' style='padding:8px;border:1px solid gray'>" + "<div>" + label + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "' style='position:absolute;right:8px'>" + "Send" + "</button>" + "</div>" + "</div>";
+  element.innerHTML = "<div id='" + C.streamId(index) + "' style='padding:8px;border:1px solid gray'>" + "<div>" + label + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>";
 
   document.getElementById(C.sliderId(index)).addEventListener("input", function (evt) {
     listeners.onSliderChange(parseInt(evt.target.value, 10));
@@ -353,7 +349,6 @@ var trace = exports.trace = function trace(_ref) {
   }
   var bufferedStreamValues = [];
   var devtoolInitialized = false;
-  var lastIndex = -1;
 
   var streamObjs = [];
   var labels = [];
@@ -373,14 +368,12 @@ var trace = exports.trace = function trace(_ref) {
     var stream = _ref2.stream;
 
     stream.map(function (value) {
-      if (lastIndex !== index) {
-        var data = { type: "MEIOSIS_STREAM_VALUE", index: index, value: stringify(value) };
+      var data = { type: "MEIOSIS_STREAM_VALUE", index: index, value: stringify(value) };
 
-        if (devtoolInitialized) {
-          window.postMessage(data, "*");
-        } else {
-          bufferedStreamValues.push(data);
-        }
+      if (devtoolInitialized) {
+        window.postMessage(data, "*");
+      } else {
+        bufferedStreamValues.push(data);
       }
     });
   });
@@ -398,9 +391,7 @@ var trace = exports.trace = function trace(_ref) {
           index = _evt$data.index,
           value = _evt$data.value;
 
-      lastIndex = index;
       streamObjs[index].stream(parse(value));
-      lastIndex = -1;
     }
   });
 
@@ -440,8 +431,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
 
 var tracer = exports.tracer = function tracer(_ref) {
-  var _ref$selector = _ref.selector,
-      selector = _ref$selector === undefined ? "#tracer" : _ref$selector,
+  var selector = _ref.selector,
+      sendTracerInit = _ref.sendTracerInit,
+      triggerStreamValue = _ref.triggerStreamValue,
       _ref$rows = _ref.rows,
       rows = _ref$rows === undefined ? 5 : _ref$rows,
       _ref$cols = _ref.cols,
@@ -455,82 +447,114 @@ var tracer = exports.tracer = function tracer(_ref) {
 
   var states = [];
 
-  window.addEventListener("message", function (evt) {
-    if (evt.data.type === "MEIOSIS_STREAM_LABELS") {
-      var labels = evt.data.value;
+  if (sendTracerInit == null) {
+    sendTracerInit = function sendTracerInit() {
+      window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
+    };
+  }
 
-      var settingsListeners = {
-        onRowsColsChange: function onRowsColsChange(rows, cols) {
-          for (var i = 0; i < labels.length; i++) {
-            var textarea = document.getElementById(C.modelId(i));
-            textarea.rows = rows;
-            textarea.cols = cols;
-          }
+  if (triggerStreamValue == null) {
+    triggerStreamValue = function triggerStreamValue(index, value) {
+      window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", index: index, value: value }, "*");
+    };
+  }
+
+  var receiveLabels = function receiveLabels(labels) {
+    var settingsListeners = {
+      onRowsColsChange: function onRowsColsChange(rows, cols) {
+        for (var i = 0; i < labels.length; i++) {
+          var textarea = document.getElementById(C.modelId(i));
+          textarea.rows = rows;
+          textarea.cols = cols;
+        }
+      },
+      onOrientChange: function onOrientChange(orient) {
+        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + orient;
+      }
+    };
+    var settings = document.createElement("div");
+    target.append(settings);
+    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, rows: rows, cols: cols });
+
+    var container = document.createElement("div");
+    container.id = C.streamContainerId;
+    container.style = "display:flex;flex-direction:column";
+    target.append(container);
+
+    var _loop = function _loop(index) {
+      states.push({ history: [], value: -1 });
+
+      var listeners = {
+        onSliderChange: function onSliderChange(value) {
+          var state = states[index];
+          var model = state.history[value];
+          state.value = value;
+
+          (0, _updateView.updateView)({ index: index, model: model, value: value });
+        },
+        onStepBack: function onStepBack() {
+          var state = states[index];
+          state.value = state.value - 1;
+          var model = state.history[state.value];
+
+          (0, _updateView.updateView)({ index: index, model: model, value: state.value });
+        },
+        onStepForward: function onStepForward() {
+          var state = states[index];
+          state.value = state.value + 1;
+          var model = state.history[state.value];
+
+          (0, _updateView.updateView)({ index: index, model: model, value: state.value });
+        },
+        onSend: function onSend(value) {
+          triggerStreamValue(index, value);
         }
       };
-      var settings = document.createElement("div");
-      target.append(settings);
-      (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, rows: rows, cols: cols });
 
-      var _loop = function _loop(index) {
-        states.push({ history: [], value: -1 });
+      var element = document.createElement("div");
+      element.style = "flex-grow:1";
+      container.append(element);
+      var label = labels[index];
 
-        var listeners = {
-          onSliderChange: function onSliderChange(value) {
-            var state = states[index];
-            var model = state.history[value];
-            state.value = value;
+      (0, _streamView.streamView)({ element: element, index: index, listeners: listeners, label: label, rows: rows, cols: cols });
+    };
 
-            (0, _updateView.updateView)({ index: index, model: model, value: value });
-          },
-          onStepBack: function onStepBack() {
-            var state = states[index];
-            state.value = state.value - 1;
-            var model = state.history[state.value];
+    for (var index = 0; index < labels.length; index++) {
+      _loop(index);
+    }
+  };
 
-            (0, _updateView.updateView)({ index: index, model: model, value: state.value });
-          },
-          onStepForward: function onStepForward() {
-            var state = states[index];
-            state.value = state.value + 1;
-            var model = state.history[state.value];
+  var receiveStreamValue = function receiveStreamValue(index, model) {
+    var state = states[index];
 
-            (0, _updateView.updateView)({ index: index, model: model, value: state.value });
-          },
-          onSend: function onSend(value) {
-            window.postMessage({ type: "MEIOSIS_TRIGGER_STREAM_VALUE", index: index, value: value }, "*");
-          }
-        };
+    if (state.history.length > 0) {
+      state.history.length = state.value + 1;
+    }
+    state.history.push(model);
+    state.value = state.history.length - 1;
 
-        var element = document.createElement("div");
-        target.append(element);
-        var label = labels[index];
+    (0, _updateView.updateView)({ index: index, model: model, value: state.value, max: state.history.length - 1 });
+  };
 
-        (0, _streamView.streamView)({ element: element, index: index, listeners: listeners, label: label, rows: rows, cols: cols });
-      };
+  var reset = function reset() {
+    return null;
+  };
 
-      for (var index = 0; index < labels.length; index++) {
-        _loop(index);
-      }
+  window.addEventListener("message", function (evt) {
+    if (evt.data.type === "MEIOSIS_STREAM_LABELS") {
+      receiveLabels(evt.data.value);
     } else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
-      var index = evt.data.index;
-      var state = states[index];
-      var model = evt.data.value;
-
-      state.history.push(model);
-      state.value = state.value + 1;
-
-      (0, _updateView.updateView)({ index: index, model: model, value: state.value, max: state.history.length - 1 });
+      receiveStreamValue(evt.data.index, evt.data.value);
     }
-    /*
-    else if (evt.data.type === "MEIOSIS_STREAM_IDS") {
-      const streamIds = evt.data.streamIds
-      initStreamIdModel(streamIds)
-    }
-    */
   });
 
-  window.postMessage({ type: "MEIOSIS_TRACER_INIT" }, "*");
+  sendTracerInit();
+
+  return {
+    receiveLabels: receiveLabels,
+    receiveStreamValue: receiveStreamValue,
+    reset: reset
+  };
 };
 
 /***/ }),

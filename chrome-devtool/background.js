@@ -1,6 +1,6 @@
 /*global chrome*/
 
-// Manages and relays messages between the panel and the inspected page.
+// Establishes a connection and relays messages between the panel and the content script.
 
 chrome.extension.onConnect.addListener(function(port) {
   var extensionListener = function(message, sender, sendResponse) {
