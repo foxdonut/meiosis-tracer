@@ -7,6 +7,10 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
     "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" +
       "<div>" +
         "<span>" + label + " </span>" +
+        "<label title='Toggle accumulate history'>" +
+          "<input id='" + C.histId(index) + "' type='checkbox' checked />" +
+          " Hist " +
+        "</label>" +
         "<button id='" + C.hideStreamId(index) + "'>Hide</button>" +
       "</div>" +
       "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" +
@@ -53,5 +57,9 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
   document.getElementById(C.showStreamId(index)).addEventListener("click", _evt => {
     document.getElementById(C.hiddenStreamId(index)).style = "display:none"
     document.getElementById(C.streamId(index)).style = streamBoxStyle
+  })
+
+  document.getElementById(C.histId(index)).addEventListener("change", evt => {
+    listeners.onHistChange(index, evt.target.checked)
   })
 }

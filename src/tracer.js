@@ -21,7 +21,7 @@ export const tracer = ({
 
   const states = []
   let autoSend = true
-  let accumulateHistory = true
+  let accumulateHistory = []
 
   if (sendTracerInit == null) {
     sendTracerInit = () => {
@@ -49,9 +49,6 @@ export const tracer = ({
       },
       onAutoChange: auto => {
         autoSend = auto
-      },
-      onHistChange: hist => {
-        accumulateHistory = hist
       }
     }
     const settings = document.createElement("div")
@@ -65,6 +62,7 @@ export const tracer = ({
 
     for (let index = 0; index < labels.length; index++) {
       states.push({ history: [], value: -1 })
+      accumulateHistory.push(true)
 
       const listeners = {
         onSliderChange: value => {
@@ -75,8 +73,8 @@ export const tracer = ({
           updateView({ index, model, value })
 
           if (autoSend) {
-            accumulateHistory = false
-            document.getElementById(C.histId).checked = false
+            accumulateHistory[index] = false
+            document.getElementById(C.histId(index)).checked = false
             triggerStreamValue(index, model)
           }
         },
@@ -96,6 +94,9 @@ export const tracer = ({
         },
         onSend: value => {
           triggerStreamValue(index, value)
+        },
+        onHistChange: (index, hist) => {
+          accumulateHistory[index] = hist
         }
       }
 
@@ -111,7 +112,7 @@ export const tracer = ({
   }
 
   const receiveStreamValue = (index, model) => {
-    if (accumulateHistory) {
+    if (accumulateHistory[index]) {
       const state = states[index]
 
       if (state.history.length > 0) {

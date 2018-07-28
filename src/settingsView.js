@@ -22,10 +22,6 @@ export const settingsView = ({ element, listeners, direction, rows, cols }) => {
         "<input id='" + C.autoId + "' type='checkbox' checked />" +
         " Auto " +
       "</label>" +
-      "<label title='Toggle accumulate history'>" +
-        "<input id='" + C.histId + "' type='checkbox' checked />" +
-        " Hist " +
-      "</label>" +
     "</div>"
 
   document.getElementById(C.rowsId).addEventListener("input", evt => {
@@ -48,10 +44,6 @@ export const settingsView = ({ element, listeners, direction, rows, cols }) => {
   document.getElementById(C.autoId).addEventListener("change", evt => {
     listeners.onAutoChange(evt.target.checked)
   })
-
-  document.getElementById(C.histId).addEventListener("change", evt => {
-    listeners.onHistChange(evt.target.checked)
-  })
 }
 
 export const initializeResizeChangeDirection = (listeners, direction) => {
@@ -64,7 +56,9 @@ export const initializeResizeChangeDirection = (listeners, direction) => {
     listeners.onDirectionChange(dir)
   }
 
-  window.addEventListener("resize", directionAccordingToWindowSize)
+  if (direction === "auto") {
+    window.addEventListener("resize", directionAccordingToWindowSize)
+  }
 
   if (direction === "row" || direction === "column") {
     listeners.onDirectionChange(direction)

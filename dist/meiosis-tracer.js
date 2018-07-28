@@ -113,7 +113,6 @@ var rowsId = exports.rowsId = "tracerRows";
 var colsId = exports.colsId = "tracerCols";
 var streamContainerId = exports.streamContainerId = "tracerStreamContainer";
 var autoId = exports.autoId = "traceAutoSend";
-var histId = exports.histId = "tracerAccumulateHistory";
 
 var streamId = exports.streamId = function streamId(index) {
   return "tracerStreamBox_ " + index;
@@ -144,6 +143,9 @@ var sliderValueId = exports.sliderValueId = function sliderValueId(index) {
 };
 var sendId = exports.sendId = function sendId(index) {
   return "tracerSend_" + index;
+};
+var histId = exports.histId = function histId(index) {
+  return "tracerAccumulateHistory_" + index;
 };
 
 /***/ }),
@@ -222,7 +224,7 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       rows = _ref.rows,
       cols = _ref.cols;
 
-  element.innerHTML = "<div>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
+  element.innerHTML = "<div>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "</div>";
 
   document.getElementById(C.rowsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10));
@@ -244,10 +246,6 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
   document.getElementById(C.autoId).addEventListener("change", function (evt) {
     listeners.onAutoChange(evt.target.checked);
   });
-
-  document.getElementById(C.histId).addEventListener("change", function (evt) {
-    listeners.onHistChange(evt.target.checked);
-  });
 };
 
 var initializeResizeChangeDirection = exports.initializeResizeChangeDirection = function initializeResizeChangeDirection(listeners, direction) {
@@ -260,7 +258,9 @@ var initializeResizeChangeDirection = exports.initializeResizeChangeDirection = 
     listeners.onDirectionChange(dir);
   };
 
-  window.addEventListener("resize", directionAccordingToWindowSize);
+  if (direction === "auto") {
+    window.addEventListener("resize", directionAccordingToWindowSize);
+  }
 
   if (direction === "row" || direction === "column") {
     listeners.onDirectionChange(direction);
@@ -303,7 +303,7 @@ var streamView = exports.streamView = function streamView(_ref) {
 
   var streamBoxStyle = "padding:8px;border:1px solid gray";
 
-  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
+  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId(index) + "' type='checkbox' checked />" + " Hist " + "</label>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
 
   document.getElementById(C.sliderId(index)).addEventListener("input", function (evt) {
     listeners.onSliderChange(parseInt(evt.target.value, 10));
@@ -333,6 +333,10 @@ var streamView = exports.streamView = function streamView(_ref) {
   document.getElementById(C.showStreamId(index)).addEventListener("click", function (_evt) {
     document.getElementById(C.hiddenStreamId(index)).style = "display:none";
     document.getElementById(C.streamId(index)).style = streamBoxStyle;
+  });
+
+  document.getElementById(C.histId(index)).addEventListener("change", function (evt) {
+    listeners.onHistChange(index, evt.target.checked);
   });
 };
 
@@ -496,7 +500,7 @@ var tracer = exports.tracer = function tracer(_ref) {
 
   var states = [];
   var autoSend = true;
-  var accumulateHistory = true;
+  var accumulateHistory = [];
 
   if (sendTracerInit == null) {
     sendTracerInit = function sendTracerInit() {
@@ -524,9 +528,6 @@ var tracer = exports.tracer = function tracer(_ref) {
       },
       onAutoChange: function onAutoChange(auto) {
         autoSend = auto;
-      },
-      onHistChange: function onHistChange(hist) {
-        accumulateHistory = hist;
       }
     };
     var settings = document.createElement("div");
@@ -540,6 +541,7 @@ var tracer = exports.tracer = function tracer(_ref) {
 
     var _loop = function _loop(index) {
       states.push({ history: [], value: -1 });
+      accumulateHistory.push(true);
 
       var listeners = {
         onSliderChange: function onSliderChange(value) {
@@ -550,8 +552,8 @@ var tracer = exports.tracer = function tracer(_ref) {
           (0, _updateView.updateView)({ index: index, model: model, value: value });
 
           if (autoSend) {
-            accumulateHistory = false;
-            document.getElementById(C.histId).checked = false;
+            accumulateHistory[index] = false;
+            document.getElementById(C.histId(index)).checked = false;
             triggerStreamValue(index, model);
           }
         },
@@ -571,6 +573,9 @@ var tracer = exports.tracer = function tracer(_ref) {
         },
         onSend: function onSend(value) {
           triggerStreamValue(index, value);
+        },
+        onHistChange: function onHistChange(index, hist) {
+          accumulateHistory[index] = hist;
         }
       };
 
@@ -590,7 +595,7 @@ var tracer = exports.tracer = function tracer(_ref) {
   };
 
   var receiveStreamValue = function receiveStreamValue(index, model) {
-    if (accumulateHistory) {
+    if (accumulateHistory[index]) {
       var state = states[index];
 
       if (state.history.length > 0) {
