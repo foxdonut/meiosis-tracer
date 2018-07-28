@@ -5,6 +5,9 @@ export const autoId = "traceAutoSend"
 export const histId = "tracerAccumulateHistory"
 
 export const streamId = index => "tracerStreamBox_ " + index
+export const hiddenStreamId = index => "tracerStreamBoxHidden_" + index
+export const hideStreamId = index => "tracerStreamHide_" + index
+export const showStreamId = index => "tracerStreamShow_" + index
 export const modelId = index => "tracerModel_" + index
 export const sliderId = index => "tracerSlider_" + index
 export const stepBackId = index => "tracerStepBack_" + index

@@ -17,7 +17,7 @@ export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
       "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" +
         " value='" + cols + "'/>" +
       "<label title='Toggle auto-send'>" +
-        "<input id='" + C.autoId + "' type='checkbox' />" +
+        "<input id='" + C.autoId + "' type='checkbox' checked />" +
         " Auto " +
       "</label>" +
       "<label title='Toggle accumulate history'>" +
@@ -40,4 +40,12 @@ export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
       listeners.onOrientChange(evt.target.value)
     })
   }
+
+  document.getElementById(C.autoId).addEventListener("change", evt => {
+    listeners.onAutoChange(evt.target.checked)
+  })
+
+  document.getElementById(C.histId).addEventListener("change", evt => {
+    listeners.onHistChange(evt.target.checked)
+  })
 }

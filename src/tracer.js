@@ -19,6 +19,8 @@ export const tracer = ({
   }
 
   const states = []
+  let autoSend = true
+  let accumulateHistory = true
 
   if (sendTracerInit == null) {
     sendTracerInit = () => {
@@ -43,6 +45,12 @@ export const tracer = ({
       },
       onOrientChange: orient => {
         document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + orient
+      },
+      onAutoChange: auto => {
+        autoSend = auto
+      },
+      onHistChange: hist => {
+        accumulateHistory = hist
       }
     }
     const settings = document.createElement("div")
@@ -64,6 +72,12 @@ export const tracer = ({
           state.value = value
 
           updateView({ index, model, value })
+
+          if (autoSend) {
+            accumulateHistory = false
+            document.getElementById(C.histId).checked = false
+            triggerStreamValue(index, model)
+          }
         },
         onStepBack: () => {
           const state = states[index]
@@ -94,15 +108,17 @@ export const tracer = ({
   }
 
   const receiveStreamValue = (index, model) => {
-    const state = states[index]
+    if (accumulateHistory) {
+      const state = states[index]
 
-    if (state.history.length > 0) {
-      state.history.length = state.value + 1
+      if (state.history.length > 0) {
+        state.history.length = state.value + 1
+      }
+      state.history.push(model)
+      state.value = state.history.length - 1
+
+      updateView({ index, model, value: state.value, max: state.history.length - 1 })
     }
-    state.history.push(model)
-    state.value = state.history.length - 1
-
-    updateView({ index, model, value: state.value, max: state.history.length - 1 })
   }
 
   const reset = () => null

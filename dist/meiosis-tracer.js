@@ -118,6 +118,15 @@ var histId = exports.histId = "tracerAccumulateHistory";
 var streamId = exports.streamId = function streamId(index) {
   return "tracerStreamBox_ " + index;
 };
+var hiddenStreamId = exports.hiddenStreamId = function hiddenStreamId(index) {
+  return "tracerStreamBoxHidden_" + index;
+};
+var hideStreamId = exports.hideStreamId = function hideStreamId(index) {
+  return "tracerStreamHide_" + index;
+};
+var showStreamId = exports.showStreamId = function showStreamId(index) {
+  return "tracerStreamShow_" + index;
+};
 var modelId = exports.modelId = function modelId(index) {
   return "tracerModel_" + index;
 };
@@ -214,7 +223,7 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       _ref$cols = _ref.cols,
       cols = _ref$cols === undefined ? 40 : _ref$cols;
 
-  element.innerHTML = "<div>" + "<label title='Align vertically'>" + "<input type='radio' name='orient' value='column' checked />" + "Ver " + "</label>" + "<label title='Align horizontally'>" + "<input type='radio' name='orient' value='row' />" + "Hor " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
+  element.innerHTML = "<div>" + "<label title='Align vertically'>" + "<input type='radio' name='orient' value='column' checked />" + "Ver " + "</label>" + "<label title='Align horizontally'>" + "<input type='radio' name='orient' value='row' />" + "Hor " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
 
   document.getElementById(C.rowsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10));
@@ -230,6 +239,14 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       listeners.onOrientChange(evt.target.value);
     });
   }
+
+  document.getElementById(C.autoId).addEventListener("change", function (evt) {
+    listeners.onAutoChange(evt.target.checked);
+  });
+
+  document.getElementById(C.histId).addEventListener("change", function (evt) {
+    listeners.onHistChange(evt.target.checked);
+  });
 };
 
 /***/ }),
@@ -266,7 +283,9 @@ var streamView = exports.streamView = function streamView(_ref) {
       _ref$cols = _ref.cols,
       cols = _ref$cols === undefined ? 40 : _ref$cols;
 
-  element.innerHTML = "<div id='" + C.streamId(index) + "' style='padding:8px;border:1px solid gray'>" + "<div>" + label + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>";
+  var streamBoxStyle = "padding:8px;border:1px solid gray";
+
+  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
 
   document.getElementById(C.sliderId(index)).addEventListener("input", function (evt) {
     listeners.onSliderChange(parseInt(evt.target.value, 10));
@@ -286,6 +305,16 @@ var streamView = exports.streamView = function streamView(_ref) {
 
   document.getElementById(C.sendId(index)).addEventListener("click", function (_evt) {
     listeners.onSend(document.getElementById(C.modelId(index)).value);
+  });
+
+  document.getElementById(C.hideStreamId(index)).addEventListener("click", function (_evt) {
+    document.getElementById(C.streamId(index)).style = "display:none";
+    document.getElementById(C.hiddenStreamId(index)).style = streamBoxStyle;
+  });
+
+  document.getElementById(C.showStreamId(index)).addEventListener("click", function (_evt) {
+    document.getElementById(C.hiddenStreamId(index)).style = "display:none";
+    document.getElementById(C.streamId(index)).style = streamBoxStyle;
   });
 };
 
@@ -446,6 +475,8 @@ var tracer = exports.tracer = function tracer(_ref) {
   }
 
   var states = [];
+  var autoSend = true;
+  var accumulateHistory = true;
 
   if (sendTracerInit == null) {
     sendTracerInit = function sendTracerInit() {
@@ -470,6 +501,12 @@ var tracer = exports.tracer = function tracer(_ref) {
       },
       onOrientChange: function onOrientChange(orient) {
         document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + orient;
+      },
+      onAutoChange: function onAutoChange(auto) {
+        autoSend = auto;
+      },
+      onHistChange: function onHistChange(hist) {
+        accumulateHistory = hist;
       }
     };
     var settings = document.createElement("div");
@@ -491,6 +528,12 @@ var tracer = exports.tracer = function tracer(_ref) {
           state.value = value;
 
           (0, _updateView.updateView)({ index: index, model: model, value: value });
+
+          if (autoSend) {
+            accumulateHistory = false;
+            document.getElementById(C.histId).checked = false;
+            triggerStreamValue(index, model);
+          }
         },
         onStepBack: function onStepBack() {
           var state = states[index];
@@ -525,15 +568,17 @@ var tracer = exports.tracer = function tracer(_ref) {
   };
 
   var receiveStreamValue = function receiveStreamValue(index, model) {
-    var state = states[index];
+    if (accumulateHistory) {
+      var state = states[index];
 
-    if (state.history.length > 0) {
-      state.history.length = state.value + 1;
+      if (state.history.length > 0) {
+        state.history.length = state.value + 1;
+      }
+      state.history.push(model);
+      state.value = state.history.length - 1;
+
+      (0, _updateView.updateView)({ index: index, model: model, value: state.value, max: state.history.length - 1 });
     }
-    state.history.push(model);
-    state.value = state.history.length - 1;
-
-    (0, _updateView.updateView)({ index: index, model: model, value: state.value, max: state.history.length - 1 });
   };
 
   var reset = function reset() {
