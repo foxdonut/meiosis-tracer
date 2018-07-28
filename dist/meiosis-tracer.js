@@ -207,7 +207,7 @@ var meiosisTracer = exports.meiosisTracer = function meiosisTracer(params) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.settingsView = undefined;
+exports.initializeResizeChangeDirection = exports.settingsView = undefined;
 
 var _constants = __webpack_require__(/*! ./constants */ "./src/constants.js");
 
@@ -218,12 +218,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var settingsView = exports.settingsView = function settingsView(_ref) {
   var element = _ref.element,
       listeners = _ref.listeners,
-      _ref$rows = _ref.rows,
-      rows = _ref$rows === undefined ? 5 : _ref$rows,
-      _ref$cols = _ref.cols,
-      cols = _ref$cols === undefined ? 40 : _ref$cols;
+      direction = _ref.direction,
+      rows = _ref.rows,
+      cols = _ref.cols;
 
-  element.innerHTML = "<div>" + "<label title='Align vertically'>" + "<input type='radio' name='orient' value='column' checked />" + "Ver " + "</label>" + "<label title='Align horizontally'>" + "<input type='radio' name='orient' value='row' />" + "Hor " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
+  element.innerHTML = "<div>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId + "' type='checkbox' checked />" + " Hist " + "</label>" + "</div>";
 
   document.getElementById(C.rowsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10));
@@ -233,10 +232,12 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
     listeners.onRowsColsChange(parseInt(document.getElementById(C.rowsId).value, 10), parseInt(evt.target.value, 10));
   });
 
-  var radios = document.querySelectorAll("input[name='orient']");
+  var radios = document.querySelectorAll("input[name='direction']");
   for (var i = 0, t = radios.length; i < t; i++) {
     radios[i].addEventListener("change", function (evt) {
-      listeners.onOrientChange(evt.target.value);
+      if (evt.target.checked) {
+        listeners.onDirectionChange(evt.target.value);
+      }
     });
   }
 
@@ -247,6 +248,25 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
   document.getElementById(C.histId).addEventListener("change", function (evt) {
     listeners.onHistChange(evt.target.checked);
   });
+};
+
+var initializeResizeChangeDirection = exports.initializeResizeChangeDirection = function initializeResizeChangeDirection(listeners, direction) {
+  var directionAccordingToWindowSize = function directionAccordingToWindowSize() {
+    var dir = window.innerWidth > window.innerHeight ? "row" : "column";
+    var radios = document.querySelectorAll("input[name='direction']");
+    for (var i = 0, t = radios.length; i < t; i++) {
+      radios[i].checked = radios[i].value === dir;
+    }
+    listeners.onDirectionChange(dir);
+  };
+
+  window.addEventListener("resize", directionAccordingToWindowSize);
+
+  if (direction === "row" || direction === "column") {
+    listeners.onDirectionChange(direction);
+  } else {
+    directionAccordingToWindowSize();
+  }
 };
 
 /***/ }),
@@ -278,10 +298,8 @@ var streamView = exports.streamView = function streamView(_ref) {
       listeners = _ref.listeners,
       _ref$label = _ref.label,
       label = _ref$label === undefined ? "" : _ref$label,
-      _ref$rows = _ref.rows,
-      rows = _ref$rows === undefined ? 5 : _ref$rows,
-      _ref$cols = _ref.cols,
-      cols = _ref$cols === undefined ? 40 : _ref$cols;
+      rows = _ref.rows,
+      cols = _ref.cols;
 
   var streamBoxStyle = "padding:8px;border:1px solid gray";
 
@@ -463,10 +481,12 @@ var tracer = exports.tracer = function tracer(_ref) {
   var selector = _ref.selector,
       sendTracerInit = _ref.sendTracerInit,
       triggerStreamValue = _ref.triggerStreamValue,
+      _ref$direction = _ref.direction,
+      direction = _ref$direction === undefined ? "column" : _ref$direction,
       _ref$rows = _ref.rows,
-      rows = _ref$rows === undefined ? 5 : _ref$rows,
+      rows = _ref$rows === undefined ? 15 : _ref$rows,
       _ref$cols = _ref.cols,
-      cols = _ref$cols === undefined ? 40 : _ref$cols;
+      cols = _ref$cols === undefined ? 50 : _ref$cols;
 
   var target = document.querySelector(selector);
 
@@ -499,8 +519,8 @@ var tracer = exports.tracer = function tracer(_ref) {
           textarea.cols = cols;
         }
       },
-      onOrientChange: function onOrientChange(orient) {
-        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + orient;
+      onDirectionChange: function onDirectionChange(direction) {
+        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + direction;
       },
       onAutoChange: function onAutoChange(auto) {
         autoSend = auto;
@@ -511,7 +531,7 @@ var tracer = exports.tracer = function tracer(_ref) {
     };
     var settings = document.createElement("div");
     target.append(settings);
-    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, rows: rows, cols: cols });
+    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, direction: direction, rows: rows, cols: cols });
 
     var container = document.createElement("div");
     container.id = C.streamContainerId;
@@ -565,6 +585,8 @@ var tracer = exports.tracer = function tracer(_ref) {
     for (var index = 0; index < labels.length; index++) {
       _loop(index);
     }
+
+    (0, _settingsView.initializeResizeChangeDirection)(settingsListeners, direction);
   };
 
   var receiveStreamValue = function receiveStreamValue(index, model) {

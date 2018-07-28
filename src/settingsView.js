@@ -1,15 +1,17 @@
 import * as C from "./constants"
 
-export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
+export const settingsView = ({ element, listeners, direction, rows, cols }) => {
   element.innerHTML =
     "<div>" +
-      "<label title='Align vertically'>" +
-        "<input type='radio' name='orient' value='column' checked />" +
-        "Ver " +
+      "<label title='Align in a row'>" +
+        "<input type='radio' name='direction' value='row' " +
+          (direction === "row" ? "checked" : "") + " />" +
+        "Row " +
       "</label>" +
-      "<label title='Align horizontally'>" +
-        "<input type='radio' name='orient' value='row' />" +
-        "Hor " +
+      "<label title='Align in a column'>" +
+        "<input type='radio' name='direction' value='column' " +
+          (direction === "column" ? "checked" : "") + " />" +
+        "Col " +
       "</label>" +
       "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" +
         " value='" + rows + "'/>" +
@@ -34,10 +36,12 @@ export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
     listeners.onRowsColsChange(parseInt(document.getElementById(C.rowsId).value, 10), parseInt(evt.target.value, 10))
   })
 
-  const radios = document.querySelectorAll("input[name='orient']")
+  const radios = document.querySelectorAll("input[name='direction']")
   for (let i = 0, t = radios.length; i < t; i++) {
     radios[i].addEventListener("change", evt => {
-      listeners.onOrientChange(evt.target.value)
+      if (evt.target.checked) {
+        listeners.onDirectionChange(evt.target.value)
+      }
     })
   }
 
@@ -48,4 +52,24 @@ export const settingsView = ({ element, listeners, rows = 5, cols = 40 }) => {
   document.getElementById(C.histId).addEventListener("change", evt => {
     listeners.onHistChange(evt.target.checked)
   })
+}
+
+export const initializeResizeChangeDirection = (listeners, direction) => {
+  const directionAccordingToWindowSize = () => {
+    const dir = window.innerWidth > window.innerHeight ? "row" : "column"
+    const radios = document.querySelectorAll("input[name='direction']")
+    for (let i = 0, t = radios.length; i < t; i++) {
+      radios[i].checked = radios[i].value === dir
+    }
+    listeners.onDirectionChange(dir)
+  }
+
+  window.addEventListener("resize", directionAccordingToWindowSize)
+
+  if (direction === "row" || direction === "column") {
+    listeners.onDirectionChange(direction)
+  }
+  else {
+    directionAccordingToWindowSize()
+  }
 }

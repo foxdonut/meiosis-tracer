@@ -1,6 +1,6 @@
 import * as C from "./constants"
 
-export const streamView = ({ element, index, listeners, label = "", rows = 5, cols = 40 }) => {
+export const streamView = ({ element, index, listeners, label = "", rows, cols }) => {
   const streamBoxStyle = "padding:8px;border:1px solid gray"
 
   element.innerHTML =

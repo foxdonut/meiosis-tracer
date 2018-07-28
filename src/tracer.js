@@ -1,6 +1,6 @@
 import { streamView } from "./streamView"
 import { updateView } from "./updateView"
-import { settingsView } from "./settingsView"
+import { settingsView, initializeResizeChangeDirection } from "./settingsView"
 import * as C from "./constants"
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true
@@ -9,8 +9,9 @@ export const tracer = ({
   selector,
   sendTracerInit,
   triggerStreamValue,
-  rows = 5,
-  cols = 40
+  direction = "column",
+  rows = 15,
+  cols = 50
 }) => {
   const target = document.querySelector(selector)
 
@@ -43,8 +44,8 @@ export const tracer = ({
           textarea.cols = cols
         }
       },
-      onOrientChange: orient => {
-        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + orient
+      onDirectionChange: direction => {
+        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + direction
       },
       onAutoChange: auto => {
         autoSend = auto
@@ -55,7 +56,7 @@ export const tracer = ({
     }
     const settings = document.createElement("div")
     target.append(settings)
-    settingsView({ element: settings, listeners: settingsListeners, rows, cols })
+    settingsView({ element: settings, listeners: settingsListeners, direction, rows, cols })
 
     const container = document.createElement("div")
     container.id = C.streamContainerId
@@ -105,6 +106,8 @@ export const tracer = ({
 
       streamView({ element, index, listeners, label, rows, cols })
     }
+
+    initializeResizeChangeDirection(settingsListeners, direction)
   }
 
   const receiveStreamValue = (index, model) => {

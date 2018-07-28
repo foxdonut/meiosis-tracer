@@ -54,7 +54,8 @@ var createTracer = function() {
   tracer = window.meiosisTracer({
     selector: "#meiosis-tracer",
     sendTracerInit: sendTracerInit,
-    triggerStreamValue: triggerStreamValue
+    triggerStreamValue: triggerStreamValue,
+    direction: "auto"
   })
 }
 
