@@ -60,6 +60,14 @@ export const tracer = ({
     container.style="display:flex;flex-direction:column"
     target.append(container)
 
+    const sendStreamValue = (index, model) => {
+      if (autoSend) {
+        accumulateHistory[index] = false
+        document.getElementById(C.histId(index)).checked = false
+        triggerStreamValue(index, model)
+      }
+    }
+
     for (let index = 0; index < labels.length; index++) {
       states.push({ history: [], value: -1 })
       accumulateHistory.push(true)
@@ -71,12 +79,7 @@ export const tracer = ({
           state.value = value
 
           updateView({ index, model, value })
-
-          if (autoSend) {
-            accumulateHistory[index] = false
-            document.getElementById(C.histId(index)).checked = false
-            triggerStreamValue(index, model)
-          }
+          sendStreamValue(index, model)
         },
         onStepBack: () => {
           const state = states[index]
@@ -84,6 +87,7 @@ export const tracer = ({
           const model = state.history[state.value]
 
           updateView({ index, model, value: state.value })
+          sendStreamValue(index, model)
         },
         onStepForward: () => {
           const state = states[index]
@@ -91,9 +95,17 @@ export const tracer = ({
           const model = state.history[state.value]
 
           updateView({ index, model, value: state.value })
+          sendStreamValue(index, model)
         },
         onSend: value => {
           triggerStreamValue(index, value)
+        },
+        onReset: () => {
+          const state = states[index]
+          state.history.length = 0
+          state.value = -1
+
+          updateView({ index, model: "", value: state.value, max: state.value })
         },
         onHistChange: (index, hist) => {
           accumulateHistory[index] = hist

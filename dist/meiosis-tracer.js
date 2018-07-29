@@ -144,6 +144,9 @@ var sliderValueId = exports.sliderValueId = function sliderValueId(index) {
 var sendId = exports.sendId = function sendId(index) {
   return "tracerSend_" + index;
 };
+var resetId = exports.resetId = function resetId(index) {
+  return "tracerReset_" + index;
+};
 var histId = exports.histId = function histId(index) {
   return "tracerAccumulateHistory_" + index;
 };
@@ -303,7 +306,7 @@ var streamView = exports.streamView = function streamView(_ref) {
 
   var streamBoxStyle = "padding:8px;border:1px solid gray";
 
-  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId(index) + "' type='checkbox' checked />" + " Hist " + "</label>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button>" + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
+  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId(index) + "' type='checkbox' checked />" + " Hist " + "</label>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button> " + "<button id='" + C.resetId(index) + "'>Reset</button> " + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
 
   document.getElementById(C.sliderId(index)).addEventListener("input", function (evt) {
     listeners.onSliderChange(parseInt(evt.target.value, 10));
@@ -323,6 +326,10 @@ var streamView = exports.streamView = function streamView(_ref) {
 
   document.getElementById(C.sendId(index)).addEventListener("click", function (_evt) {
     listeners.onSend(document.getElementById(C.modelId(index)).value);
+  });
+
+  document.getElementById(C.resetId(index)).addEventListener("click", function (_evt) {
+    listeners.onReset();
   });
 
   document.getElementById(C.hideStreamId(index)).addEventListener("click", function (_evt) {
@@ -539,6 +546,14 @@ var tracer = exports.tracer = function tracer(_ref) {
     container.style = "display:flex;flex-direction:column";
     target.append(container);
 
+    var sendStreamValue = function sendStreamValue(index, model) {
+      if (autoSend) {
+        accumulateHistory[index] = false;
+        document.getElementById(C.histId(index)).checked = false;
+        triggerStreamValue(index, model);
+      }
+    };
+
     var _loop = function _loop(index) {
       states.push({ history: [], value: -1 });
       accumulateHistory.push(true);
@@ -550,12 +565,7 @@ var tracer = exports.tracer = function tracer(_ref) {
           state.value = value;
 
           (0, _updateView.updateView)({ index: index, model: model, value: value });
-
-          if (autoSend) {
-            accumulateHistory[index] = false;
-            document.getElementById(C.histId(index)).checked = false;
-            triggerStreamValue(index, model);
-          }
+          sendStreamValue(index, model);
         },
         onStepBack: function onStepBack() {
           var state = states[index];
@@ -563,6 +573,7 @@ var tracer = exports.tracer = function tracer(_ref) {
           var model = state.history[state.value];
 
           (0, _updateView.updateView)({ index: index, model: model, value: state.value });
+          sendStreamValue(index, model);
         },
         onStepForward: function onStepForward() {
           var state = states[index];
@@ -570,9 +581,17 @@ var tracer = exports.tracer = function tracer(_ref) {
           var model = state.history[state.value];
 
           (0, _updateView.updateView)({ index: index, model: model, value: state.value });
+          sendStreamValue(index, model);
         },
         onSend: function onSend(value) {
           triggerStreamValue(index, value);
+        },
+        onReset: function onReset() {
+          var state = states[index];
+          state.history.length = 0;
+          state.value = -1;
+
+          (0, _updateView.updateView)({ index: index, model: "", value: state.value, max: state.value });
         },
         onHistChange: function onHistChange(index, hist) {
           accumulateHistory[index] = hist;

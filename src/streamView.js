@@ -21,7 +21,8 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
         "<button id='" + C.stepBackId(index) + "'>&lt</button> " +
         "<button id='" + C.stepForwardId(index) + "'>&gt</button> " +
         "<span id='" + C.sliderValueId(index) + "'>-1</span> " +
-        "<button id='" + C.sendId(index) + "'>Send</button>" +
+        "<button id='" + C.sendId(index) + "'>Send</button> " +
+        "<button id='" + C.resetId(index) + "'>Reset</button> " +
       "</div>" +
     "</div>" +
     "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" +
@@ -47,6 +48,10 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
 
   document.getElementById(C.sendId(index)).addEventListener("click", _evt => {
     listeners.onSend(document.getElementById(C.modelId(index)).value)
+  })
+
+  document.getElementById(C.resetId(index)).addEventListener("click", _evt => {
+    listeners.onReset()
   })
 
   document.getElementById(C.hideStreamId(index)).addEventListener("click", _evt => {

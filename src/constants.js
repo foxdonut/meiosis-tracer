@@ -13,4 +13,5 @@ export const stepBackId = index => "tracerStepBack_" + index
 export const stepForwardId = index => "tracerStepForward_" + index
 export const sliderValueId = index => "tracerSliderValue_" + index
 export const sendId = index => "tracerSend_" + index
+export const resetId = index => "tracerReset_" + index
 export const histId = index => "tracerAccumulateHistory_" + index
