@@ -112,6 +112,9 @@ Object.defineProperty(exports, "__esModule", {
 var rowsId = exports.rowsId = "tracerRows";
 var colsId = exports.colsId = "tracerCols";
 var streamContainerId = exports.streamContainerId = "tracerStreamContainer";
+var settingsContainerId = exports.settingsContainerId = "tracerSettingsContainer";
+var hideTracerId = exports.hideTracerId = "tracerHide";
+var showTracerId = exports.showTracerId = "tracerShow";
 var autoId = exports.autoId = "traceAutoSend";
 
 var streamId = exports.streamId = function streamId(index) {
@@ -227,7 +230,15 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       rows = _ref.rows,
       cols = _ref.cols;
 
-  element.innerHTML = "<div>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label>" + "</div>";
+  element.innerHTML = "<div id='" + C.settingsContainerId + "'>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + " Auto " + "</label> " + "<button id='" + C.hideTracerId + "'>Hide</button>" + "</div>" + "<button id='" + C.showTracerId + "' style='display:none'>Show</button>";
+
+  document.getElementById(C.hideTracerId).addEventListener("click", function (_evt) {
+    listeners.onHideTracer();
+  });
+
+  document.getElementById(C.showTracerId).addEventListener("click", function (_evt) {
+    listeners.onShowTracer();
+  });
 
   document.getElementById(C.rowsId).addEventListener("input", function (evt) {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10));
@@ -508,6 +519,7 @@ var tracer = exports.tracer = function tracer(_ref) {
   var states = [];
   var autoSend = true;
   var accumulateHistory = [];
+  var containerStyle = null;
 
   if (sendTracerInit == null) {
     sendTracerInit = function sendTracerInit() {
@@ -523,6 +535,20 @@ var tracer = exports.tracer = function tracer(_ref) {
 
   var receiveLabels = function receiveLabels(labels) {
     var settingsListeners = {
+      onHideTracer: function onHideTracer() {
+        var container = document.getElementById(C.streamContainerId);
+        containerStyle = container.style;
+        container.style = "display:none";
+
+        document.getElementById(C.settingsContainerId).style = "display:none";
+        document.getElementById(C.showTracerId).style = "";
+      },
+      onShowTracer: function onShowTracer() {
+        document.getElementById(C.streamContainerId).style = containerStyle;
+
+        document.getElementById(C.settingsContainerId).style = "";
+        document.getElementById(C.showTracerId).style = "display:none";
+      },
       onRowsColsChange: function onRowsColsChange(rows, cols) {
         for (var i = 0; i < labels.length; i++) {
           var textarea = document.getElementById(C.modelId(i));

@@ -22,6 +22,7 @@ export const tracer = ({
   const states = []
   let autoSend = true
   let accumulateHistory = []
+  let containerStyle = null
 
   if (sendTracerInit == null) {
     sendTracerInit = () => {
@@ -37,6 +38,20 @@ export const tracer = ({
 
   const receiveLabels = labels => {
     const settingsListeners = {
+      onHideTracer: () => {
+        const container = document.getElementById(C.streamContainerId)
+        containerStyle = container.style
+        container.style = "display:none"
+
+        document.getElementById(C.settingsContainerId).style = "display:none"
+        document.getElementById(C.showTracerId).style = ""
+      },
+      onShowTracer: () => {
+        document.getElementById(C.streamContainerId).style = containerStyle
+
+        document.getElementById(C.settingsContainerId).style = ""
+        document.getElementById(C.showTracerId).style = "display:none"
+      },
       onRowsColsChange: (rows, cols) => {
         for (let i = 0; i < labels.length; i++) {
           const textarea = document.getElementById(C.modelId(i))

@@ -2,7 +2,7 @@ import * as C from "./constants"
 
 export const settingsView = ({ element, listeners, direction, rows, cols }) => {
   element.innerHTML =
-    "<div>" +
+    "<div id='" + C.settingsContainerId + "'>" +
       "<label title='Align in a row'>" +
         "<input type='radio' name='direction' value='row' " +
           (direction === "row" ? "checked" : "") + " />" +
@@ -21,8 +21,18 @@ export const settingsView = ({ element, listeners, direction, rows, cols }) => {
       "<label title='Toggle auto-send'>" +
         "<input id='" + C.autoId + "' type='checkbox' checked />" +
         " Auto " +
-      "</label>" +
-    "</div>"
+      "</label> " +
+      "<button id='" + C.hideTracerId + "'>Hide</button>" +
+    "</div>" +
+    "<button id='" + C.showTracerId + "' style='display:none'>Show</button>"
+
+  document.getElementById(C.hideTracerId).addEventListener("click", _evt => {
+    listeners.onHideTracer()
+  })
+
+  document.getElementById(C.showTracerId).addEventListener("click", _evt => {
+    listeners.onShowTracer()
+  })
 
   document.getElementById(C.rowsId).addEventListener("input", evt => {
     listeners.onRowsColsChange(parseInt(evt.target.value, 10), parseInt(document.getElementById(C.colsId).value, 10))

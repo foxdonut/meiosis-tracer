@@ -1,6 +1,9 @@
 export const rowsId = "tracerRows"
 export const colsId = "tracerCols"
 export const streamContainerId = "tracerStreamContainer"
+export const settingsContainerId = "tracerSettingsContainer"
+export const hideTracerId = "tracerHide"
+export const showTracerId = "tracerShow"
 export const autoId = "traceAutoSend"
 
 export const streamId = index => "tracerStreamBox_ " + index
