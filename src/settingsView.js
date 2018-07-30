@@ -13,15 +13,15 @@ export const settingsView = ({ element, listeners, direction, rows, cols }) => {
           (direction === "column" ? "checked" : "") + " />" +
         "Col " +
       "</label>" +
+      "<label title='Toggle auto-send'>" +
+        "<input id='" + C.autoId + "' type='checkbox' checked />" +
+        "Auto " +
+      "</label> " +
       "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" +
         " value='" + rows + "'/>" +
       "<span> &times; </span> " +
       "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" +
         " value='" + cols + "'/>" +
-      "<label title='Toggle auto-send'>" +
-        "<input id='" + C.autoId + "' type='checkbox' checked />" +
-        " Auto " +
-      "</label> " +
       "<button id='" + C.hideTracerId + "'>Hide</button>" +
     "</div>" +
     "<button id='" + C.showTracerId + "' style='display:none'>Show</button>"
