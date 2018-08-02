@@ -11,7 +11,8 @@ export const tracer = ({
   triggerStreamValue,
   direction = "column",
   rows = 15,
-  cols = 50
+  cols = 50,
+  autoSend = true
 }) => {
   const target = document.querySelector(selector)
 
@@ -20,7 +21,6 @@ export const tracer = ({
   }
 
   const states = []
-  let autoSend = true
   let accumulateHistory = []
   let containerStyle = null
 
@@ -68,7 +68,7 @@ export const tracer = ({
     }
     const settings = document.createElement("div")
     target.append(settings)
-    settingsView({ element: settings, listeners: settingsListeners, direction, rows, cols })
+    settingsView({ element: settings, listeners: settingsListeners, direction, rows, cols, autoSend })
 
     const container = document.createElement("div")
     container.id = C.streamContainerId

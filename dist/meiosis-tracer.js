@@ -228,9 +228,10 @@ var settingsView = exports.settingsView = function settingsView(_ref) {
       listeners = _ref.listeners,
       direction = _ref.direction,
       rows = _ref.rows,
-      cols = _ref.cols;
+      cols = _ref.cols,
+      autoSend = _ref.autoSend;
 
-  element.innerHTML = "<div id='" + C.settingsContainerId + "'>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' checked />" + "Auto " + "</label> " + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<button id='" + C.hideTracerId + "'>Hide</button>" + "</div>" + "<button id='" + C.showTracerId + "' style='display:none'>Show</button>";
+  element.innerHTML = "<div id='" + C.settingsContainerId + "'>" + "<label title='Align in a row'>" + "<input type='radio' name='direction' value='row' " + (direction === "row" ? "checked" : "") + " />" + "Row " + "</label>" + "<label title='Align in a column'>" + "<input type='radio' name='direction' value='column' " + (direction === "column" ? "checked" : "") + " />" + "Col " + "</label>" + "<label title='Toggle auto-send'>" + "<input id='" + C.autoId + "' type='checkbox' " + (autoSend ? "checked" : "") + " />" + "Auto " + "</label> " + "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" + " value='" + rows + "'/>" + "<span> &times; </span> " + "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" + " value='" + cols + "'/>" + "<button id='" + C.hideTracerId + "'>Hide</button>" + "</div>" + "<button id='" + C.showTracerId + "' style='display:none'>Show</button>";
 
   document.getElementById(C.hideTracerId).addEventListener("click", function (_evt) {
     listeners.onHideTracer();
@@ -508,7 +509,9 @@ var tracer = exports.tracer = function tracer(_ref) {
       _ref$rows = _ref.rows,
       rows = _ref$rows === undefined ? 15 : _ref$rows,
       _ref$cols = _ref.cols,
-      cols = _ref$cols === undefined ? 50 : _ref$cols;
+      cols = _ref$cols === undefined ? 50 : _ref$cols,
+      _ref$autoSend = _ref.autoSend,
+      autoSend = _ref$autoSend === undefined ? true : _ref$autoSend;
 
   var target = document.querySelector(selector);
 
@@ -517,7 +520,6 @@ var tracer = exports.tracer = function tracer(_ref) {
   }
 
   var states = [];
-  var autoSend = true;
   var accumulateHistory = [];
   var containerStyle = null;
 
@@ -565,7 +567,7 @@ var tracer = exports.tracer = function tracer(_ref) {
     };
     var settings = document.createElement("div");
     target.append(settings);
-    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, direction: direction, rows: rows, cols: cols });
+    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, direction: direction, rows: rows, cols: cols, autoSend: autoSend });
 
     var container = document.createElement("div");
     container.id = C.streamContainerId;

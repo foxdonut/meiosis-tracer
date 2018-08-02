@@ -1,6 +1,6 @@
 import * as C from "./constants"
 
-export const settingsView = ({ element, listeners, direction, rows, cols }) => {
+export const settingsView = ({ element, listeners, direction, rows, cols, autoSend }) => {
   element.innerHTML =
     "<div id='" + C.settingsContainerId + "'>" +
       "<label title='Align in a row'>" +
@@ -14,7 +14,7 @@ export const settingsView = ({ element, listeners, direction, rows, cols }) => {
         "Col " +
       "</label>" +
       "<label title='Toggle auto-send'>" +
-        "<input id='" + C.autoId + "' type='checkbox' checked />" +
+        "<input id='" + C.autoId + "' type='checkbox' " + (autoSend ? "checked" : "") + " />" +
         "Auto " +
       "</label> " +
       "<input title='Number of rows' id='" + C.rowsId + "' type='text' size='2'" +
