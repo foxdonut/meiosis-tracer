@@ -13,47 +13,50 @@ Chrome DevTools Extension.
 You can install Meiosis-Tracer with `npm`:
 
 ```
-npm i --save meiosis-tracer
+npm i -D meiosis-tracer
 ```
 
-Then use it along with Meiosis. First, add an HTML element to your page where you want the tracer
+Then use it either by
+[adding it to your page](#adding-meiosis-tracer-to-your-page), or with the
+[Chrome DevTools Extension](#using-the-chrome-devtools-extension).
+
+## Adding Meiosis Tracer To Your Page
+
+First, add an HTML element to your page where you want the tracer
 to be rendered, and give it a way to identify it via a selector. For example:
 
 ```html
 <div id="tracer" style="position: fixed; top: 0px; right: 0px;"></div>
 ```
 
-Call the `trace` function and pass it the `update` stream and the `dataStreams` that you
-want to trace. Optionally, specify `otherStreams` for other streams to trace, such as an
-`eventStream`.
-Then, create the tracer by passing it the selector for the element where the tracer will be rendered:
+Second, import the tracer and call it as a function, passing a `selector` that matches your
+HTML element and an array of `streams` that you want to trace. For example:
 
 ```javascript
 import meiosisTracer from "meiosis-tracer";
 
-const update = ...;
-const model = ...;
-const viewModel = model.map(...);
-const eventStream = ...;
+const models = ...; // a stream
+const states = model.map(...); // another stream
 
-meiosisTracer({ selector: "#tracer", streams: [ model, viewModel, eventStream ] });
+meiosisTracer({ selector: "#tracer", streams: [ models, states ] });
 ```
 
-This will render the tracer into the element that has the `tracer` id.
+This will render the tracer into the HTML element that has the `tracer` id.
 
 You can also download the JavaScript file from
 [unpkg](https://unpkg.com/meiosis-tracer) and add it to your page with a plain `<script>` tag.
 In that case it will be available as the `meiosisTracer` global variable.
 
-## Chrome DevTools Extension
+## Using the Chrome DevTools Extension
 
-Meiosis-Tracer is now also available as a Chrome DevTools Extension, so that you can use it without needing to add it to your page.
+Meiosis-Tracer is now also available as a Chrome DevTools Extension, so that you can use it
+without needing to add it to your page.
 
 You can [get it from the Chrome Web Store](https://chrome.google.com/webstore/detail/meiosis-tracer/lcomllmppaiciocfbeefdeoplnfpnnfl).
 
 Once installed:
 
-- If DevTools was already open, close it
+- If DevTools is already open, close it
 - When you open DevTools, you should have a `Meiosis` tab.
 
 Alternatively, you can run it directly from the source code. To do so, clone the repository:
@@ -62,13 +65,52 @@ Alternatively, you can run it directly from the source code. To do so, clone the
 git clone https://github.com/foxdonut/meiosis-tracer
 ```
 
+- If DevTools was already open, close it
 - In Chrome, open `chrome://extensions`
 - Press **Load unpacked extension...**
 - Select the `chrome-devtool` directory under `meiosis-tracer`
-- If DevTools was already open, close it
 - When you open DevTools, you should have a `Meiosis` tab.
 
 Meiosis-Tracer works in the same way either added to the page, or in DevTools. Enjoy!
+
+## Using the Tracer
+
+## Full List of Options
+
+### Options for `meiosisTracer({ ... })`
+
+These are general options for the tracer. Stream-related options apply to all streams, unless
+overridden by a stream-specific option (see below.) Stream-related options are `stringify`,
+`parse`, `listen`, and `emit`.
+
+| option | purpose | values  | default |
+|--------|---------|---------|---------|
+| `selector` | CSS selector targetting the HTML element for the tracer | string |    |
+| `direction` | layout direction for multiple streams | `row`, `column`, `auto` | `column` |
+| `rows` | number of rows in textareas | number | `15`   |
+| `cols` | number of columns in textareas | number | `50`   |
+| `auto` | whether or not to automatically send values | boolean | `true` |
+| `stringify` | how to convert a stream value to a string | function | `JSON.stringify(val, null, 4)` |
+| `parse` | how to parse a string to a stream value | function | `JSON.parse(str)` |
+| `listen` | how to listen to a stream | function | `stream.map` |
+| `emit` | how to send a value to a stream | function | `stream(value)` |
+
+### Stream Options
+
+These are stream-specific options. When the same option is specified for the tracer (above) and
+for a specific stream, the stream-specific option overrides the tracer option. These options
+include  `stringify`, `parse`, `listen`, and `emit`.
+
+| option | purpose | values  | default |
+|--------|---------|---------|---------|
+| `stream` | the stream to be traced | stream | |
+| `label` | the label for the stream | string | `Stream N` |
+| `hist` | whether or not to accumulate history | boolean | `true` |
+| `hide` | whether or not to initially hide the stream | boolean | `false` |
+| `stringify` | how to convert a stream value to a string | function | `JSON.stringify(val, null, 4)` |
+| `parse` | how to parse a string to a stream value | function | `JSON.parse(str)` |
+| `listen` | how to listen to a stream | function | `stream.map` |
+| `emit` | how to send a value to a stream | function | `stream(value)` |
 
 ## Credits
 
