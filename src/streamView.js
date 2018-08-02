@@ -1,6 +1,6 @@
 import * as C from "./constants"
 
-export const streamView = ({ element, index, listeners, label = "", rows, cols }) => {
+export const streamView = ({ element, index, listeners, label = "", rows, cols, hist = true, hide = false }) => {
   const streamBoxStyle = "padding:8px;border:1px solid gray"
 
   element.innerHTML =
@@ -8,7 +8,7 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
       "<div>" +
         "<span>" + label + " </span>" +
         "<label title='Toggle accumulate history'>" +
-          "<input id='" + C.histId(index) + "' type='checkbox' checked />" +
+          "<input id='" + C.histId(index) + "' type='checkbox' " + (hist ? "checked" : "") + " />" +
           " Hist " +
         "</label>" +
         "<button id='" + C.hideStreamId(index) + "'>Hide</button>" +
@@ -54,10 +54,12 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
     listeners.onReset()
   })
 
-  document.getElementById(C.hideStreamId(index)).addEventListener("click", _evt => {
+  const hideStream = index => {
     document.getElementById(C.streamId(index)).style = "display:none"
     document.getElementById(C.hiddenStreamId(index)).style = streamBoxStyle
-  })
+  }
+
+  document.getElementById(C.hideStreamId(index)).addEventListener("click", _evt => hideStream(index))
 
   document.getElementById(C.showStreamId(index)).addEventListener("click", _evt => {
     document.getElementById(C.hiddenStreamId(index)).style = "display:none"
@@ -67,4 +69,8 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols }
   document.getElementById(C.histId(index)).addEventListener("change", evt => {
     listeners.onHistChange(index, evt.target.checked)
   })
+
+  if (hide) {
+    hideStream(index)
+  }
 }

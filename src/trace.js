@@ -14,7 +14,7 @@ Messages:
 
 - MEIOSIS_TRACER_INIT: received from the UI to initialize
 - MEIOSIS_PING: sent to the UI in case we missed the INIT message, asks the UI to send INIT
-- MEIOSIS_STREAM_LABELS: sent to the UI to initialize number of streams and labels
+- MEIOSIS_STREAM_OPTIONS: sent to the UI to initialize streams and options
 - MEIOSIS_STREAM_VALUE: sent to the UI to indicate a new stream value
 - MEIOSIS_TRIGGER_STREAM_VALUE: received from the UI to push a value onto a stream
 
@@ -36,17 +36,15 @@ export const trace = ({
   let devtoolInitialized = false
 
   const streamObjs = []
-  const labels = []
 
   for (let i = 0, t = streams.length; i < t; i++) {
-    if (streams[i].label) {
-      labels.push(streams[i].label)
+    const defaultLabel = "Stream " + i
+    if (streams[i].stream) {
+      streams[i].label = streams[i].label || defaultLabel
       streamObjs.push(streams[i])
     }
     else {
-      const label = "Stream " + i
-      labels.push(label)
-      streamObjs.push({ stream: streams[i], label })
+      streamObjs.push({ stream: streams[i], label: defaultLabel })
     }
   }
 
@@ -65,7 +63,17 @@ export const trace = ({
 
   window.addEventListener("message", evt => {
     if (evt.data.type === "MEIOSIS_TRACER_INIT") {
-      window.postMessage({ type: "MEIOSIS_STREAM_LABELS", value: labels }, "*")
+      const streamOpts = []
+      streamObjs.forEach(streamObj => {
+        const streamOpt = {}
+        Object.keys(streamObj).forEach(key => {
+          if (key !== "stream") {
+            streamOpt[key] = streamObj[key]
+          }
+        })
+        streamOpts.push(streamOpt)
+      })
+      window.postMessage({ type: "MEIOSIS_STREAM_OPTIONS", value: streamOpts }, "*")
       devtoolInitialized = true
       bufferedStreamValues.forEach(data => window.postMessage(data, "*"))
       bufferedStreamValues.length = 0

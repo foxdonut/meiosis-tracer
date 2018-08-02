@@ -27,7 +27,7 @@ window.addEventListener("message", function(evt) {
     return
   }
   if (evt.data.type === "MEIOSIS_PING" ||
-      evt.data.type === "MEIOSIS_STREAM_LABELS" ||
+      evt.data.type === "MEIOSIS_STREAM_OPTIONS" ||
       evt.data.type === "MEIOSIS_STREAM_VALUE")
   {
     sendObjectToDevTools({data: evt.data})

@@ -29,8 +29,8 @@ port.onMessage.addListener(function(evt) {
   if (data.type === "MEIOSIS_PING") {
     sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
   }
-  else if (data.type === "MEIOSIS_STREAM_LABELS") {
-    tracer.receiveLabels(data.value)
+  else if (data.type === "MEIOSIS_STREAM_OPTIONS") {
+    tracer.receiveStreamOptions(data.value)
   }
   else if (data.type === "MEIOSIS_STREAM_VALUE") {
     tracer.receiveStreamValue(data.index, data.value)

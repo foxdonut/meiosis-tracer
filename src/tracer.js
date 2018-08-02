@@ -36,7 +36,7 @@ export const tracer = ({
     }
   }
 
-  const receiveLabels = labels => {
+  const receiveStreamOptions = streamOptions => {
     const settingsListeners = {
       onHideTracer: () => {
         const container = document.getElementById(C.streamContainerId)
@@ -53,7 +53,7 @@ export const tracer = ({
         document.getElementById(C.showTracerId).style = "display:none"
       },
       onRowsColsChange: (rows, cols) => {
-        for (let i = 0; i < labels.length; i++) {
+        for (let i = 0; i < streamOptions.length; i++) {
           const textarea = document.getElementById(C.modelId(i))
           textarea.rows = rows
           textarea.cols = cols
@@ -83,9 +83,10 @@ export const tracer = ({
       }
     }
 
-    for (let index = 0; index < labels.length; index++) {
+    for (let index = 0; index < streamOptions.length; index++) {
+      const { label, hist, hide } = streamOptions[index]
       states.push({ history: [], value: -1 })
-      accumulateHistory.push(true)
+      accumulateHistory.push(hist === false ? false : true)
 
       const listeners = {
         onSliderChange: value => {
@@ -130,9 +131,8 @@ export const tracer = ({
       const element = document.createElement("div")
       element.style="flex-grow:1"
       container.append(element)
-      const label = labels[index]
 
-      streamView({ element, index, listeners, label, rows, cols })
+      streamView({ element, index, listeners, label, rows, cols, hist, hide })
     }
 
     initializeResizeChangeDirection(settingsListeners, direction)
@@ -155,8 +155,8 @@ export const tracer = ({
   const reset = () => null
 
   window.addEventListener("message", evt => {
-    if (evt.data.type === "MEIOSIS_STREAM_LABELS") {
-      receiveLabels(evt.data.value)
+    if (evt.data.type === "MEIOSIS_STREAM_OPTIONS") {
+      receiveStreamOptions(evt.data.value)
     }
     else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
       receiveStreamValue(evt.data.index, evt.data.value)
@@ -166,7 +166,7 @@ export const tracer = ({
   sendTracerInit()
 
   return {
-    receiveLabels,
+    receiveStreamOptions,
     receiveStreamValue,
     reset
   }

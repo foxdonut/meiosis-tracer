@@ -314,11 +314,15 @@ var streamView = exports.streamView = function streamView(_ref) {
       _ref$label = _ref.label,
       label = _ref$label === undefined ? "" : _ref$label,
       rows = _ref.rows,
-      cols = _ref.cols;
+      cols = _ref.cols,
+      _ref$hist = _ref.hist,
+      hist = _ref$hist === undefined ? true : _ref$hist,
+      _ref$hide = _ref.hide,
+      hide = _ref$hide === undefined ? false : _ref$hide;
 
   var streamBoxStyle = "padding:8px;border:1px solid gray";
 
-  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId(index) + "' type='checkbox' checked />" + " Hist " + "</label>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button> " + "<button id='" + C.resetId(index) + "'>Reset</button> " + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
+  element.innerHTML = "<div id='" + C.streamId(index) + "' style='" + streamBoxStyle + "'>" + "<div>" + "<span>" + label + " </span>" + "<label title='Toggle accumulate history'>" + "<input id='" + C.histId(index) + "' type='checkbox' " + (hist ? "checked" : "") + " />" + " Hist " + "</label>" + "<button id='" + C.hideStreamId(index) + "'>Hide</button>" + "</div>" + "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" + "</textarea>" + "<div>" + "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" + " style='width: 100%' />" + "<button id='" + C.stepBackId(index) + "'>&lt</button> " + "<button id='" + C.stepForwardId(index) + "'>&gt</button> " + "<span id='" + C.sliderValueId(index) + "'>-1</span> " + "<button id='" + C.sendId(index) + "'>Send</button> " + "<button id='" + C.resetId(index) + "'>Reset</button> " + "</div>" + "</div>" + "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" + "<span>" + label + " </span>" + "<button id='" + C.showStreamId(index) + "'>Show</button>" + "</div>";
 
   document.getElementById(C.sliderId(index)).addEventListener("input", function (evt) {
     listeners.onSliderChange(parseInt(evt.target.value, 10));
@@ -344,9 +348,13 @@ var streamView = exports.streamView = function streamView(_ref) {
     listeners.onReset();
   });
 
-  document.getElementById(C.hideStreamId(index)).addEventListener("click", function (_evt) {
+  var hideStream = function hideStream(index) {
     document.getElementById(C.streamId(index)).style = "display:none";
     document.getElementById(C.hiddenStreamId(index)).style = streamBoxStyle;
+  };
+
+  document.getElementById(C.hideStreamId(index)).addEventListener("click", function (_evt) {
+    return hideStream(index);
   });
 
   document.getElementById(C.showStreamId(index)).addEventListener("click", function (_evt) {
@@ -357,6 +365,10 @@ var streamView = exports.streamView = function streamView(_ref) {
   document.getElementById(C.histId(index)).addEventListener("change", function (evt) {
     listeners.onHistChange(index, evt.target.checked);
   });
+
+  if (hide) {
+    hideStream(index);
+  }
 };
 
 /***/ }),
@@ -392,7 +404,7 @@ Messages:
 
 - MEIOSIS_TRACER_INIT: received from the UI to initialize
 - MEIOSIS_PING: sent to the UI in case we missed the INIT message, asks the UI to send INIT
-- MEIOSIS_STREAM_LABELS: sent to the UI to initialize number of streams and labels
+- MEIOSIS_STREAM_OPTIONS: sent to the UI to initialize streams and options
 - MEIOSIS_STREAM_VALUE: sent to the UI to indicate a new stream value
 - MEIOSIS_TRIGGER_STREAM_VALUE: received from the UI to push a value onto a stream
 
@@ -421,16 +433,14 @@ var trace = exports.trace = function trace(_ref) {
   var devtoolInitialized = false;
 
   var streamObjs = [];
-  var labels = [];
 
   for (var i = 0, t = streams.length; i < t; i++) {
-    if (streams[i].label) {
-      labels.push(streams[i].label);
+    var defaultLabel = "Stream " + i;
+    if (streams[i].stream) {
+      streams[i].label = streams[i].label || defaultLabel;
       streamObjs.push(streams[i]);
     } else {
-      var label = "Stream " + i;
-      labels.push(label);
-      streamObjs.push({ stream: streams[i], label: label });
+      streamObjs.push({ stream: streams[i], label: defaultLabel });
     }
   }
 
@@ -450,7 +460,17 @@ var trace = exports.trace = function trace(_ref) {
 
   window.addEventListener("message", function (evt) {
     if (evt.data.type === "MEIOSIS_TRACER_INIT") {
-      window.postMessage({ type: "MEIOSIS_STREAM_LABELS", value: labels }, "*");
+      var streamOpts = [];
+      streamObjs.forEach(function (streamObj) {
+        var streamOpt = {};
+        Object.keys(streamObj).forEach(function (key) {
+          if (key !== "stream") {
+            streamOpt[key] = streamObj[key];
+          }
+        });
+        streamOpts.push(streamOpt);
+      });
+      window.postMessage({ type: "MEIOSIS_STREAM_OPTIONS", value: streamOpts }, "*");
       devtoolInitialized = true;
       bufferedStreamValues.forEach(function (data) {
         return window.postMessage(data, "*");
@@ -535,7 +555,7 @@ var tracer = exports.tracer = function tracer(_ref) {
     };
   }
 
-  var receiveLabels = function receiveLabels(labels) {
+  var receiveStreamOptions = function receiveStreamOptions(streamOptions) {
     var settingsListeners = {
       onHideTracer: function onHideTracer() {
         var container = document.getElementById(C.streamContainerId);
@@ -552,7 +572,7 @@ var tracer = exports.tracer = function tracer(_ref) {
         document.getElementById(C.showTracerId).style = "display:none";
       },
       onRowsColsChange: function onRowsColsChange(rows, cols) {
-        for (var i = 0; i < labels.length; i++) {
+        for (var i = 0; i < streamOptions.length; i++) {
           var textarea = document.getElementById(C.modelId(i));
           textarea.rows = rows;
           textarea.cols = cols;
@@ -583,8 +603,13 @@ var tracer = exports.tracer = function tracer(_ref) {
     };
 
     var _loop = function _loop(index) {
+      var _streamOptions$index = streamOptions[index],
+          label = _streamOptions$index.label,
+          hist = _streamOptions$index.hist,
+          hide = _streamOptions$index.hide;
+
       states.push({ history: [], value: -1 });
-      accumulateHistory.push(true);
+      accumulateHistory.push(hist === false ? false : true);
 
       var listeners = {
         onSliderChange: function onSliderChange(value) {
@@ -629,12 +654,11 @@ var tracer = exports.tracer = function tracer(_ref) {
       var element = document.createElement("div");
       element.style = "flex-grow:1";
       container.append(element);
-      var label = labels[index];
 
-      (0, _streamView.streamView)({ element: element, index: index, listeners: listeners, label: label, rows: rows, cols: cols });
+      (0, _streamView.streamView)({ element: element, index: index, listeners: listeners, label: label, rows: rows, cols: cols, hist: hist, hide: hide });
     };
 
-    for (var index = 0; index < labels.length; index++) {
+    for (var index = 0; index < streamOptions.length; index++) {
       _loop(index);
     }
 
@@ -660,8 +684,8 @@ var tracer = exports.tracer = function tracer(_ref) {
   };
 
   window.addEventListener("message", function (evt) {
-    if (evt.data.type === "MEIOSIS_STREAM_LABELS") {
-      receiveLabels(evt.data.value);
+    if (evt.data.type === "MEIOSIS_STREAM_OPTIONS") {
+      receiveStreamOptions(evt.data.value);
     } else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
       receiveStreamValue(evt.data.index, evt.data.value);
     }
@@ -670,7 +694,7 @@ var tracer = exports.tracer = function tracer(_ref) {
   sendTracerInit();
 
   return {
-    receiveLabels: receiveLabels,
+    receiveStreamOptions: receiveStreamOptions,
     receiveStreamValue: receiveStreamValue,
     reset: reset
   };
