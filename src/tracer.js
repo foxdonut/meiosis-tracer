@@ -60,7 +60,8 @@ export const tracer = ({
         }
       },
       onDirectionChange: direction => {
-        document.getElementById(C.streamContainerId).style = "display:flex;flex-direction:" + direction
+        document.getElementById(C.streamContainerId).style =
+          "display:flex;flex-direction:" + direction
       },
       onAutoChange: auto => {
         autoSend = auto
@@ -68,7 +69,8 @@ export const tracer = ({
     }
     const settings = document.createElement("div")
     target.append(settings)
-    settingsView({ element: settings, listeners: settingsListeners, direction, rows, cols, autoSend })
+    settingsView({ element: settings, listeners: settingsListeners, direction,
+      rows, cols, autoSend })
 
     const container = document.createElement("div")
     container.id = C.streamContainerId

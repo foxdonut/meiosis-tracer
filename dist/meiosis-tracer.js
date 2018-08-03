@@ -410,9 +410,12 @@ Messages:
 
 Parameters:
 
-- streams:              [ ]      // each item either a stream, or { label, stream }
+- streams:              [ ]      // each item either a stream, or
+    { stream, label, hist, hide, stringify, parse, listen, emit }
 - stringify (optional): Function // default is obj => JSON.stringify(obj, null, 4)
 - parse (optional):     Function // default is str => JSON.parse(str)
+- listen (optional):    Function // default is (stream, fn) => stream.map(fn)
+- emit (optional):      Function // default is (stream, value) => stream(value)
 */
 var trace = exports.trace = function trace(_ref) {
   var _ref$streams = _ref.streams,
@@ -424,7 +427,15 @@ var trace = exports.trace = function trace(_ref) {
       _ref$parse = _ref.parse,
       parse = _ref$parse === undefined ? function (str) {
     return JSON.parse(str);
-  } : _ref$parse;
+  } : _ref$parse,
+      _ref$listen = _ref.listen,
+      listen = _ref$listen === undefined ? function (stream, fn) {
+    return stream.map(fn);
+  } : _ref$listen,
+      _ref$emit = _ref.emit,
+      emit = _ref$emit === undefined ? function (stream, value) {
+    return stream(value);
+  } : _ref$emit;
 
   if (!isMeiosisTracerOn()) {
     return;
@@ -447,7 +458,7 @@ var trace = exports.trace = function trace(_ref) {
   streamObjs.forEach(function (_ref2, index) {
     var stream = _ref2.stream;
 
-    stream.map(function (value) {
+    listen(stream, function (value) {
       var data = { type: "MEIOSIS_STREAM_VALUE", index: index, value: stringify(value) };
 
       if (devtoolInitialized) {
@@ -481,7 +492,7 @@ var trace = exports.trace = function trace(_ref) {
           index = _evt$data.index,
           value = _evt$data.value;
 
-      streamObjs[index].stream(parse(value));
+      emit(streamObjs[index].stream, parse(value));
     }
   });
 
@@ -587,7 +598,8 @@ var tracer = exports.tracer = function tracer(_ref) {
     };
     var settings = document.createElement("div");
     target.append(settings);
-    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, direction: direction, rows: rows, cols: cols, autoSend: autoSend });
+    (0, _settingsView.settingsView)({ element: settings, listeners: settingsListeners, direction: direction,
+      rows: rows, cols: cols, autoSend: autoSend });
 
     var container = document.createElement("div");
     container.id = C.streamContainerId;

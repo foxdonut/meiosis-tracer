@@ -20,14 +20,19 @@ Messages:
 
 Parameters:
 
-- streams:              [ ]      // each item either a stream, or { label, stream }
+- streams:              [ ]      // each item either a stream, or
+    { stream, label, hist, hide, stringify, parse, listen, emit }
 - stringify (optional): Function // default is obj => JSON.stringify(obj, null, 4)
 - parse (optional):     Function // default is str => JSON.parse(str)
+- listen (optional):    Function // default is (stream, fn) => stream.map(fn)
+- emit (optional):      Function // default is (stream, value) => stream(value)
 */
 export const trace = ({
   streams = [],
   stringify = obj => JSON.stringify(obj, null, 4),
-  parse = str => JSON.parse(str)
+  parse = str => JSON.parse(str),
+  listen = (stream, fn) => stream.map(fn),
+  emit = (stream, value) => stream(value)
 }) => {
   if (!isMeiosisTracerOn()) {
     return
@@ -49,7 +54,7 @@ export const trace = ({
   }
 
   streamObjs.forEach(({ stream }, index) => {
-    stream.map(value => {
+    listen(stream, value => {
       const data = { type: "MEIOSIS_STREAM_VALUE", index, value: stringify(value) }
 
       if (devtoolInitialized) {
@@ -80,7 +85,7 @@ export const trace = ({
     }
     else if (evt.data.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
       const { index, value } = evt.data
-      streamObjs[index].stream(parse(value))
+      emit(streamObjs[index].stream, parse(value))
     }
   })
 

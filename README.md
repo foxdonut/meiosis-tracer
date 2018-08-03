@@ -81,9 +81,7 @@ Meiosis-Tracer works in the same way either added to the page, or in DevTools. E
 
 ### Options for `meiosisTracer({ ... })`
 
-These are general options for the tracer. Stream-related options apply to all streams, unless
-overridden by a stream-specific option (see below.) Stream-related options are `stringify`,
-`parse`, `listen`, and `emit`.
+These are general options for the tracer. Stream-related options apply to all streams.
 
 | option | purpose | values  | default |
 |--------|---------|---------|---------|
@@ -94,14 +92,12 @@ overridden by a stream-specific option (see below.) Stream-related options are `
 | `autoSend` | whether or not to automatically send values | boolean | `true` |
 | `stringify` | how to convert a stream value to a string | function | `JSON.stringify(val, null, 4)` |
 | `parse` | how to parse a string to a stream value | function | `JSON.parse(str)` |
-| `listen` | how to listen to a stream | function | `stream.map` |
-| `emit` | how to send a value to a stream | function | `stream(value)` |
+| `listen` | how to listen to a stream | function | `listen = (stream, fn) => stream.map(fn)` |
+| `emit` | how to send a value to a stream | function | `(stream, value) => stream(value)` |
 
 ### Stream Options
 
-These are stream-specific options. When the same option is specified for the tracer (above) and
-for a specific stream, the stream-specific option overrides the tracer option. These options
-include  `stringify`, `parse`, `listen`, and `emit`.
+These are stream-specific options.
 
 | option | purpose | values  | default |
 |--------|---------|---------|---------|
@@ -109,10 +105,6 @@ include  `stringify`, `parse`, `listen`, and `emit`.
 | `label` | the label for the stream | string | `Stream N` |
 | `hist` | whether or not to accumulate history | boolean | `true` |
 | `hide` | whether or not to initially hide the stream | boolean | `false` |
-| `stringify` | how to convert a stream value to a string | function | `JSON.stringify(val, null, 4)` |
-| `parse` | how to parse a string to a stream value | function | `JSON.parse(str)` |
-| `listen` | how to listen to a stream | function | `stream.map` |
-| `emit` | how to send a value to a stream | function | `stream(value)` |
 
 ## Credits
 
