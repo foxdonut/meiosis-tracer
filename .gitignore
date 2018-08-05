@@ -34,3 +34,5 @@ node_modules
 
 meiosis*.tgz
 meiosis-tracer.zip
+build
+dist
