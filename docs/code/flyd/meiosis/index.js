@@ -36,4 +36,6 @@ const view = createView(createActions(update))
 const element = document.getElementById("app")
 models.map(model => { ReactDOM.render(view(model), element) })
 
-meiosisTracer({ selector: "#tracer", streams: [ models ]})
+meiosisTracer({ selector: "#tracer", streams: [
+  { stream: models, label: "models" }
+]})

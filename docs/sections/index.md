@@ -12,7 +12,7 @@
 ## Introduction
 
 Meiosis-Tracer is a development and debugging tool that traces, rewinds, and replays snapshots of
-[flyd](https://github.com/paldepind/flyd) or [Mithril](https://mithril.js.org/stream.html) streams.
+[Flyd](https://github.com/paldepind/flyd) or [Mithril](https://mithril.js.org/stream.html) streams.
 It can also work with other stream libraries such as [RxJS](https://rxjs-dev.firebaseapp.com/),
 [most.js](https://github.com/cujojs/most), and so on.
 
@@ -63,6 +63,8 @@ meiosisTracer({ selector: "#tracer", streams: [ models, states ] });
 
 This will render the tracer into the HTML element that has the `tracer` id.
 
+See [Using the Tracer](#using_the_tracer) for more details and examples.
+
 <a name="using_chrome_extension"></a>
 ## Using the Chrome DevTools Extension
 
@@ -72,24 +74,35 @@ without needing to add it to your page.
 You can
 [get it from the Chrome Web Store](https://chrome.google.com/webstore/detail/meiosis-tracer/lcomllmppaiciocfbeefdeoplnfpnnfl).
 
-Once installed:
-
-- If DevTools is already open, close it
-- When you open DevTools, you should have a `Meiosis` tab.
-
 Alternatively, you can run it directly from the source code. To do so, clone the repository:
 
 ```
 git clone https://github.com/foxdonut/meiosis-tracer
 ```
 
-- If DevTools was already open, close it
 - In Chrome, open `chrome://extensions`
 - Press **Load unpacked extension...**
 - Select the `chrome-devtool` directory under `meiosis-tracer`
+
+Once installed:
+
+- If DevTools is already open, close it
 - When you open DevTools, you should have a `Meiosis` tab.
 
-Meiosis-Tracer works in the same way either added to the page, or in DevTools. Enjoy!
+To trace streams in your application, call `meiosisTracer` but **DO NOT** specify a `selector`:
+
+```javascript
+import meiosisTracer from "meiosis-tracer";
+
+const models = ...; // a stream
+const states = model.map(...); // another stream
+
+meiosisTracer({ streams: [ models, states ] });
+```
+
+The Meiosis-Tracer UI works in the same way either added to the page, or in DevTools.
+
+See [Using the Tracer](#using_the_tracer) for more details and examples.
 
 ### Credits
 
@@ -104,9 +117,38 @@ My thanks and appreciation go to their authors!
 <a name="using_the_tracer"></a>
 ## Using the Tracer
 
-### RxJS example
+At it simplest, the Tracer works with
+[Flyd](https://github.com/paldepind/flyd) or [Mithril](https://mithril.js.org/stream.html) streams
+without any configuration. Simply call `meiosisTracer` and indicate the `streams` that you want to
+trace. That's all you need if you are using the Chrome Extension. If you want to add the Tracer to
+your page instead, also indicate the `selector`.
 
-@flems lib/meiosis-tracer.js,code/rxjs/basic/index.js,app.html rxjs
+Here is a Flyd example:
+
+@flems lib/meiosis-tracer.js,code/flyd/basic/index.js,app.html flyd
+
+And here is the same example with Mithril-Stream:
+
+@flems lib/meiosis-tracer.js,code/mithril/basic/index.js,app.html mithril,mithril-stream
+
+By default, streams are labeled `Stream 0`, `Stream 1`, etc. To specify different labels, use
+objects in the `streams` array. Each object must have a `stream` property for the stream. Then,
+use `label` to indicate the label:
+
+@flems lib/meiosis-tracer.js,code/flyd/meiosis/index.js,app.html flyd,react,react-dom 800
+
+You can also specify options to the tracer itself, which apply to all streams. In the
+example below, we indicated the number of `rows` for the textarea, and how to `stringify`
+values:
+
+@flems lib/meiosis-tracer.js,code/mithril/meiosis/index.js,app.html mithril,mithril-stream 800
+
+The Tracer can also work with other stream libraries such as
+[RxJS](https://rxjs-dev.firebaseapp.com/), [most.js](https://github.com/cujojs/most), and so on.
+In those cases, specify the `listen` and `emit` properties to indicate how to listen to a stream
+and how to emit a value onto a stream. Here is an example with RxJS:
+
+@flems lib/meiosis-tracer.js,code/rxjs/basic/index.js,app.html rxjs 600
 
 <a name="options"></a>
 ## Full List of Options
@@ -118,6 +160,7 @@ These are general options for the tracer. Stream-related options apply to all st
 | option | purpose | values  | default |
 |--------|---------|---------|---------|
 | `selector` | CSS selector targetting the HTML element for the tracer | string |    |
+| `stream` | array of streams to be traced | array |  |
 | `direction` | layout direction for multiple streams | `row`, `column`, `auto` | `column` |
 | `rows` | number of rows in textareas | number | `15`   |
 | `cols` | number of columns in textareas | number | `50`   |
@@ -129,7 +172,8 @@ These are general options for the tracer. Stream-related options apply to all st
 
 ### Stream Options
 
-These are stream-specific options.
+These are stream-specific options. Indicate these options within properties of the objects that
+you pass to the `streams` array.
 
 | option | purpose | values  | default |
 |--------|---------|---------|---------|

@@ -35,4 +35,11 @@ const view = createView(createActions(update))
 const element = document.getElementById("app")
 models.map(model => { m.render(element, view(model)) })
 
-meiosisTracer({ selector: "#tracer", streams: [ models ]})
+meiosisTracer({
+  selector: "#tracer",
+  streams: [
+    { stream: models, label: "models" }
+  ],
+  rows: 10,
+  stringify: value => JSON.stringify(value, null, 2)
+})

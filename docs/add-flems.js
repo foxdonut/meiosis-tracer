@@ -60,10 +60,12 @@ filenames.forEach(source => {
       var linkString = "[" + linkContents.join(",") + "]"
 
       var style = ""
+      var autoHeight = "autoHeight: true,"
       if (parts.length > 3) {
         style = " style=\"height:" + parts[3] + "px\""
+        autoHeight = ""
       }
-      var middle = "75"
+      var middle = "60"
       if (parts.length > 4) {
         middle = parts[4]
       }
@@ -77,7 +79,7 @@ filenames.forEach(source => {
       links: ${linkString},
       middle: ${middle},
       autoFocus: false,
-      autoHeight: true,
+      ${autoHeight}
       selected: 'index.js'
     })
   </script>
