@@ -131,6 +131,29 @@ And here is the same example with Mithril-Stream:
 
 @flems lib/meiosis-tracer.js,code/mithril/basic/index.js,app.html mithril,mithril-stream
 
+The controls that you see at the top of the Tracer are as follows:
+
+- **Row / Col**: when you trace more than one stream, this indicates the layout direction of the
+boxes. _When using the Tracer in Chrome DevTools, the layout automatically changes according
+to the position of your DevTools window._
+- **Auto**: whether or not to automatically send values when you use the slider or the arrow buttons
+to go back and forth in history.
+- **15 &times; 50**: this is the number of rows and columns in the textareas. You can change these
+values to adjust the size of the textareas. Note that this stops working on textareas if you
+resize them manually.
+- **Hide button**: hides the Tracer.
+
+Each stream also has these controls:
+
+- **Hist**: whether or not to accumulate history. This automatically shuts off if you have Auto on
+and use the slider or arrow buttons to go back and forth in history.
+- **Hide button**: hide an individual stream.
+- **Arrow buttons**: go back and forth in history.
+- **Send**: send the value entered in the textarea onto the stream. Note that the value that you
+enter in the textarea must be valid JSON, or be recognized by the `parse` function that you
+specify (see below for full list of options), otherwise an error will occur.
+- **Reset**: wipes out the stream's history.
+
 By default, streams are labeled `Stream 0`, `Stream 1`, etc. To specify different labels, use
 objects in the `streams` array. Each object must have a `stream` property for the stream. Then,
 use `label` to indicate the label:
