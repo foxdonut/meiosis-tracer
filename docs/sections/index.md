@@ -119,11 +119,11 @@ your page instead, also indicate the `selector`.
 
 Here is a Flyd example:
 
-@flems lib/meiosis-tracer.js,code/flyd/basic/index.js,app.html flyd
+@flems code/flyd/basic/index.js,app.html flyd,meiosis-tracer
 
 And here is the same example with Mithril-Stream:
 
-@flems lib/meiosis-tracer.js,code/mithril/basic/index.js,app.html mithril,mithril-stream
+@flems code/mithril/basic/index.js,app.html mithril,mithril-stream,meiosis-tracer
 
 The controls that you see at the top of the Tracer are as follows:
 
@@ -152,20 +152,20 @@ By default, streams are labeled `Stream 0`, `Stream 1`, etc. To specify differen
 objects in the `streams` array. Each object must have a `stream` property for the stream. Then,
 use `label` to indicate the label:
 
-@flems lib/meiosis-tracer.js,code/flyd/meiosis/index.js,app.html flyd,react,react-dom 800
+@flems code/flyd/meiosis/index.js,app.html flyd,react,react-dom,meiosis-tracer 800
 
 You can also specify options to the tracer itself, which apply to all streams. In the
 example below, we indicated the number of `rows` for the textarea, and how to `stringify`
 values:
 
-@flems lib/meiosis-tracer.js,code/mithril/meiosis/index.js,app.html mithril,mithril-stream 800
+@flems code/mithril/meiosis/index.js,app.html mithril,mithril-stream,meiosis-tracer 800
 
 The Tracer can also work with other stream libraries such as
 [RxJS](https://rxjs-dev.firebaseapp.com/), [most.js](https://github.com/cujojs/most), and so on.
 In those cases, specify the `listen` and `emit` properties to indicate how to listen to a stream
 and how to emit a value onto a stream. Here is an example with RxJS:
 
-@flems lib/meiosis-tracer.js,code/rxjs/basic/index.js,app.html rxjs 600
+@flems code/rxjs/basic/index.js,app.html rxjs,meiosis-tracer 600
 
 > For more examples using Meiosis-Tracer, see the
 [Meiosis Examples](http://meiosis.js.org/examples.html).
