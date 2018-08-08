@@ -34,4 +34,5 @@ node_modules
 
 meiosis*.tgz
 meiosis-tracer.zip
-.vscode
+build
+dist

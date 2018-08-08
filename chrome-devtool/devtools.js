@@ -4,4 +4,4 @@ chrome.devtools.panels.create("Meiosis",
   "panel.html",
   function(_panel) {
   }
-);
+)

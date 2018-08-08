@@ -1,8 +1,8 @@
 /*global process, __dirname*/
-var isProd = process.env.NODE_ENV === "prod";
-var isDev = process.env.NODE_ENV === "dev";
-var isLib = !(isProd || isDev);
-var isDevtool = process.env.NODE_ENV === "devtool";
+var isProd = process.env.NODE_ENV === "prod"
+var isDev = process.env.NODE_ENV === "dev"
+var isLib = !(isProd || isDev)
+var isDevtool = process.env.NODE_ENV === "devtool"
 
 module.exports = isDevtool ? {
   entry: "./src/index.js",
@@ -42,4 +42,4 @@ module.exports = isDevtool ? {
       }
     ]
   }
-};
+}

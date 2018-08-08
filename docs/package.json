@@ -1,0 +1,35 @@
+{
+  "name": "meiosis-tracer-docs",
+  "version": "2.0.0",
+  "description": "meiosis tracer docs",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf build dist && mkdir -p build dist && node add-flems.js sections build",
+    "build": "harp compile build dist",
+    "postbuild": "cp css/* dist",
+    "onchange": "onchange app.css app.html 'code/*' 'css/*' 'sections/*' -- npm run build",
+    "start": "static-server -p ${PORT:-9000}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdonut/meiosis-racer.git"
+  },
+  "keywords": [
+    "meiosis",
+    "reactive",
+    "streams",
+    "tracer"
+  ],
+  "author": "foxdonut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdonut/meiosis-tracer/issues"
+  },
+  "homepage": "https://github.com/foxdonut/meiosis-tracer#readme",
+  "devDependencies": {
+    "eslint": "^5.1.0",
+    "harp": "^0.27.0",
+    "onchange": "^4.1.0",
+    "static-server": "^2.2.1"
+  }
+}
