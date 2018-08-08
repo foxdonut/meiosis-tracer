@@ -1,5 +1,8 @@
 # Meiosis-Tracer
 
+**NEW: VERSION 2** - improved UI, can work with any stream, even outside of the Meiosis pattern;
+no longer requires `meiosis` as a dependency.
+
 Meiosis-Tracer is a development and debugging tool that traces, rewinds, and replays snapshots of
 streams such as [flyd](https://github.com/paldepind/flyd),
 [Mithril](https://mithril.js.org/stream.html),

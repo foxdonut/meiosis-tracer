@@ -19,12 +19,6 @@ It can also work with other stream libraries such as [RxJS](https://rxjs-dev.fir
 You can also directly enter your own snapshots and send the values onto the streams. This works
 particularly well in [Meiosis](http://meiosis.js.org) applications.
 
-You can use Meiosis-Tracer either by adding it to a page of your web application, or as a
-Chrome DevTools Extension.
-
-**VERSION 2.0.0 RELEASED**: see what's new in this
-[short screencast on YouTube](https://www.youtube.com/watch?v=2T7faqh3unc)
-
 You can install Meiosis-Tracer with `npm`:
 
 ```
@@ -172,6 +166,9 @@ In those cases, specify the `listen` and `emit` properties to indicate how to li
 and how to emit a value onto a stream. Here is an example with RxJS:
 
 @flems lib/meiosis-tracer.js,code/rxjs/basic/index.js,app.html rxjs 600
+
+> For more examples using Meiosis-Tracer, see the
+[Meiosis Examples](http://meiosis.js.org/examples.html).
 
 <a name="options"></a>
 ## Full List of Options
