@@ -19,6 +19,9 @@ export const tracer = ({
   if (!target) {
     return
   }
+  while (target.lastChild) {
+    target.removeChild(target.lastChild)
+  }
 
   const states = []
   let accumulateHistory = []

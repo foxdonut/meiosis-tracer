@@ -549,6 +549,9 @@ var tracer = exports.tracer = function tracer(_ref) {
   if (!target) {
     return;
   }
+  while (target.lastChild) {
+    target.removeChild(target.lastChild);
+  }
 
   var states = [];
   var accumulateHistory = [];
