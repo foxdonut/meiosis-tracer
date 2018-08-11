@@ -549,9 +549,6 @@ var tracer = exports.tracer = function tracer(_ref) {
   if (!target) {
     return;
   }
-  while (target.lastChild) {
-    target.removeChild(target.lastChild);
-  }
 
   var states = [];
   var accumulateHistory = [];
@@ -570,6 +567,9 @@ var tracer = exports.tracer = function tracer(_ref) {
   }
 
   var receiveStreamOptions = function receiveStreamOptions(streamOptions) {
+    if (target.lastChild) {
+      return;
+    }
     var settingsListeners = {
       onHideTracer: function onHideTracer() {
         var container = document.getElementById(C.streamContainerId);

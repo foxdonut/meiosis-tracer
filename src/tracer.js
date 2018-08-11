@@ -19,9 +19,6 @@ export const tracer = ({
   if (!target) {
     return
   }
-  while (target.lastChild) {
-    target.removeChild(target.lastChild)
-  }
 
   const states = []
   let accumulateHistory = []
@@ -40,6 +37,9 @@ export const tracer = ({
   }
 
   const receiveStreamOptions = streamOptions => {
+    if (target.lastChild) {
+      return
+    }
     const settingsListeners = {
       onHideTracer: () => {
         const container = document.getElementById(C.streamContainerId)
