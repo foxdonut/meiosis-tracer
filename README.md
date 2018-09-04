@@ -10,12 +10,12 @@ streams such as [flyd](https://github.com/paldepind/flyd),
 [most.js](https://github.com/cujojs/most), and so on.
 
 You can also directly enter your own snapshots and send the values onto the streams. This works
-particularly well in [Meiosis](http://meiosis.js.org) applications.
+particularly well in [Meiosis](https://meiosis.js.org) applications.
 
 You can use Meiosis-Tracer either by adding it to a page of your web application, or as a
 Chrome DevTools Extension.
 
-Please refer to the [Meiosis-Tracer Documentation](http://meiosis.js.org/tracer/index.html) for
+Please refer to the [Meiosis-Tracer Documentation](https://meiosis.js.org/tracer/index.html) for
 all the details.
 
 -----
