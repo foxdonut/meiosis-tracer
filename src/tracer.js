@@ -4,6 +4,8 @@ import { settingsView, initializeResizeChangeDirection } from "./settingsView"
 import * as C from "./constants"
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true
+const states = []
+const accumulateHistory = []
 
 export const tracer = ({
   selector,
@@ -20,8 +22,6 @@ export const tracer = ({
     return
   }
 
-  const states = []
-  let accumulateHistory = []
   let containerStyle = null
 
   if (sendTracerInit == null) {

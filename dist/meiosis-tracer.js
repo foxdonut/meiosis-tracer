@@ -530,6 +530,8 @@ var C = _interopRequireWildcard(_constants);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 window["__MEIOSIS_TRACER_GLOBAL_HOOK__"] = true;
+var states = [];
+var accumulateHistory = [];
 
 var tracer = exports.tracer = function tracer(_ref) {
   var selector = _ref.selector,
@@ -550,8 +552,6 @@ var tracer = exports.tracer = function tracer(_ref) {
     return;
   }
 
-  var states = [];
-  var accumulateHistory = [];
   var containerStyle = null;
 
   if (sendTracerInit == null) {
