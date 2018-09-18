@@ -22,9 +22,9 @@ export const settingsView = ({ element, listeners, direction, rows, cols, autoSe
       "<span> &times; </span> " +
       "<input title='Number of columns' id='" + C.colsId + "' type='text' size='2'" +
         " value='" + cols + "'/>" +
-      "<button id='" + C.hideTracerId + "'>Hide</button>" +
+      "<button id='" + C.hideTracerId + "' type='button'>Hide</button>" +
     "</div>" +
-    "<button id='" + C.showTracerId + "' style='display:none'>Show</button>"
+    "<button id='" + C.showTracerId + "' type='button' style='display:none'>Show</button>"
 
   document.getElementById(C.hideTracerId).addEventListener("click", _evt => {
     listeners.onHideTracer()
