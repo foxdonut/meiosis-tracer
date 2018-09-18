@@ -11,23 +11,23 @@ export const streamView = ({ element, index, listeners, label = "", rows, cols, 
           "<input id='" + C.histId(index) + "' type='checkbox' " + (hist ? "checked" : "") + " />" +
           " Hist " +
         "</label>" +
-        "<button id='" + C.hideStreamId(index) + "'>Hide</button>" +
+        "<button id='" + C.hideStreamId(index) + "' type='button'>Hide</button>" +
       "</div>" +
       "<textarea id='" + C.modelId(index) + "' rows='" + rows + "' cols='" + cols + "'>" +
       "</textarea>" +
       "<div>" +
         "<input id='" + C.sliderId(index) + "' type='range' min='0' max='0' value='0'" +
           " style='width: 100%' />" +
-        "<button id='" + C.stepBackId(index) + "'>&lt</button> " +
-        "<button id='" + C.stepForwardId(index) + "'>&gt</button> " +
+        "<button id='" + C.stepBackId(index) + "' type='button'>&lt</button> " +
+        "<button id='" + C.stepForwardId(index) + "' type='button'>&gt</button> " +
         "<span id='" + C.sliderValueId(index) + "'>-1</span> " +
-        "<button id='" + C.sendId(index) + "'>Send</button> " +
-        "<button id='" + C.resetId(index) + "'>Reset</button> " +
+        "<button id='" + C.sendId(index) + "' type='button'>Send</button> " +
+        "<button id='" + C.resetId(index) + "' type='button'>Reset</button> " +
       "</div>" +
     "</div>" +
     "<div id='" + C.hiddenStreamId(index) + "' style='display:none'>" +
       "<span>" + label + " </span>" +
-      "<button id='" + C.showStreamId(index) + "'>Show</button>" +
+      "<button id='" + C.showStreamId(index) + "' type='button'>Show</button>" +
     "</div>"
 
   document.getElementById(C.sliderId(index)).addEventListener("input", evt => {
