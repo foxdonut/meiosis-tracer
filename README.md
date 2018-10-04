@@ -13,7 +13,7 @@ You can also directly enter your own snapshots and send the values onto the stre
 particularly well in [Meiosis](https://meiosis.js.org) applications.
 
 You can use Meiosis-Tracer either by adding it to a page of your web application, or as a
-Chrome DevTools Extension.
+[Chrome DevTools Extension](https://chrome.google.com/webstore/detail/meiosis-tracer/lcomllmppaiciocfbeefdeoplnfpnnfl).
 
 Please refer to the [Meiosis-Tracer Documentation](https://meiosis.js.org/tracer/index.html) for
 all the details.
