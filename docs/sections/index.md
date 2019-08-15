@@ -78,7 +78,7 @@ npm start
 ```
 
 - In Chrome, open `chrome://extensions`
-- Press **Load unpacked extension...**
+- Press **Load unpacked**
 - Select the `chrome-devtool` directory under `meiosis-tracer`
 
 Once installed:
