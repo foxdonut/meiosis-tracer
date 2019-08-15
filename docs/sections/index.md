@@ -185,6 +185,7 @@ These are general options for the tracer. Stream-related options apply to all st
 | `selector` | CSS selector targetting the HTML element for the tracer | string |    |
 | `stream` | array of streams to be traced | array |  |
 | `direction` | layout direction for multiple streams | `row`, `column`, `auto` | `column` |
+| `theme` | add a `theme-<name>` class | any string | `light` |
 | `rows` | number of rows in textareas | number | `15`   |
 | `cols` | number of columns in textareas | number | `50`   |
 | `autoSend` | whether or not to automatically send values | boolean | `true` |
