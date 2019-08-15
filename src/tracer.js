@@ -79,7 +79,6 @@ export const tracer = ({
       element: settings,
       listeners: settingsListeners,
       direction,
-      theme,
       rows,
       cols,
       autoSend

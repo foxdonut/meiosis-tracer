@@ -1,6 +1,6 @@
 import * as C from "./constants"
 
-export const settingsView = ({ element, listeners, direction, theme, rows, cols, autoSend }) => {
+export const settingsView = ({ element, listeners, direction, rows, cols, autoSend }) => {
   element.innerHTML = `
     <div id='${C.settingsContainerId}'>
       <label title='Align in a row'>
