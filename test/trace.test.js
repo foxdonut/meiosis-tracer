@@ -4,15 +4,9 @@ import flyd from "flyd"
 
 setup()
 
-const streams = [
-  flyd.stream(),
-  flyd.stream()
-]
+const streams = [flyd.stream(), flyd.stream()]
 
-const values = [
-  {test: 0},
-  {test: 1}
-]
+const values = [{ test: 0 }, { test: 1 }]
 
 const received = []
 

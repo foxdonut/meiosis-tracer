@@ -10,52 +10,49 @@
 //   tabId: [Automatically added]
 // }
 
-// This sends an object to the background page where it can be relayed to the inspected page
-var sendObjectToInspectedPage = function(message) {
+var sendMessageToBackground = function(message) {
   message.tabId = chrome.devtools.inspectedWindow.tabId
-  chrome.extension.sendMessage(message)
+  chrome.runtime.sendMessage(message)
 }
-
-// Create a port with background page for continous message communication
-var port = chrome.extension.connect({
-  name: "Meiosis-Tracer Channel"
-})
 
 var tracer = null
 
-// Listen to messages from the inspected page, relayed by the background code
-port.onMessage.addListener(function(evt) {
-  var data = JSON.parse(evt).message.data
-  if (data.type === "MEIOSIS_PING") {
-    sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
-  }
-  else if (data.type === "MEIOSIS_STREAM_OPTIONS") {
-    tracer.receiveStreamOptions(data.value)
-  }
-  else if (data.type === "MEIOSIS_STREAM_VALUE") {
-    tracer.receiveStreamValue(data.index, data.value)
+// Listen to messages from background.js and answer them
+chrome.runtime.onMessage.addListener(function(request, _sender, sendResponse) {
+  var data = request.data
+  if (data) {
+    if (data.type === "MEIOSIS_PING") {
+      sendResponse({ content: { type: "MEIOSIS_TRACER_INIT" } })
+    } else if (data.type === "MEIOSIS_STREAM_OPTIONS") {
+      tracer.receiveStreamOptions(data.value)
+    } else if (data.type === "MEIOSIS_STREAM_VALUE") {
+      tracer.receiveStreamValue(data.index, data.value)
+    }
   }
 })
 
 // Create the Tracer
 var createTracer = function() {
   var sendTracerInit = function() {
-    sendObjectToInspectedPage({ content: { type: "MEIOSIS_TRACER_INIT" } })
+    sendMessageToBackground({ content: { type: "MEIOSIS_TRACER_INIT" } })
   }
 
   var triggerStreamValue = function(index, value) {
-    sendObjectToInspectedPage({ content: {
-      type: "MEIOSIS_TRIGGER_STREAM_VALUE",
-      index: index,
-      value: value
-    } })
+    sendMessageToBackground({
+      content: {
+        type: "MEIOSIS_TRIGGER_STREAM_VALUE",
+        index: index,
+        value: value
+      }
+    })
   }
 
   tracer = window.meiosisTracer({
     selector: "#meiosis-tracer",
     sendTracerInit: sendTracerInit,
     triggerStreamValue: triggerStreamValue,
-    direction: "auto"
+    direction: "auto",
+    theme: chrome.devtools.panels.themeName
   })
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "meiosis-tracer",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "meiosis-tracer",
   "main": "lib/meiosis-tracer.js",
   "unpkg": "dist/meiosis-tracer.js",
@@ -28,14 +28,17 @@
   },
   "homepage": "https://github.com/foxdonut/meiosis-tracer#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
-    "browser-env": "^3.2.5",
-    "eslint": "^5.5.0",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.6",
+    "browser-env": "^3.2.6",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^5.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "flyd": "^0.2.8",
-    "tead": "0.4.3",
-    "webpack": "^4.17.2",
-    "webpack-cli": "^3.1.0"
+    "prettier": "1.18.2",
+    "tead": "^0.5.1",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6"
   }
 }

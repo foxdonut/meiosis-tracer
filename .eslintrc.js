@@ -4,23 +4,14 @@ module.exports = {
     "commonjs": true,
     "es6": true
   },
-  "extends": ["eslint:recommended"],
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
   "parserOptions": {
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "jsx": true
-    },
     "sourceType": "module"
   },
   "rules": {
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
     "no-unused-vars": [
       "error",
       {
@@ -28,13 +19,16 @@ module.exports = {
         "argsIgnorePattern": "^_"
       }
     ],
-    "quotes": [
+    "prettier/prettier": [
       "error",
-      "double"
-    ],
-    "semi": [
-      "error",
-      "never"
+      {
+        "printWidth": 100,
+        "semi": false,
+        "singleQuote": false
+      }
     ]
-  }
-};
+  },
+  "plugins": [
+    "prettier"
+  ]
+}

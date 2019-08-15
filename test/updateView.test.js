@@ -15,7 +15,7 @@ const listeners = {
 
 streamView({ element, index, listeners })
 
-const model = "{\"updated\": true }"
+const model = '{"updated": true }'
 const value = 1
 const max = 2
 
@@ -23,22 +23,9 @@ updateView({ index, model, value, max })
 
 export default {
   updateView: {
-    model: [
-      getElement(C.modelId(index)).value,
-      model
-    ],
-    sliderValue: [
-      getElement(C.sliderId(index)).value,
-      String(value)
-    ],
-    sliderMax: [
-      getElement(C.sliderId(index)).max,
-      String(max)
-    ],
-    sliderValueLabel: [
-      getElement(C.sliderValueId(index)).textContent,
-      String(value)
-    ]
+    model: [getElement(C.modelId(index)).value, model],
+    sliderValue: [getElement(C.sliderId(index)).value, String(value)],
+    sliderMax: [getElement(C.sliderId(index)).max, String(max)],
+    sliderValueLabel: [getElement(C.sliderValueId(index)).textContent, String(value)]
   }
 }
-

@@ -10,7 +10,7 @@ export const updateView = ({ index, model, value, max }) => {
   document.getElementById(C.sliderId(index)).value = value
   document.getElementById(C.sliderValueId(index)).innerHTML = value
 
-  document.getElementById(C.stepBackId(index)).disabled = (value <= 0)
+  document.getElementById(C.stepBackId(index)).disabled = value <= 0
   document.getElementById(C.stepForwardId(index)).disabled =
-    (value == document.getElementById(C.sliderId(index)).max)
+    value == document.getElementById(C.sliderId(index)).max
 }

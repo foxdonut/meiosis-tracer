@@ -72,6 +72,9 @@ Alternatively, you can run it directly from the source code. To do so, clone the
 
 ```
 git clone https://github.com/foxdonut/meiosis-tracer
+cd meiosis-tracer
+npm ci
+npm start
 ```
 
 - In Chrome, open `chrome://extensions`

@@ -36,3 +36,6 @@ meiosis*.tgz
 meiosis-tracer.zip
 build
 dist
+lib
+chrome-devtool/meiosis-tracer.js
+chrome-devtool/meiosis-tracer.js.map

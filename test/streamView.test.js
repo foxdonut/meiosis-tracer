@@ -13,10 +13,18 @@ const receivedValues = {
 }
 
 const listeners = {
-  onSliderChange: index => { receivedValues.sliderChange = index },
-  onStepBack: () => { receivedValues.stepBack = true },
-  onStepForward: () => { receivedValues.stepForward = true },
-  onSend: model => { receivedValues.send = model }
+  onSliderChange: index => {
+    receivedValues.sliderChange = index
+  },
+  onStepBack: () => {
+    receivedValues.stepBack = true
+  },
+  onStepForward: () => {
+    receivedValues.stepForward = true
+  },
+  onSend: model => {
+    receivedValues.send = model
+  }
 }
 
 streamView({ element, index, listeners })
@@ -35,40 +43,19 @@ triggerEvent(getElement(C.sendId(index)), "click")
 export default {
   streamView: {
     basic: {
-      streamBox: [
-        getElement(C.streamId(index)).id,
-        C.streamId(index)
-      ],
-      model: [
-        getElement(C.modelId(index)).type,
-        "textarea"
-      ],
-      slider: [
-        getElement(C.sliderId(index)).type,
-        "range"
-      ],
-      stepBack: [
-        getElement(C.stepBackId(index)).textContent,
-        "<"
-      ],
-      stepForward: [
-        getElement(C.stepForwardId(index)).textContent,
-        ">"
-      ],
-      index: [
-        getElement(C.sliderValueId(index)).textContent,
-        "-1"
-      ],
-      send: [
-        getElement(C.sendId(index)).textContent,
-        "Send"
-      ]
+      streamBox: [getElement(C.streamId(index)).id, C.streamId(index)],
+      model: [getElement(C.modelId(index)).type, "textarea"],
+      slider: [getElement(C.sliderId(index)).type, "range"],
+      stepBack: [getElement(C.stepBackId(index)).textContent, "<"],
+      stepForward: [getElement(C.stepForwardId(index)).textContent, ">"],
+      index: [getElement(C.sliderValueId(index)).textContent, "-1"],
+      send: [getElement(C.sendId(index)).textContent, "Send"]
     },
     events: {
-      onSliderChange: [ receivedValues.sliderChange, sliderValue ],
-      onStepBack: [ receivedValues.stepBack, true ],
-      onStepForward: [ receivedValues.stepForward, true ],
-      onSend: [ receivedValues.send, modelValue ]
+      onSliderChange: [receivedValues.sliderChange, sliderValue],
+      onStepBack: [receivedValues.stepBack, true],
+      onStepForward: [receivedValues.stepForward, true],
+      onSend: [receivedValues.send, modelValue]
     }
   }
 }

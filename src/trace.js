@@ -1,4 +1,4 @@
-const isMeiosisTracerOn = () => (window && window["__MEIOSIS_TRACER_GLOBAL_HOOK__"])
+const isMeiosisTracerOn = () => window && window["__MEIOSIS_TRACER_GLOBAL_HOOK__"]
 
 /*
 Changes to a stream are sent to the tracer.
@@ -47,8 +47,7 @@ export const trace = ({
     if (streams[i].stream) {
       streams[i].label = streams[i].label || defaultLabel
       streamObjs.push(streams[i])
-    }
-    else {
+    } else {
       streamObjs.push({ stream: streams[i], label: defaultLabel })
     }
   }
@@ -59,8 +58,7 @@ export const trace = ({
 
       if (devtoolInitialized) {
         window.postMessage(data, "*")
-      }
-      else {
+      } else {
         bufferedStreamValues.push(data)
       }
     })
@@ -82,8 +80,7 @@ export const trace = ({
       devtoolInitialized = true
       bufferedStreamValues.forEach(data => window.postMessage(data, "*"))
       bufferedStreamValues.length = 0
-    }
-    else if (evt.data.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
+    } else if (evt.data.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
       const { index, value } = evt.data
       emit(streamObjs[index].stream, parse(value))
     }

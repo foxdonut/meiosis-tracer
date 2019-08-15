@@ -12,6 +12,7 @@ export const tracer = ({
   sendTracerInit,
   triggerStreamValue,
   direction = "column",
+  theme = "light",
   rows = 15,
   cols = 50,
   autoSend = true
@@ -21,6 +22,8 @@ export const tracer = ({
   if (!target) {
     return
   }
+
+  target.classList.add(`theme-${theme}`)
 
   let containerStyle = null
 
@@ -72,12 +75,19 @@ export const tracer = ({
     }
     const settings = document.createElement("div")
     target.append(settings)
-    settingsView({ element: settings, listeners: settingsListeners, direction,
-      rows, cols, autoSend })
+    settingsView({
+      element: settings,
+      listeners: settingsListeners,
+      direction,
+      theme,
+      rows,
+      cols,
+      autoSend
+    })
 
     const container = document.createElement("div")
     container.id = C.streamContainerId
-    container.style="display:flex;flex-direction:column"
+    container.style = "display:flex;flex-direction:column"
     target.append(container)
 
     const sendStreamValue = (index, model) => {
@@ -134,7 +144,7 @@ export const tracer = ({
       }
 
       const element = document.createElement("div")
-      element.style="flex-grow:1"
+      element.style = "flex-grow:1"
       container.append(element)
 
       streamView({ element, index, listeners, label, rows, cols, hist, hide })
@@ -162,8 +172,7 @@ export const tracer = ({
   window.addEventListener("message", evt => {
     if (evt.data.type === "MEIOSIS_STREAM_OPTIONS") {
       receiveStreamOptions(evt.data.value)
-    }
-    else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
+    } else if (evt.data.type === "MEIOSIS_STREAM_VALUE") {
       receiveStreamValue(evt.data.index, evt.data.value)
     }
   })
