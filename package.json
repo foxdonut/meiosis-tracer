@@ -6,7 +6,7 @@
   "unpkg": "dist/meiosis-tracer.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "start": "webpack && NODE_ENV=prod webpack && NODE_ENV=dev webpack && NODE_ENV=devtool webpack",
+    "start": "webpack && cross-env NODE_ENV=prod webpack && cross-env NODE_ENV=dev webpack && cross-env NODE_ENV=devtool webpack",
     "test": "tead",
     "test-watch": "tead --watch"
   },
@@ -32,6 +32,7 @@
     "@babel/preset-env": "^7.10.4",
     "babel-loader": "^8.1.0",
     "browser-env": "^3.3.0",
+    "cross-env": "^7.0.2",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
