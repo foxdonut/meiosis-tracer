@@ -3,7 +3,7 @@
 // Create a port to send messages to content-script.js
 
 // Establishes a connection and relays messages between panel.js and content-script.js
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.tabId && message.content) {
     // Evaluate script in inspectedPage
     if (message.action === "code") {
@@ -26,3 +26,15 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     })
   }
 })
+
+// Listens to page reloads
+/*
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+  if (changeInfo.status === "loading" && !changeInfo.url) {
+    // Send message to content-script.js
+    chrome.tabs.sendMessage(tabId, {
+      content: { type: "MEIOSIS_TAB_RELOAD", tabId }
+    })
+  }
+})
+*/

@@ -1,6 +1,8 @@
 # Meiosis-Tracer
 
-**NEW: VERSION 3** - updated for latest Chrome, now with dark theme support.
+**VERSION 4** - updated to work even after reloading the page.
+
+**VERSION 3** - updated for latest Chrome, now with dark theme support.
 
 **VERSION 2** - improved UI, can work with any stream, even outside of the Meiosis pattern;
 no longer requires `meiosis` as a dependency.

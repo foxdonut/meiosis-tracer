@@ -166,8 +166,6 @@ export const tracer = ({
     }
   }
 
-  const reset = () => null
-
   window.addEventListener("message", evt => {
     if (evt.data.type === "MEIOSIS_STREAM_OPTIONS") {
       receiveStreamOptions(evt.data.value)
@@ -180,7 +178,6 @@ export const tracer = ({
 
   return {
     receiveStreamOptions,
-    receiveStreamValue,
-    reset
+    receiveStreamValue
   }
 }

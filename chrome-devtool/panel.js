@@ -10,7 +10,7 @@
 //   tabId: [Automatically added]
 // }
 
-var sendMessageToBackground = function(message) {
+var sendMessageToBackground = function (message) {
   message.tabId = chrome.devtools.inspectedWindow.tabId
   chrome.runtime.sendMessage(message)
 }
@@ -18,11 +18,12 @@ var sendMessageToBackground = function(message) {
 var tracer = null
 
 // Listen to messages from background.js and answer them
-chrome.runtime.onMessage.addListener(function(request, _sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, _sender, _sendResponse) {
   var data = request.data
   if (data) {
     if (data.type === "MEIOSIS_PING") {
-      sendResponse({ content: { type: "MEIOSIS_TRACER_INIT" } })
+      sendMessageToBackground({ content: { type: "MEIOSIS_TRACER_INIT" } })
+      // sendResponse({ content: { type: "MEIOSIS_TRACER_INIT" } })
     } else if (data.type === "MEIOSIS_STREAM_OPTIONS") {
       tracer.receiveStreamOptions(data.value)
     } else if (data.type === "MEIOSIS_STREAM_VALUE") {
@@ -32,12 +33,12 @@ chrome.runtime.onMessage.addListener(function(request, _sender, sendResponse) {
 })
 
 // Create the Tracer
-var createTracer = function() {
-  var sendTracerInit = function() {
+var createTracer = function () {
+  var sendTracerInit = function () {
     sendMessageToBackground({ content: { type: "MEIOSIS_TRACER_INIT" } })
   }
 
-  var triggerStreamValue = function(index, value) {
+  var triggerStreamValue = function (index, value) {
     sendMessageToBackground({
       content: {
         type: "MEIOSIS_TRIGGER_STREAM_VALUE",
@@ -56,11 +57,8 @@ var createTracer = function() {
   })
 }
 
-// Called when navigating to tab.
-chrome.devtools.network.onNavigated.addListener(function() {
-  if (tracer) {
-    tracer.reset()
-  }
+// Called when navigating to tab or reloading the tab.
+chrome.devtools.network.onNavigated.addListener(function () {
   createTracer()
 })
 
