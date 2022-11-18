@@ -1,4 +1,4 @@
-const isMeiosisTracerOn = () => window && window["__MEIOSIS_TRACER_GLOBAL_HOOK__"]
+const isMeiosisTracerOn = () => window && window['__MEIOSIS_TRACER_GLOBAL_HOOK__'];
 
 /*
 Changes to a stream are sent to the tracer.
@@ -29,63 +29,63 @@ Parameters:
 */
 export const trace = ({
   streams = [],
-  stringify = obj => JSON.stringify(obj, null, 4),
-  parse = str => JSON.parse(str),
+  stringify = (obj) => JSON.stringify(obj, null, 4),
+  parse = (str) => JSON.parse(str),
   listen = (stream, fn) => stream.map(fn),
   emit = (stream, value) => stream(value)
 }) => {
   if (!isMeiosisTracerOn()) {
-    return
+    return;
   }
-  const bufferedStreamValues = []
-  let devtoolInitialized = false
+  const bufferedStreamValues = [];
+  let devtoolInitialized = false;
 
-  const streamObjs = []
+  const streamObjs = [];
 
   for (let i = 0, t = streams.length; i < t; i++) {
-    const defaultLabel = "Stream " + i
+    const defaultLabel = 'Stream ' + i;
     if (streams[i].stream) {
-      streams[i].label = streams[i].label || defaultLabel
-      streamObjs.push(streams[i])
+      streams[i].label = streams[i].label || defaultLabel;
+      streamObjs.push(streams[i]);
     } else {
-      streamObjs.push({ stream: streams[i], label: defaultLabel })
+      streamObjs.push({ stream: streams[i], label: defaultLabel });
     }
   }
 
   streamObjs.forEach(({ stream }, index) => {
-    listen(stream, value => {
-      const data = { type: "MEIOSIS_STREAM_VALUE", index, value: stringify(value) }
+    listen(stream, (value) => {
+      const data = { type: 'MEIOSIS_STREAM_VALUE', index, value: stringify(value) };
 
       if (devtoolInitialized) {
-        window.postMessage(data, "*")
+        window.postMessage(data, '*');
       } else {
-        bufferedStreamValues.push(data)
+        bufferedStreamValues.push(data);
       }
-    })
-  })
+    });
+  });
 
-  window.addEventListener("message", evt => {
-    if (evt.data.type === "MEIOSIS_TRACER_INIT") {
-      const streamOpts = []
-      streamObjs.forEach(streamObj => {
-        const streamOpt = {}
-        Object.keys(streamObj).forEach(key => {
-          if (key !== "stream") {
-            streamOpt[key] = streamObj[key]
+  window.addEventListener('message', (evt) => {
+    if (evt.data.type === 'MEIOSIS_TRACER_INIT') {
+      const streamOpts = [];
+      streamObjs.forEach((streamObj) => {
+        const streamOpt = {};
+        Object.keys(streamObj).forEach((key) => {
+          if (key !== 'stream') {
+            streamOpt[key] = streamObj[key];
           }
-        })
-        streamOpts.push(streamOpt)
-      })
-      window.postMessage({ type: "MEIOSIS_STREAM_OPTIONS", value: streamOpts }, "*")
-      devtoolInitialized = true
-      bufferedStreamValues.forEach(data => window.postMessage(data, "*"))
-      bufferedStreamValues.length = 0
-    } else if (evt.data.type === "MEIOSIS_TRIGGER_STREAM_VALUE") {
-      const { index, value } = evt.data
-      emit(streamObjs[index].stream, parse(value))
+        });
+        streamOpts.push(streamOpt);
+      });
+      window.postMessage({ type: 'MEIOSIS_STREAM_OPTIONS', value: streamOpts }, '*');
+      devtoolInitialized = true;
+      bufferedStreamValues.forEach((data) => window.postMessage(data, '*'));
+      bufferedStreamValues.length = 0;
+    } else if (evt.data.type === 'MEIOSIS_TRIGGER_STREAM_VALUE') {
+      const { index, value } = evt.data;
+      emit(streamObjs[index].stream, parse(value));
     }
-  })
+  });
 
   // Send ping in case tracer was already loaded and we missed the MEIOSIS_TRACER_INIT message.
-  window.postMessage({ type: "MEIOSIS_PING" }, "*")
-}
+  window.postMessage({ type: 'MEIOSIS_PING' }, '*');
+};

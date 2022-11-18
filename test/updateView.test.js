@@ -1,25 +1,25 @@
-import { setup, getElement } from "./setup"
-import { streamView } from "../src/streamView"
-import { updateView } from "../src/updateView"
-import * as C from "../src/constants"
+import { setup, getElement } from './setup';
+import { streamView } from '../src/streamView';
+import { updateView } from '../src/updateView';
+import * as C from '../src/constants';
 
-const element = setup()
-const index = 0
+const element = setup();
+const index = 0;
 
 const listeners = {
   onSliderChange: () => null,
   onStepBack: () => null,
   onStepForward: () => null,
   onSend: () => null
-}
+};
 
-streamView({ element, index, listeners })
+streamView({ element, index, listeners });
 
-const model = '{"updated": true }'
-const value = 1
-const max = 2
+const model = '{"updated": true }';
+const value = 1;
+const max = 2;
 
-updateView({ index, model, value, max })
+updateView({ index, model, value, max });
 
 export default {
   updateView: {
@@ -28,4 +28,4 @@ export default {
     sliderMax: [getElement(C.sliderId(index)).max, String(max)],
     sliderValueLabel: [getElement(C.sliderValueId(index)).textContent, String(value)]
   }
-}
+};

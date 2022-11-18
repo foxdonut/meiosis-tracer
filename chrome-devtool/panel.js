@@ -10,57 +10,57 @@
 //   tabId: [Automatically added]
 // }
 
-var sendMessageToBackground = function (message) {
-  message.tabId = chrome.devtools.inspectedWindow.tabId
-  chrome.runtime.sendMessage(message)
-}
+var sendMessageToBackground = function(message) {
+  message.tabId = chrome.devtools.inspectedWindow.tabId;
+  chrome.runtime.sendMessage(message);
+};
 
-var tracer = null
+var tracer = null;
 
 // Listen to messages from background.js and answer them
-chrome.runtime.onMessage.addListener(function (request, _sender, _sendResponse) {
-  var data = request.data
+chrome.runtime.onMessage.addListener(function(request, _sender, _sendResponse) {
+  var data = request.data;
   if (data) {
-    if (data.type === "MEIOSIS_PING") {
-      sendMessageToBackground({ content: { type: "MEIOSIS_TRACER_INIT" } })
+    if (data.type === 'MEIOSIS_PING') {
+      sendMessageToBackground({ content: { type: 'MEIOSIS_TRACER_INIT' } });
       // sendResponse({ content: { type: "MEIOSIS_TRACER_INIT" } })
-    } else if (data.type === "MEIOSIS_STREAM_OPTIONS") {
-      tracer.receiveStreamOptions(data.value)
-    } else if (data.type === "MEIOSIS_STREAM_VALUE") {
-      tracer.receiveStreamValue(data.index, data.value)
+    } else if (data.type === 'MEIOSIS_STREAM_OPTIONS') {
+      tracer.receiveStreamOptions(data.value);
+    } else if (data.type === 'MEIOSIS_STREAM_VALUE') {
+      tracer.receiveStreamValue(data.index, data.value);
     }
   }
-})
+});
 
 // Create the Tracer
-var createTracer = function () {
-  var sendTracerInit = function () {
-    sendMessageToBackground({ content: { type: "MEIOSIS_TRACER_INIT" } })
-  }
+var createTracer = function() {
+  var sendTracerInit = function() {
+    sendMessageToBackground({ content: { type: 'MEIOSIS_TRACER_INIT' } });
+  };
 
-  var triggerStreamValue = function (index, value) {
+  var triggerStreamValue = function(index, value) {
     sendMessageToBackground({
       content: {
-        type: "MEIOSIS_TRIGGER_STREAM_VALUE",
+        type: 'MEIOSIS_TRIGGER_STREAM_VALUE',
         index: index,
         value: value
       }
-    })
-  }
+    });
+  };
 
   tracer = window.meiosisTracer({
-    selector: "#meiosis-tracer",
+    selector: '#meiosis-tracer',
     sendTracerInit: sendTracerInit,
     triggerStreamValue: triggerStreamValue,
-    direction: "auto",
+    direction: 'auto',
     theme: chrome.devtools.panels.themeName
-  })
-}
+  });
+};
 
 // Called when navigating to tab or reloading the tab.
-chrome.devtools.network.onNavigated.addListener(function () {
-  createTracer()
-})
+chrome.devtools.network.onNavigated.addListener(function() {
+  createTracer();
+});
 
 // Initially create the tracer.
-createTracer()
+createTracer();

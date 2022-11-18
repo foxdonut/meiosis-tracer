@@ -12,12 +12,13 @@
 ## Introduction
 
 Meiosis-Tracer is a development and debugging tool that traces, rewinds, and replays snapshots of
-[Flyd](https://github.com/paldepind/flyd) or [Mithril](https://mithril.js.org/stream.html) streams.
-It can also work with other stream libraries such as [RxJS](https://rxjs-dev.firebaseapp.com/),
-[most.js](https://github.com/cujojs/most), and so on.
+streams such as [flyd](https://github.com/paldepind/flyd) and
+[Mithril Stream](https://mithril.js.org/stream.html).
 
 You can also directly enter your own snapshots and send the values onto the streams. This works
-particularly well in [Meiosis](http://meiosis.js.org) applications.
+particularly well in [Meiosis](https://meiosis.js.org) applications. Of course, Meiosis-Tracer also
+works with Meiosis's
+[Simple Stream](https://meiosis.js.org/docs/setup-js-stream-implementation.html).
 
 You can install Meiosis-Tracer with `npm`:
 
