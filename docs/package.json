@@ -4,10 +4,10 @@
   "description": "meiosis tracer docs",
   "main": "index.js",
   "scripts": {
-    "prebuild": "rm -rf build dist && mkdir -p build dist && node add-flems.js sections build",
-    "build": "harp compile build dist",
+    "prebuild": "rm -rf build dist && mkdir -p build dist && node process-tags.js sections build",
+    "build": "harp build dist",
     "postbuild": "cp css/* dist",
-    "onchange": "onchange app.css app.html 'code/*' 'css/*' 'sections/*' -- npm run build",
+    "onchange": "onchange -i app.css app.html 'code/*' 'css/*' 'sections/*' -- npm run build",
     "start": "static-server -p ${PORT:-9000}"
   },
   "repository": {

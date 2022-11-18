@@ -121,13 +121,9 @@ without any configuration. Simply call `meiosisTracer` and indicate the `streams
 trace. That's all you need if you are using the Chrome Extension. If you want to add the Tracer to
 your page instead, also indicate the `selector`.
 
-Here is a Flyd example:
+Here is an example (with Mithril-Stream):
 
-@flems code/flyd/basic/index.js,app.html flyd,meiosis-tracer
-
-And here is the same example with Mithril-Stream:
-
-@flems code/mithril/basic/index.js,app.html mithril,mithril-stream,meiosis-tracer
+@flems {"files":"code/mithril/basic/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","middle":60}
 
 The controls that you see at the top of the Tracer are as follows:
 
@@ -154,22 +150,13 @@ specify (see below for full list of options), otherwise an error will occur.
 
 By default, streams are labeled `Stream 0`, `Stream 1`, etc. To specify different labels, use
 objects in the `streams` array. Each object must have a `stream` property for the stream. Then,
-use `label` to indicate the label:
-
-@flems code/flyd/meiosis/index.js,app.html flyd,react,react-dom,meiosis-tracer 800
+use `label` to indicate the label.
 
 You can also specify options to the tracer itself, which apply to all streams. In the
 example below, we indicated the number of `rows` for the textarea, and how to `stringify`
 values:
 
-@flems code/mithril/meiosis/index.js,app.html mithril,mithril-stream,meiosis-tracer 800
-
-The Tracer can also work with other stream libraries such as
-[RxJS](https://rxjs-dev.firebaseapp.com/), [most.js](https://github.com/cujojs/most), and so on.
-In those cases, specify the `listen` and `emit` properties to indicate how to listen to a stream
-and how to emit a value onto a stream. Here is an example with RxJS:
-
-@flems code/rxjs/basic/index.js,app.html rxjs,meiosis-tracer 600
+@flems {"files":"code/mithril/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
 
 > For more examples using Meiosis-Tracer, see the
 [Meiosis Examples](http://meiosis.js.org/examples.html).
