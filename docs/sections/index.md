@@ -123,7 +123,7 @@ your page instead, also indicate the `selector`.
 
 Here is an example (with Mithril-Stream):
 
-@flems {"files":"code/mithril/basic/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","middle":60}
+@flems {"files":"code/basic/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","middle":60}
 
 The controls that you see at the top of the Tracer are as follows:
 
@@ -156,7 +156,7 @@ You can also specify options to the tracer itself, which apply to all streams. I
 example below, we indicated the number of `rows` for the textarea, and how to `stringify`
 values:
 
-@flems {"files":"code/mithril/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
+@flems {"files":"code/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
 
 > For more examples using Meiosis-Tracer, see the
 [Meiosis Examples](http://meiosis.js.org/examples.html).
@@ -171,7 +171,7 @@ These are general options for the tracer. Stream-related options apply to all st
 | option | purpose | values  | default |
 |--------|---------|---------|---------|
 | `selector` | CSS selector targetting the HTML element for the tracer | string |    |
-| `stream` | array of streams to be traced | array |  |
+| `streams` | array of streams to be traced | array |  |
 | `direction` | layout direction for multiple streams | `row`, `column`, `auto` | `column` |
 | `theme` | add a `theme-<name>` class | any string | `light` |
 | `rows` | number of rows in textareas | number | `15`   |
