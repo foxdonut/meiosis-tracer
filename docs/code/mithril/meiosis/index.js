@@ -1,44 +1,48 @@
 /*global m, meiosisTracer*/
 
-const createActions = (update) => ({
-  increase: () => update((model) => {
+const actions = {
+  increase: (cell) => cell.update((model) => {
     model.value = model.value + 1;
     return model;
   }),
-  editName: (value) => update((model) => {
+  editName: (cell, value) => cell.update((model) => {
     model.name = value;
     return model;
   })
-});
+};
 
-const createView = (actions) => (model) =>
+const view = (cell) =>
   m('div',
     m('div',
-      m('span', 'Counter: ', model.value, ' '),
-      m('button', { onclick: actions.increase }, 'Increase')
+      m('span', 'Counter: ', cell.state.value, ' '),
+      m('button', { onclick: () => actions.increase(cell) }, 'Increase')
     ),
     m('div',
       m('span', 'Name: '),
-      m('input', { type: 'text', value: model.name,
-        oninput: (evt) => actions.editName(evt.target.value) })
+      m('input', {
+        type: 'text', value: cell.state.name,
+        oninput: (evt) => actions.editName(cell, evt.target.value)
+      })
     ),
     m('div',
-      m('span', 'Hello, ', model.name)
+      m('span', 'Hello, ', cell.state.name)
     )
   );
 
+const initial = { value: 0, name: '' };
 const update = m.stream();
-const models = m.stream.scan((model, func) => func(model),
-  { value: 0, name: '' }, update);
+const states = m.stream.scan((state, fn) => fn(state),
+  initial, update);
+const createCell = (state) => ({ state, update });
+const cells = states.map(createCell);
 
-const view = createView(createActions(update));
 const element = document.getElementById('app');
-models.map((model) => { m.render(element, view(model)); });
+cells.map((cell) => { m.render(element, view(cell)); });
 
 meiosisTracer({
   selector: '#tracer',
   streams: [
-    { stream: models, label: 'models' }
+    { stream: states, label: 'states' }
   ],
   rows: 10,
   stringify: (value) => JSON.stringify(value, null, 2)
