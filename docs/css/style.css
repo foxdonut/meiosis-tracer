@@ -18,8 +18,12 @@ h3, th {
   height: 500px;
 }
 blockquote {
-  padding-left: 20px;
-  border-left: 2px solid gray;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  margin-left: 0;
+  border: 2px solid #ffaa99;
+  background-color: #ffffee;
 }
 img {
   max-width: 100%;
