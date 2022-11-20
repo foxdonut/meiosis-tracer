@@ -162,8 +162,9 @@ values. This example uses [Meiosis-Setup](https://meiosis.js.org/setup).
 
 @flems {"files":"code/meiosis-setup/index.js,app.html","libs":"mithril,meiosis-setup,meiosis-tracer","height":800,"middle":60}
 
-> For more examples using Meiosis-Tracer, see the
-[Meiosis Examples](http://meiosis.js.org/examples.html).
+> These examples are also available [here](https://meiosis.js.org/tracer/examples/index.html) so
+that you can run them in your browser with the [Chrome Devtools](#using_chrome_extension) version
+of Meiosis-Tracer.
 
 <a name="options"></a>
 ## Full List of Options
@@ -201,5 +202,5 @@ you pass to the `streams` array.
 -----
 
 [Meiosis-Tracer](https://github.com/foxdonut/meiosis-tracer) is developed by
-[@foxdonut00](http://twitter.com/foxdonut00) / [foxdonut](https://github.com/foxdonut)
+[@foxdonut00](https://twitter.com/foxdonut00) / [foxdonut](https://github.com/foxdonut)
 and is released under the MIT license.
