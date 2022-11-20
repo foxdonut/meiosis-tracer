@@ -41,7 +41,4 @@ const cells = states.map(createCell);
 const element = document.getElementById('app');
 cells.map((cell) => { m.render(element, view(cell)); });
 
-meiosisTracer({
-  selector: '#tracer',
-  streams: [states]
-});
+meiosisTracer({ selector: '#tracer', streams: [states] });

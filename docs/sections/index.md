@@ -3,6 +3,7 @@
 ## Contents
 
 - [Introduction](#introduction)
+- [Installation](#installation)
 - [Adding the Tracer To Your Page](#adding_the_tracer)
 - [Using the Chrome DevTools Extension](#using_chrome_extension)
 - [Using the Tracer](#using_the_tracer)
@@ -12,13 +13,15 @@
 ## Introduction
 
 Meiosis-Tracer is a development and debugging tool that traces, rewinds, and replays snapshots of
-streams such as [flyd](https://github.com/paldepind/flyd) and
-[Mithril Stream](https://mithril.js.org/stream.html).
+streams such as [flyd](https://github.com/paldepind/flyd),
+[Mithril Stream](https://mithril.js.org/stream.html), and Meiosis's own
+[Simple Stream](https://meiosis.js.org/docs/setup-js-stream-implementation.html).
 
 You can also directly enter your own snapshots and send the values onto the streams. This works
-particularly well in [Meiosis](https://meiosis.js.org) applications. Of course, Meiosis-Tracer also
-works with Meiosis's
-[Simple Stream](https://meiosis.js.org/docs/setup-js-stream-implementation.html).
+particularly well in [Meiosis](https://meiosis.js.org) applications.
+
+<a name="installation"></a>
+## Installation
 
 You can install Meiosis-Tracer with `npm`:
 
@@ -115,11 +118,14 @@ My thanks and appreciation go to their authors!
 <a name="using_the_tracer"></a>
 ## Using the Tracer
 
-At it simplest, the Tracer works with
-[Flyd](https://github.com/paldepind/flyd) or [Mithril](https://mithril.js.org/stream.html) streams
+At its simplest, the Tracer works with
+[Simple Stream](https://meiosis.js.org/docs/setup-js-stream-implementation.html),
+[Flyd](https://github.com/paldepind/flyd), or [Mithril](https://mithril.js.org/stream.html) streams
 without any configuration. Simply call `meiosisTracer` and indicate the `streams` that you want to
 trace. That's all you need if you are using the Chrome Extension. If you want to add the Tracer to
 your page instead, also indicate the `selector`.
+
+Here is an example that uses [Meiosis](https://meiosis.js.org):
 
 @flems {"files":"code/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
 
@@ -139,9 +145,9 @@ Each stream also has these controls:
 
 - **Hist**: whether or not to accumulate history. This automatically shuts off if you have Auto on
 and use the slider or arrow buttons to go back and forth in history.
-- **Hide button**: hide an individual stream.
-- **Arrow buttons**: go back and forth in history.
-- **Send**: send the value entered in the textarea onto the stream. Note that the value that you
+- **Hide button**: hides an individual stream.
+- **Arrow buttons**: goes back and forth in history.
+- **Send**: sends the value entered in the textarea onto the stream. Note that the value that you
 enter in the textarea must be valid JSON, or be recognized by the `parse` function that you
 specify (see below for full list of options), otherwise an error will occur.
 - **Reset**: wipes out the stream's history.
@@ -151,8 +157,8 @@ objects in the `streams` array. Each object must have a `stream` property for th
 use `label` to indicate the label.
 
 You can also specify options to the tracer itself, which apply to all streams. In the
-example below, we indicated the number of `rows` for the textarea, and how to `stringify`
-values:
+example below, we've indicated the number of `rows` for the textarea, and how to `stringify`
+values. This example uses [Meiosis-Setup](https://meiosis.js.org/setup).
 
 @flems {"files":"code/meiosis-setup/index.js,app.html","libs":"mithril,meiosis-setup,meiosis-tracer","height":800,"middle":60}
 
