@@ -121,7 +121,7 @@ without any configuration. Simply call `meiosisTracer` and indicate the `streams
 trace. That's all you need if you are using the Chrome Extension. If you want to add the Tracer to
 your page instead, also indicate the `selector`.
 
-(example)
+@flems {"files":"code/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
 
 The controls that you see at the top of the Tracer are as follows:
 
@@ -154,7 +154,7 @@ You can also specify options to the tracer itself, which apply to all streams. I
 example below, we indicated the number of `rows` for the textarea, and how to `stringify`
 values:
 
-@flems {"files":"code/meiosis/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","height":800,"middle":60}
+@flems {"files":"code/meiosis-setup/index.js,app.html","libs":"mithril,meiosis-setup,meiosis-tracer","height":800,"middle":60}
 
 > For more examples using Meiosis-Tracer, see the
 [Meiosis Examples](http://meiosis.js.org/examples.html).

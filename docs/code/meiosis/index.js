@@ -43,9 +43,5 @@ cells.map((cell) => { m.render(element, view(cell)); });
 
 meiosisTracer({
   selector: '#tracer',
-  streams: [
-    { stream: states, label: 'states' }
-  ],
-  rows: 10,
-  stringify: (value) => JSON.stringify(value, null, 2)
+  streams: [states]
 });

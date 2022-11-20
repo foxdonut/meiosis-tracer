@@ -4,7 +4,8 @@ const fromDir = process.argv[2];
 const toDir = process.argv[3];
 
 const libMap = {
-  'meiosis-tracer': 'https://unpkg.com/meiosis-tracer@2.0.0/dist/meiosis-tracer.js',
+  'meiosis-tracer': 'https://unpkg.com/meiosis-tracer@4.0.0/dist/meiosis-tracer.js',
+  'meiosis-setup': 'https://unpkg.com/meiosis-setup@6.1.1/meiosis-setup.js',
   mithril: 'https://unpkg.com/mithril@2.0.4',
   'mithril-stream': 'https://unpkg.com/mithril@2.0.4/stream/stream.js'
 };
