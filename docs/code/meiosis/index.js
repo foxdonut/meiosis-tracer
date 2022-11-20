@@ -15,16 +15,18 @@ const view = (cell) =>
   m('div',
     m('div',
       m('span', 'Counter: ', cell.state.value, ' '),
-      m('button', { onclick: () => actions.increase(cell) }, 'Increase')
+      m('button.btn.btn-primary.btn-sm.ms-2',
+        { onclick: () => actions.increase(cell) },
+        'Increase')
     ),
-    m('div',
+    m('div.mt-3',
       m('span', 'Name: '),
       m('input', {
         type: 'text', value: cell.state.name,
         oninput: (evt) => actions.editName(cell, evt.target.value)
       })
     ),
-    m('div',
+    m('div.mt-2',
       m('span', 'Hello, ', cell.state.name)
     )
   );

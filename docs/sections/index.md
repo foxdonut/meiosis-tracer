@@ -121,9 +121,7 @@ without any configuration. Simply call `meiosisTracer` and indicate the `streams
 trace. That's all you need if you are using the Chrome Extension. If you want to add the Tracer to
 your page instead, also indicate the `selector`.
 
-Here is an example (with Mithril-Stream):
-
-@flems {"files":"code/basic/index.js,app.html","libs":"mithril,mithril-stream,meiosis-tracer","middle":60}
+(example)
 
 The controls that you see at the top of the Tracer are as follows:
 
