@@ -1,8 +1,8 @@
 {
   "name": "meiosis-tracer",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "meiosis-tracer",
-  "main": "lib/meiosis-tracer.js",
+  "main": "dist/meiosis-tracer.js",
   "unpkg": "dist/meiosis-tracer.js",
   "typings": "lib/index.d.ts",
   "scripts": {

@@ -1,6 +1,7 @@
 {
   "name": "meiosis-tracer-docs",
   "version": "5.0.0",
+  "private": true,
   "description": "meiosis tracer docs",
   "main": "index.js",
   "scripts": {
