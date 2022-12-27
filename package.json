@@ -1,12 +1,12 @@
 {
   "name": "meiosis-tracer",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "meiosis-tracer",
   "main": "dist/meiosis-tracer.js",
   "unpkg": "dist/meiosis-tracer.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "start": "webpack && cross-env NODE_ENV=prod webpack && cross-env NODE_ENV=dev webpack && cross-env NODE_ENV=devtool webpack && cp src/meiosis-tracer.d.ts dist/",
+    "start": "webpack && cross-env NODE_ENV=prod webpack && cross-env NODE_ENV=dev webpack && cross-env NODE_ENV=devtool webpack",
     "test": "tead",
     "test-watch": "tead --watch"
   },
