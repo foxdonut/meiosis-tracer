@@ -11,11 +11,7 @@ export const tracer = ({
   selector,
   sendTracerInit,
   triggerStreamValue,
-  theme = 'light',
-  direction = 'column',
-  rows = 15,
-  cols = 50,
-  autoSend = true
+  theme = 'light'
 }) => {
   const target = document.querySelector(selector);
 
@@ -39,8 +35,7 @@ export const tracer = ({
     };
   }
 
-  // const receiveStreamOptions = ({ streamOptions, direction, rows, cols, autoSend }) => {
-  const receiveStreamOptions = (streamOptions) => {
+  const receiveStreamOptions = ({ streamOptions, direction, rows, cols, autoSend }) => {
     if (target.lastChild) {
       return;
     }

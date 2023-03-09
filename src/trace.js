@@ -32,14 +32,11 @@ export const trace = ({
   stringify = (obj) => JSON.stringify(obj, null, 4),
   parse = (str) => JSON.parse(str),
   listen = (stream, fn) => stream.map(fn),
-  emit = (stream, value) => stream(value)
-  /*
   emit = (stream, value) => stream(value),
   direction = 'column',
   rows = 15,
   cols = 50,
   autoSend = true
-  */
 }) => {
   if (!isMeiosisTracerOn()) {
     return;
@@ -83,7 +80,6 @@ export const trace = ({
         });
         streamOptions.push(streamOpt);
       });
-      /*
       const params = {
         streamOptions,
         direction,
@@ -92,8 +88,6 @@ export const trace = ({
         autoSend
       };
       window.postMessage({ type: 'MEIOSIS_STREAM_OPTIONS', value: params }, '*');
-      */
-      window.postMessage({ type: 'MEIOSIS_STREAM_OPTIONS', value: streamOptions }, '*');
       devtoolInitialized = true;
       bufferedStreamValues.forEach((data) => window.postMessage(data, '*'));
       bufferedStreamValues.length = 0;
