@@ -27,14 +27,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   }
 });
 
-// Listens to page reloads
-/*
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-  if (changeInfo.status === "loading" && !changeInfo.url) {
-    // Send message to content-script.js
-    chrome.tabs.sendMessage(tabId, {
-      content: { type: "MEIOSIS_TAB_RELOAD", tabId }
-    })
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && /^http/.test(tab.url)) {
+    chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      files: ['./content-script.js']
+    });
   }
-})
-*/
+});

@@ -11,8 +11,8 @@ export const tracer = ({
   selector,
   sendTracerInit,
   triggerStreamValue,
-  direction = 'column',
   theme = 'light',
+  direction = 'column',
   rows = 15,
   cols = 50,
   autoSend = true
@@ -39,6 +39,7 @@ export const tracer = ({
     };
   }
 
+  // const receiveStreamOptions = ({ streamOptions, direction, rows, cols, autoSend }) => {
   const receiveStreamOptions = (streamOptions) => {
     if (target.lastChild) {
       return;

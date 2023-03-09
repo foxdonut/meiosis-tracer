@@ -23,7 +23,6 @@ chrome.runtime.onMessage.addListener(function(request, _sender, _sendResponse) {
   if (data) {
     if (data.type === 'MEIOSIS_PING') {
       sendMessageToBackground({ content: { type: 'MEIOSIS_TRACER_INIT' } });
-      // sendResponse({ content: { type: "MEIOSIS_TRACER_INIT" } })
     } else if (data.type === 'MEIOSIS_STREAM_OPTIONS') {
       tracer.receiveStreamOptions(data.value);
     } else if (data.type === 'MEIOSIS_STREAM_VALUE') {

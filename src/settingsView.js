@@ -23,7 +23,7 @@ export const settingsView = ({ element, listeners, direction, rows, cols, autoSe
       <input title='Number of columns' id='${C.colsId}' type='text' size='2'
         value='${cols}'/>
       <button id='${C.hideTracerId}'>Hide</button>
-      <span>v5.0.0</span>
+      <span>v6.0.0</span>
     </div>
     <button id='${C.showTracerId}' style='display:none'>Show</button>
   `;

@@ -6,18 +6,12 @@
 // Listens for messages from background.js and sends them to the inspected page.
 
 // Set the hook on the inspected page
-var initializeHook = function(window) {
+var initializeHook = function() {
   window.__MEIOSIS_TRACER_GLOBAL_HOOK__ = true;
 };
 
-var js = ';(' + initializeHook.toString() + '(window))';
+initializeHook();
 
-var script = document.createElement('script');
-script.textContent = js;
-document.documentElement.appendChild(script);
-script.parentNode.removeChild(script);
-
-// Messages received from the inspected page
 window.addEventListener('message', function(evt) {
   if (evt.source != window) {
     return;
