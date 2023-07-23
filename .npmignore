@@ -3,8 +3,9 @@
 .eslintrc.js
 .vscode
 chrome-devtool
+jestconfig.json
 meiosis-tracer.zip
 src
 webpack.config.js
 docs
-test
+tests

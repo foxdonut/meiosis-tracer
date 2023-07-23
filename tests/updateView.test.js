@@ -1,3 +1,5 @@
+/* eslint-env jest */
+
 import { setup, getElement } from './setup';
 import { streamView } from '../src/streamView';
 import { updateView } from '../src/updateView';
@@ -21,11 +23,20 @@ const max = 2;
 
 updateView({ index, model, value, max });
 
-export default {
-  updateView: {
-    model: [getElement(C.modelId(index)).value, model],
-    sliderValue: [getElement(C.sliderId(index)).value, String(value)],
-    sliderMax: [getElement(C.sliderId(index)).max, String(max)],
-    sliderValueLabel: [getElement(C.sliderValueId(index)).textContent, String(value)]
-  }
-};
+describe('updateView', () => {
+  it('model', () => {
+    expect(getElement(C.modelId(index)).value).toEqual(model);
+  });
+
+  it('sliderValue', () => {
+    expect(getElement(C.sliderId(index)).value).toEqual(String(value));
+  });
+
+  it('sliderMax', () => {
+    expect(getElement(C.sliderId(index)).max).toEqual(String(max));
+  });
+
+  it('sliderValueLabel', () => {
+    expect(getElement(C.sliderValueId(index)).textContent).toEqual(String(value));
+  });
+});
